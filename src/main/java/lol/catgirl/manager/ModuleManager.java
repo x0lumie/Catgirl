@@ -19,6 +19,8 @@ import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.movement.NoWebModule;
 import lol.catgirl.module.movement.SpeedModule;
 import lol.catgirl.module.movement.SprintModule;
+import lol.catgirl.module.player.AntiFireballModule;
+import lol.catgirl.module.player.NoFallModule;
 import lombok.Getter;
 
 @Getter
@@ -46,6 +48,8 @@ public final class ModuleManager {
         modules.add(TickShiftModule.INSTANCE);
         modules.add(TargetsModule.INSTANCE);
         modules.add(TargetHUDModule.INSTANCE);
+        modules.add(NoFallModule.INSTANCE);
+        modules.add(AntiFireballModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
