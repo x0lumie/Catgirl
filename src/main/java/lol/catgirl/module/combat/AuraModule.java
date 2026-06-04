@@ -42,9 +42,6 @@ public class AuraModule extends Module {
     public void onPreUpdate(PreUpdateEvent event) {
         if (mc.player == null) return;
 
-        minCps.setHidden(() -> !oldCombat.getValue());
-        maxCps.setHidden(() -> !oldCombat.getValue());
-
         if (maxCps.getValue() < minCps.getValue()) {
             maxCps.setValue(minCps.getValue());
         }
