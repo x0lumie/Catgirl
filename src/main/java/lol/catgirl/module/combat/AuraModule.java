@@ -19,8 +19,12 @@ public class AuraModule extends Module {
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
     public static SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 2, 1, 5, 0.5f);
     public static BoolProperty oldCombat = new BoolProperty("Old Combat", false);
-    public static SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1);
-    public static SliderProperty maxCps = new SliderProperty("Max CPS", 13, 1, 20, 1);
+    public static SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1)
+            .hide(()->!oldCombat.getValue())
+            ;
+    public static SliderProperty maxCps = new SliderProperty("Max CPS", 13, 1, 20, 1)
+            .hide(()->!oldCombat.getValue())
+            ;
 
     public static final AuraModule INSTANCE = new AuraModule();
 
