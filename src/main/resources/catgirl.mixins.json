@@ -3,6 +3,7 @@
 	"package": "lol.catgirl.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"ConnectionMixin",
 		"GuiMixin",
 		"LivingEntityMixin",
 		"LocalPlayerMixin"
@@ -24,6 +25,7 @@
 		"LivingEntityRendererMixin",
 		"MinecraftMixin",
 		"MouseMixin",
+		"PacketSendMixin",
 		"RenderMixin"
 	]
 }
