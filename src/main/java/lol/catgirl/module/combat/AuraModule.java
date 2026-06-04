@@ -17,6 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AuraModule extends Module {
     public static final AuraModule INSTANCE = new AuraModule();
 
+    // if u want my aura tell me and ill give it to you. :ribbon:
+
     public final EnumSetting<TargetManager.Mode> mode =
             new EnumSetting<>("Mode", TargetManager.Mode.Adaptive);
     public final EnumSetting<TargetManager.Entities> entities =
