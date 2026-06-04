@@ -8,15 +8,15 @@ import lol.catgirl.setting.impl.BoolProperty;
 import lol.catgirl.setting.impl.SliderProperty;
 import net.minecraft.world.item.*;
 
-public class FastUseModule extends Module {
-    public static final FastUseModule INSTANCE = new FastUseModule();
+public class FastThrowModule extends Module {
+    public static final FastThrowModule INSTANCE = new FastThrowModule();
 
     public final SliderProperty delay = new SliderProperty("Delay", 0, 0, 50, 1);
     public final BoolProperty includeBlocks = new BoolProperty("Include Blocks", false);
     public final BoolProperty includeProjectiles = new BoolProperty("Include Projectiles", false);
     public final BoolProperty includeXP = new BoolProperty("Include XP", true);
 
-    public FastUseModule() {
+    public FastThrowModule() {
         super("FastUse", "Modifies the delay when using items.", ModuleCategory.Ghost);
         addSettings(delay, includeBlocks, includeProjectiles, includeXP);
     }
