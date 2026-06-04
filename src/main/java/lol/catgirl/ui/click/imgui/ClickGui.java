@@ -3,6 +3,7 @@ package lol.catgirl.ui.click.imgui;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.ImGuiCond;
 import imgui.type.ImFloat;
 import imgui.type.ImString;
 import lol.catgirl.manager.ModuleManager;
@@ -20,9 +21,12 @@ import static lol.catgirl.utils.IMinecraft.mc;
 
 public class ClickGui extends Screen {
     private final ImString searchText = new ImString(500);
-    private ModuleCategory moduleCategory;
+    private ModuleCategory moduleCategory = ModuleCategory.values()[0];
     private lol.catgirl.module.Module keyBindingModule = null;
     private lol.catgirl.module.Module module;
+
+    private final float windowWidth = 650.0f;
+    private final float windowHeight = 450.0f;
 
     public ClickGui() {
         super(Component.empty());
@@ -40,98 +44,102 @@ public class ClickGui extends Screen {
         ImGuiImpl.render(io -> {
             int windowFlags = ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar;
 
+            ImGui.setNextWindowSize(windowWidth, windowHeight, ImGuiCond.FirstUseEver);
+
             if (ImGui.begin("Catgirl", windowFlags)) {
-                for (ModuleCategory moduleCategory1 : ModuleCategory.values()) {
-                    ImGui.beginTabBar("Main");
 
-                    if (ImGui.beginTabItem(moduleCategory1.name() + "##tab")) {
-                        moduleCategory = moduleCategory1;
-                        ImGui.endTabItem();
+                if (ImGui.beginTabBar("Main")) {
+                    for (ModuleCategory category : ModuleCategory.values()) {
+                        if (ImGui.beginTabItem(category.name() + "##tab")) {
+                            moduleCategory = category;
+                            ImGui.endTabItem();
+                        }
                     }
-
                     ImGui.endTabBar();
                 }
 
-                for (lol.catgirl.module.Module module : ModuleManager.getInstance().getModulesByCategory(moduleCategory)) {
-                    ImGui.setCursorPosX(ImGui.getCursorPosX() + 25);
-                    if (ImGui.collapsingHeader(module.getDisplayName())) {
-                        drawToggle(module);
+                if (moduleCategory != null) {
+                    for (lol.catgirl.module.Module module : ModuleManager.getInstance().getModulesByCategory(moduleCategory)) {
+                        ImGui.setCursorPosX(ImGui.getCursorPosX() + 25);
+                        if (ImGui.collapsingHeader(module.getDisplayName())) {
+                            drawToggle(module);
 
-                        this.module = module;
+                            this.module = module;
 
-                        ImGui.text(module.getDescription());
+                            ImGui.text(module.getDescription());
 
-                        ImGui.sameLine();
+                            ImGui.sameLine();
 
-                        String keyName = GLFW.glfwGetKeyName(module.getKey(), 0);
+                            String keyName = GLFW.glfwGetKeyName(module.getKey(), 0);
 
-                        if (ImGui.button(
-                                keyBindingModule == module
-                                        ? "Listening..."
-                                        : "Key " + (keyName != null ? keyName.toLowerCase() : "none"))) {
-                            keyBindingModule = (keyBindingModule == module) ? null : module;
-                        }
-
-                        ImGui.separator();
-
-                        for (Property<?> property : module.getProperties()) {
-                            if (property.isHidden()) continue;
-
-                            if (property instanceof BoolProperty booleanSetting) {
-                                if (ImGui.checkbox(property.getName(), booleanSetting.getValue())) {
-                                    booleanSetting.setValue(!booleanSetting.getValue());
-                                }
+                            if (ImGui.button(
+                                    keyBindingModule == module
+                                            ? "Listening..."
+                                            : "Key " + (keyName != null ? keyName.toLowerCase() : "none"))) {
+                                keyBindingModule = (keyBindingModule == module) ? null : module;
                             }
 
-                            if (property instanceof SliderProperty numberProperty) {
-                                ImFloat imFloat = new ImFloat((float) numberProperty.getValue());
+                            ImGui.separator();
 
-                                if (ImGui.sliderFloat("##" + numberProperty.getName(), imFloat.getData(), (float) numberProperty.getMin(), (float) numberProperty.getMax())) {
-                                    numberProperty.setValue(imFloat.get());
+                            for (Property<?> property : module.getProperties()) {
+                                if (property.isHidden()) continue;
+
+                                if (property instanceof BoolProperty booleanSetting) {
+                                    if (ImGui.checkbox(property.getName(), booleanSetting.getValue())) {
+                                        booleanSetting.setValue(!booleanSetting.getValue());
+                                    }
                                 }
 
-                                ImGui.sameLine();
-                                ImGui.text(numberProperty.getName());
+                                if (property instanceof SliderProperty numberProperty) {
+                                    ImFloat imFloat = new ImFloat((float) numberProperty.getValue());
 
-                                imFloat.getData()[0] = (float) numberProperty.getValue();
-                            }
+                                    if (ImGui.sliderFloat("##" + numberProperty.getName(), imFloat.getData(), (float) numberProperty.getMin(), (float) numberProperty.getMax())) {
+                                        numberProperty.setValue(imFloat.get());
+                                    }
 
-                            if (property instanceof EnumProperty<?> modeProperty) {
-                                String propertyName = modeProperty.getName();
-                                String comboId = "##" + propertyName + "_" + module.getDisplayName();
+                                    ImGui.sameLine();
+                                    ImGui.text(numberProperty.getName());
 
-                                String previewValue = String.valueOf(modeProperty.getValue());
+                                    imFloat.getData()[0] = (float) numberProperty.getValue();
+                                }
 
-                                if (ImGui.beginCombo(comboId, previewValue)) {
-                                    ImGui.inputTextWithHint(comboId + "_search", "Search For Modes...", searchText, ImGuiInputTextFlags.None);
-                                    String search = searchText.get().toLowerCase();
+                                if (property instanceof EnumProperty<?> modeProperty) {
+                                    String propertyName = modeProperty.getName();
+                                    String comboId = "##" + propertyName + "_" + module.getDisplayName();
 
-                                    for (Enum<?> mode : modeProperty.getModes()) {
-                                        String modeName = mode.toString();
+                                    String previewValue = String.valueOf(modeProperty.getValue());
 
-                                        if (search.isEmpty() || modeName.toLowerCase().contains(search)) {
-                                            boolean isSelected = modeProperty.getValue() == mode;
+                                    if (ImGui.beginCombo(comboId, previewValue)) {
+                                        ImGui.inputTextWithHint(comboId + "_search", "Search For Modes...", searchText, ImGuiInputTextFlags.None);
+                                        String search = searchText.get().toLowerCase();
 
-                                            if (ImGui.selectable(modeName, isSelected)) {
-                                                modeProperty.setValueByEnum(mode);
+                                        for (Enum<?> mode : modeProperty.getModes()) {
+                                            String modeName = mode.toString();
 
-                                                searchText.clear();
-                                            }
+                                            if (search.isEmpty() || modeName.toLowerCase().contains(search)) {
+                                                boolean isSelected = modeProperty.getValue() == mode;
 
-                                            if (isSelected) {
-                                                ImGui.setItemDefaultFocus();
+                                                if (ImGui.selectable(modeName, isSelected)) {
+                                                    modeProperty.setValueByEnum(mode);
+
+                                                    searchText.clear();
+                                                }
+
+                                                if (isSelected) {
+                                                    ImGui.setItemDefaultFocus();
+                                                }
                                             }
                                         }
+                                        ImGui.endCombo();
                                     }
-                                    ImGui.endCombo();
-                                }
 
-                                ImGui.sameLine();
-                                ImGui.text(propertyName);
+                                    ImGui.sameLine();
+                                    ImGui.text(propertyName);
+                                }
                             }
+                        } else {
+                            drawToggle(module);
                         }
-                    } else {
-                        drawToggle(module);
                     }
                 }
             }

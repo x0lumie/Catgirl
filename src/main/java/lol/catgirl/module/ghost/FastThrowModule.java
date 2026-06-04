@@ -6,6 +6,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.setting.impl.BoolProperty;
 import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.utils.client.TickingTimer;
 import net.minecraft.world.item.*;
 
 public class FastThrowModule extends Module {
@@ -20,6 +21,8 @@ public class FastThrowModule extends Module {
         super("FastThrow", "Modifies the delay when using items.", ModuleCategory.Ghost);
         addSettings(delay, includeBlocks, includeProjectiles, includeXP);
     }
+
+    private TickingTimer timer = new TickingTimer();
 
     @EventHook
     public void onTick(ClientTickEvent event) {
@@ -37,8 +40,11 @@ public class FastThrowModule extends Module {
             return;
         }
 
-        // if this errors ignore it
-        mc.rightClickDelay = delay.getValue().intValue();
+        // this won't error anymore thanks to me
+        if (timer.hasTimeElapsed(delay.getValue().intValue())) {
+            mc.rightClickDelay = 0;
+            timer.reset();
+        }
     }
 
     private boolean isProjectile(Item item) {
