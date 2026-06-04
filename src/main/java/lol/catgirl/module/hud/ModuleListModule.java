@@ -31,6 +31,7 @@ public class ModuleListModule extends Module {
     public final SliderSetting cornerRadius = new SliderSetting("Corner Radius", 2, 0, 15, 1);
     public final SliderSetting sidebarWidth = new SliderSetting("Sidebar Width", 1.2f, 0.5f, 6.0f, 0.1f).hide(() -> !bar.getValue());
     public final SliderSetting animSpeed = new SliderSetting("Animation Speed", 0.2f, 0.05f, 1.0f, 0.01f);
+    public final SliderSetting xPositioningOffset = new SliderSetting("X Offset", 3, 0, 50, 1);
     public final BoolSetting excludeCombat = new BoolSetting("Exclude Combat", false);
     public final BoolSetting excludeMovement = new BoolSetting("Exclude Movement", false);
     public final BoolSetting excludePlayer = new BoolSetting("Exclude Player", false);
@@ -42,8 +43,9 @@ public class ModuleListModule extends Module {
     public ModuleListModule() {
         super("ModuleList", "Shows a hud with currently enabled modules.", ModuleCategory.Hud);
         addSettings(
-                background, animSpeed, shadow, bar, isLeft, suffix, textSize, suffixTextSize,
-                paddingX, paddingY, spacing, cornerRadius, sidebarWidth,
+                background, animSpeed, xPositioningOffset, shadow, bar,
+                isLeft, suffix, textSize, suffixTextSize, paddingX,
+                paddingY, spacing, cornerRadius, sidebarWidth,
                 excludeCombat, excludeMovement, excludePlayer, excludeHud,
                 excludeRender, excludeCombat, excludeGhost, excludeClient
         );
@@ -137,7 +139,7 @@ public class ModuleListModule extends Module {
                 y += 17;
             }
             if (watermarkModule.mode.getValue() == WatermarkModule.Mode.Simple) {
-                y += 10;
+                y += 16;
             }
         } else {
             y = 10;
@@ -161,7 +163,13 @@ public class ModuleListModule extends Module {
 
             if (alpha <= 0.01f) continue;
 
-            double x = isLeft ? (5 + currentX) : (screenWidth - totalWidth - PADDING_X - 5 + currentX);
+            double xPositioningOffset =
+                    this.xPositioningOffset.getValue().intValue();
+
+            double x = isLeft
+                    ? (xPositioningOffset + currentX) :
+                    (screenWidth - totalWidth
+                     - PADDING_X - xPositioningOffset + currentX);
 
             float bgTop = (float) (y - TEXT_SIZE * 0.8 - PADDING_Y);
             float bgBottom = bgTop + SPACING + 0.1f;

@@ -67,16 +67,4 @@ public class Handler implements IMinecraft {
                     mc.getDeltaTracker().getRealtimeDeltaTicks()));
         });
     }
-
-    @EventHook
-    public void onRenderTick(RenderTickEvent event) {
-        int x = 1;
-        int y = 1;
-            DrawUtil.drawString(
-                    "a",
-                    x + x + 2 + x + 25, y,
-                    1, Color.WHITE,
-                    ResourceManager.FontResources.roboto
-            );
-        }
 }

@@ -13,6 +13,7 @@ import lol.catgirl.setting.Setting;
 import lol.catgirl.setting.impl.BoolSetting;
 import lol.catgirl.setting.impl.EnumSetting;
 import lol.catgirl.setting.impl.SliderSetting;
+import lol.catgirl.utils.render.nanovg.DrawUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -38,6 +39,8 @@ public class ClickGui extends Screen {
 
     @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        DrawUtil.begin();
+
         ImGuiImpl.render(io -> {
             int windowFlags = ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar;
 
@@ -132,6 +135,7 @@ public class ClickGui extends Screen {
             }
             ImGui.end();
         });
+        DrawUtil.end();
     }
 
     @Override
