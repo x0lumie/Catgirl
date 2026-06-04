@@ -17,7 +17,7 @@ public class FastThrowModule extends Module {
     public final BoolProperty includeXP = new BoolProperty("Include XP", true);
 
     public FastThrowModule() {
-        super("FastUse", "Modifies the delay when using items.", ModuleCategory.Ghost);
+        super("FastThrow", "Modifies the delay when using items.", ModuleCategory.Ghost);
         addSettings(delay, includeBlocks, includeProjectiles, includeXP);
     }
 
