@@ -1,7 +1,11 @@
-package lol.catgirl.manager;
+package lol.catgirl.module.client;
 
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PreUpdateEvent;
+import lol.catgirl.module.Module;
+import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.setting.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,42 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static lol.catgirl.utils.IMinecraft.mc;
-
-public class TargetManager {
-
-    // this is the one from simp and it works great! -lumie
-
-    @Getter
-    @Setter
-    private static LivingEntity target;
-    @Getter
-    private static List<LivingEntity> targetList = new CopyOnWriteArrayList<>();
-    private static final TickingTimer switchTimer = new TickingTimer();
-    @Getter
-    @Setter
-    private static Enum mode;
-    @Getter
-    @Setter
-    private static Enum entities;
-    @Getter
-    @Setter
-    private static boolean dontTargetTeams;
-    @Getter
-    @Setter
-    private static float seekRange;
-    @Getter
-    @Setter
-    private static int switchTime;
-    private int targetIndex;
-
-    public TargetManager() {
-        mode = Mode.Adaptive;
-        entities = Entities.Optimal;
-        dontTargetTeams = false;
-        seekRange = 4.2f;
-        switchTime = 2;
-    }
+public class TargetsModule extends Module {
 
     public enum Mode {
         Adaptive,
@@ -65,6 +34,27 @@ public class TargetManager {
         All
     }
 
+    public final EnumProperty<Mode> mode =
+            new EnumProperty<>("Mode", Mode.Adaptive);
+    public final EnumProperty<Entities> entities =
+            new EnumProperty<>("Entities", Entities.Optimal);
+    public static SliderProperty seekRange = new SliderProperty("Seek Range", 4.2f, 3, 6, 0.1f);
+
+    public static final TargetsModule INSTANCE = new TargetsModule();
+
+    public TargetsModule() {
+        super("Targets", "Settings for selecting the targets.", ModuleCategory.Client);
+        addSettings(mode, entities, seekRange);
+        this.toggle();
+    }
+
+    @Getter
+    @Setter
+    private static LivingEntity target;
+    @Getter
+    private static List<LivingEntity> targetList = new CopyOnWriteArrayList<>();
+    private static final TickingTimer switchTimer = new TickingTimer();
+    private int targetIndex;
 
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
@@ -86,22 +76,22 @@ public class TargetManager {
             return;
         }
 
-        switch (mode) {
-            case Mode.Single -> target = targetList.getFirst();
+        switch (mode.getValue()) {
+            case Single -> target = targetList.getFirst();
 
-            case Mode.Switch -> {
+            case Switch -> {
                 if (targetIndex >= targetList.size()) {
                     targetIndex = 0;
                 }
 
-                if (switchTimer.hasTimeElapsed(switchTime * 100)) {
+                if (switchTimer.hasTimeElapsed(100)) {
                     targetIndex = (targetIndex + 1) % targetList.size();
                     switchTimer.reset();
                 }
                 target = targetList.get(targetIndex);
             }
 
-            case Mode.Adaptive -> {
+            case Adaptive -> {
                 target = targetList.stream()
                         .min(Comparator.comparingDouble(e -> mc.player.distanceTo(e)))
                         .orElse(null);
@@ -119,18 +109,16 @@ public class TargetManager {
                 .filter(entity -> entity != mc.player)
                 .filter(Entity::isAlive)
                 .filter(entity -> entity.getHealth() > 0)
-                .filter(entity -> mc.player.distanceTo(entity) <= seekRange)
+                .filter(entity -> mc.player.distanceTo(entity) <= seekRange.getValue())
                 .filter(this::isValidEntity)
                 .collect(Collectors.toList());
     }
 
     private boolean isValidEntity(LivingEntity entity) {
-        return switch (entities) {
-            case Entities.Optimal -> entity instanceof Player || entity instanceof Mob;
-            case Entities.Players -> entity instanceof Player;
-            case Entities.All -> true;
-            default -> throw new IllegalStateException("Unexpected value: " + entities);
+        return switch (entities.getValue()) {
+            case Optimal -> entity instanceof Player || entity instanceof Mob;
+            case Players -> entity instanceof Player;
+            case All -> true;
         };
     }
-
 }

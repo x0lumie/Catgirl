@@ -2,7 +2,7 @@ package lol.catgirl;
 
 import lol.catgirl.event.EventBus;
 import lol.catgirl.event.Handler;
-import lol.catgirl.manager.ManagerHandler;
+import lol.catgirl.manager.CommandManager;
 import lol.catgirl.manager.ModuleManager;
 import net.fabricmc.api.ModInitializer;
 
@@ -25,18 +25,19 @@ public class Catgirl implements ModInitializer {
 	public static Catgirl INSTANCE;
 	public EventBus eventBus;
 	public Handler theHandler;
+	public CommandManager commandManager;
 
 	@Override
 	public void onInitialize() {
 		INSTANCE = this;
 		eventBus = new EventBus();
 		theHandler = new Handler();
+		commandManager = new CommandManager();
 
 		Handler.initialize();
 		ModuleManager.getInstance().init();
-		ManagerHandler.init();
 
-		eventBus.subscribe(ManagerHandler.commandManager);
+		eventBus.subscribe(commandManager);
 		eventBus.subscribe(theHandler);
 	}
 

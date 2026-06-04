@@ -3,7 +3,6 @@ package lol.catgirl.command.impl;
 
 import lol.catgirl.Catgirl;
 import lol.catgirl.command.Command;
-import lol.catgirl.manager.ManagerHandler;
 
 public class HelpCommand extends Command {
     public HelpCommand() {
@@ -12,7 +11,7 @@ public class HelpCommand extends Command {
 
     @Override
     public void execute(String[] args) {
-        for (Command command : ManagerHandler.commandManager.getCommands().values()) {
+        for (Command command : Catgirl.INSTANCE.commandManager.getCommands().values()) {
             Catgirl.sendChatMessage(command.getName() + " - " + command.getDescription() + " ["+command.getAlias()+"]");
         }
     }

@@ -8,6 +8,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.ClickGuiModule;
 import lol.catgirl.module.client.InterfaceModule;
+import lol.catgirl.module.client.TargetsModule;
 import lol.catgirl.module.combat.*;
 import lol.catgirl.module.ghost.EagleModule;
 import lol.catgirl.module.ghost.FastThrowModule;
@@ -42,6 +43,7 @@ public final class ModuleManager {
         modules.add(NoWebModule.INSTANCE);
         modules.add(SpeedModule.INSTANCE);
         modules.add(TickShiftModule.INSTANCE);
+        modules.add(TargetsModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
