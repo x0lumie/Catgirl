@@ -13,6 +13,7 @@ import lol.catgirl.module.combat.*;
 import lol.catgirl.module.ghost.EagleModule;
 import lol.catgirl.module.ghost.FastThrowModule;
 import lol.catgirl.module.hud.ModuleListModule;
+import lol.catgirl.module.hud.TargetHUDModule;
 import lol.catgirl.module.hud.WatermarkModule;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.movement.NoWebModule;
@@ -44,6 +45,7 @@ public final class ModuleManager {
         modules.add(SpeedModule.INSTANCE);
         modules.add(TickShiftModule.INSTANCE);
         modules.add(TargetsModule.INSTANCE);
+        modules.add(TargetHUDModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

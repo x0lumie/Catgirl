@@ -1,5 +1,7 @@
 package lol.catgirl.utils.client;
 
+import lol.catgirl.module.hud.WatermarkModule;
+
 import java.awt.Color;
 
 public class ColorUtil {
@@ -10,5 +12,9 @@ public class ColorUtil {
         }
 
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), opacity);
+    }
+
+    public static Color getClientTheme() {
+        return WatermarkModule.INSTANCE.PURPLE;
     }
 }
