@@ -222,7 +222,7 @@ public class WatermarkModule extends Module {
     }
 
     @Override
-    public String suffix() {
+    protected String getFinalSuffix() {
         return mode.getValue().toString();
     }
 }

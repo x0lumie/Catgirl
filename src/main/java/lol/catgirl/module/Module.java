@@ -27,6 +27,7 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
     private boolean enabled = false;
     private boolean expanded;
     private int key;
+    private String suffix;
 
     public BoolProperty isVisible = new BoolProperty("Is Visible", true);
 
@@ -93,9 +94,17 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
         return name;
     }
 
-    public String suffix() {
-        // OVERRIDE This
-        return "";
+    //AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    public final String getSuffix() {
+        String raw = getFinalSuffix();
+        if (raw == null || raw.isEmpty()) {
+            return "";
+        }
+        return format(raw);
+    }
+
+    protected String getFinalSuffix() {
+        return this.suffix;
     }
 
     public void addSetting(Property<?> property) {
@@ -186,18 +195,21 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
 
     // sorry cpu );
     public String getDisplayName() {
-        String raw = this.name;
+        return format(name);
+    }
+
+    private String format(String text) {
+        if (text == null || text.isEmpty()) return "";
 
         InterfaceModule.NamingStyle style = InterfaceModule.INSTANCE.namingStyle.getValue();
 
-        String spaced = raw.replaceAll("([a-z])([A-Z])", "$1 $2");
+        String spaced = text.replaceAll("([a-z])([A-Z])", "$1 $2");
 
-        switch (style) {
-            case Lowercase: return raw.toLowerCase();
-            case LowercaseSpaced: return spaced.toLowerCase();
-            case Normal: return raw;
-            case NormalSpaced: return spaced;
-            default: return raw;
-        }
+        return switch (style) {
+            case Lowercase -> text.toLowerCase();
+            case LowercaseSpaced -> spaced.toLowerCase();
+            case Normal -> text;
+            case NormalSpaced -> spaced;
+        };
     }
 }

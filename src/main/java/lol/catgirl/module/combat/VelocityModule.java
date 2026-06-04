@@ -122,7 +122,7 @@ public final class VelocityModule extends Module {
     }
 
     @Override
-    public String suffix() {
+    protected String getFinalSuffix() {
         return mode.getValue().toString();
     }
 }

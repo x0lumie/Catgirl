@@ -147,7 +147,7 @@ public class ModuleListModule extends Module {
         for (int i = 0; i < modules.size(); i++) {
             Module mod = modules.get(i);
             String name = mod.getDisplayName();
-            String suffix = mod.suffix();
+            String suffix = mod.getSuffix();
             if (!mod.isVisible.getValue()) continue;
 
             double totalWidth = getWidth(mod, TEXT_SIZE, SUFFIX_TEXT_SIZE);
@@ -316,7 +316,7 @@ public class ModuleListModule extends Module {
             return nameWidth;
         }
 
-        String suffix = mod.suffix();
+        String suffix = mod.getSuffix();
         double suffixWidth = DrawUtil.getStringWidth(
                 " " + suffix,
                 SUFFIX_TEXT_SIZE,

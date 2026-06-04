@@ -41,4 +41,9 @@ public class NoWebModule extends Module {
             }
         }
     }
+
+    @Override
+    protected String getFinalSuffix() {
+        return mode.getValue().toString();
+    }
 }
