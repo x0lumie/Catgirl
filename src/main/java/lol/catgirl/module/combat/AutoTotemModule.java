@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class AutoTotemModule extends Module {
+public final class AutoTotemModule extends Module {
     public static final AutoTotemModule INSTANCE = new AutoTotemModule();
 
     public enum Mode {

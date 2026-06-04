@@ -6,7 +6,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.utils.player.RotationUtil;
 
-public class MovementFixModule extends Module {
+public final class MovementFixModule extends Module {
     public static final MovementFixModule INSTANCE = new MovementFixModule();
 
     public MovementFixModule() {

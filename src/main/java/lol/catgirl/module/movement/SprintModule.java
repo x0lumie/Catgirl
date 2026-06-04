@@ -5,7 +5,7 @@ import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 
-public class SprintModule extends Module {
+public final class SprintModule extends Module {
     public static final SprintModule INSTANCE = new SprintModule();
 
     public SprintModule() {
