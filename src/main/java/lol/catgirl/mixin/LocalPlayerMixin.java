@@ -1,11 +1,13 @@
 package lol.catgirl.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.authlib.GameProfile;
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.impl.*;
 import lol.catgirl.module.movement.MovementFixModule;
+import lol.catgirl.module.player.NoSlowModule;
 import lol.catgirl.utils.IMinecraft;
 import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.client.Minecraft;
@@ -192,14 +194,14 @@ public abstract class LocalPlayerMixin extends
     }
 
 
-//    @ModifyExpressionValue(method = "isSlowDueToUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
-//    private boolean hookSprintAffectStart(boolean original) {
-//        if (NoSlowModule.INSTANCE.isEnabled()) {
-//            return false;
-//        }
-//
-//        return original;
-//    }
+    @ModifyExpressionValue(method = "isSlowDueToUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
+    private boolean hookSprintAffectStart(boolean original) {
+        if (NoSlowModule.INSTANCE.isEnabled()) {
+            return false;
+        }
+
+        return original;
+    }
 
     @Inject(at = @At("HEAD"), method = "move", cancellable = true)
     private void moveHead(CallbackInfo ci) {
