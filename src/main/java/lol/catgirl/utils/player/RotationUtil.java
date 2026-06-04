@@ -21,6 +21,11 @@ public class RotationUtil implements IMinecraft {
     @Getter
     public static float rotationYaw, rotationPitch, lastRotationYaw, lastRotationPitch, camYaw, camPitch;
 
+    public static void setRotations (float[] rotations) {
+        rotationYaw = rotations[0];
+        rotationPitch = rotations[1];
+    }
+
     public static boolean isFacing(Player self, Player target, float maxAngle) {
         Vec3 eye = self.getEyePosition();
 

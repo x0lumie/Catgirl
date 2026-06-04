@@ -6,6 +6,8 @@ import java.util.List;
 import lol.catgirl.Catgirl;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.client.ClickGuiModule;
+import lol.catgirl.module.combat.AuraModule;
 import lol.catgirl.module.combat.AutoTotemModule;
 import lol.catgirl.module.combat.RegenModule;
 import lol.catgirl.module.combat.VelocityModule;
@@ -26,6 +28,8 @@ public final class ModuleManager {
         modules.add(AutoTotemModule.INSTANCE);
         modules.add(RegenModule.INSTANCE);
         modules.add(VelocityModule.INSTANCE);
+        modules.add(AuraModule.INSTANCE);
+        modules.add(ClickGuiModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

@@ -2,6 +2,7 @@ package lol.catgirl;
 
 import lol.catgirl.event.EventBus;
 import lol.catgirl.event.Handler;
+import lol.catgirl.manager.ManagerHandler;
 import lol.catgirl.manager.ModuleManager;
 import net.fabricmc.api.ModInitializer;
 
@@ -25,6 +26,6 @@ public class Catgirl implements ModInitializer {
 		INSTANCE = this;
 		Handler.initialize();
 		ModuleManager.getInstance().init();
-
+		ManagerHandler.init();
 	}
 }
