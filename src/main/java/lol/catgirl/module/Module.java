@@ -6,6 +6,7 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.file.Serializable;
 import lol.catgirl.setting.Setting;
 import lol.catgirl.utils.IMinecraft;
+import lol.catgirl.utils.keybind.KeybindRegistry;
 import lol.catgirl.utils.keybind.Keybindable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
         this.name = name;
         this.category = category;
         this.description = description;
+        KeybindRegistry.subscribe(this);
     }
 
     @Getter
