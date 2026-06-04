@@ -206,7 +206,7 @@ public class WatermarkModule extends Module {
                 String name = Catgirl.NAME;
 
                 DrawUtil.drawString(
-                        Catgirl.VERSION, x + x + 2 + x + 25, y,
+                        "v"+Catgirl.VERSION, x + x + 2 + x + 25, y,
                         10, Color.WHITE,
                         ResourceManager.FontResources.roboto
                 );
