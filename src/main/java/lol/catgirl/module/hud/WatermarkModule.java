@@ -28,7 +28,7 @@ public class WatermarkModule extends Module {
 
     public WatermarkModule() {
         super("Watermark", "Shows the client watermark.", ModuleCategory.Hud);
-        addSettings(mode, watermarkVersion, shadow, themeMode);
+        addSettings(mode, watermarkVersion, shadow);
     }
 
     public enum Mode {
@@ -39,8 +39,7 @@ public class WatermarkModule extends Module {
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
     public final BoolProperty watermarkVersion = new BoolProperty("Show Version", true);
-    public final BoolProperty shadow = new BoolProperty("Shadow", false);
-    public final EnumProperty<ThemeMode> themeMode = new EnumProperty<>("Theme Mode", ThemeMode.Default);
+    public final BoolProperty shadow = new BoolProperty("Shadow", false).hide(()->mode.getValue()== Mode.Simple);
 
     @EventHook
     public void onRender(RenderTickEvent event) {
