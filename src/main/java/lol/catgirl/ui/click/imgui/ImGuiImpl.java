@@ -34,7 +34,7 @@ public class ImGuiImpl {
         fontConfig.setMergeMode(false);
         fontConfig.setPixelSnapH(true);
 
-        String fontPath = "assets/catgirl/fonts/imgui.ttf";
+        String fontPath = "assets/catgirl/fonts/Mojangles.ttf";
         float fontSize = 18.0f;
 
         File tempFontFile = null;
