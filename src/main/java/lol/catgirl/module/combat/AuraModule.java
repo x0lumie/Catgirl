@@ -95,20 +95,17 @@ public class AuraModule extends Module {
             long currentTime = System.currentTimeMillis();
 
             if (currentTime - lastAttackTime >= nextAttackDelay) {
-                executeAttack();
+                mc.gameMode.attack(mc.player, target);
+                mc.player.swing(InteractionHand.MAIN_HAND);
 
                 lastAttackTime = currentTime;
                 nextAttackDelay = calculateCpsDelay(minCps.getValue(), maxCps.getValue());
             }
         } else {
             if (mc.player.getAttackStrengthScale(0.5f) < 1.0f) return;
-            executeAttack();
+            mc.gameMode.attack(mc.player, target);
+            mc.player.swing(InteractionHand.MAIN_HAND);
         }
-    }
-
-    private void executeAttack() {
-        mc.gameMode.attack(mc.player, target);
-        mc.player.swing(InteractionHand.MAIN_HAND);
     }
 
     private long calculateCpsDelay(double min, double max) {
