@@ -5,8 +5,8 @@ import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PacketReceivedEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolSetting;
-import lol.catgirl.setting.impl.EnumSetting;
+import lol.catgirl.setting.impl.BoolProperty;
+import lol.catgirl.setting.impl.EnumProperty;
 import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 
@@ -29,10 +29,10 @@ public final class VelocityModule extends Module {
         Blatent, Safe
     }
 
-    public final EnumSetting<Mode> mode = new EnumSetting<>("Mode", Mode.Cancel);
-    public final BoolSetting polar = new BoolSetting("Polar", false).hide(()-> !(mode.getValue() == Mode.JumpReset));
-    public final EnumSetting<IntaveMode> intaveMode = new EnumSetting<>("Intave Mode", IntaveMode.Blatent).hide(()-> !(mode.getValue() == Mode.Intave));
-    public final BoolSetting ignoreOnFire = new BoolSetting("Ignore on fire", true);
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
+    public final BoolProperty polar = new BoolProperty("Polar", false).hide(()-> !(mode.getValue() == Mode.JumpReset));
+    public final EnumProperty<IntaveMode> intaveMode = new EnumProperty<>("Intave Mode", IntaveMode.Blatent).hide(()-> !(mode.getValue() == Mode.Intave));
+    public final BoolProperty ignoreOnFire = new BoolProperty("Ignore on fire", true);
 
     public VelocityModule() {
         super("Velocity", "Uses heavy dick and balls to drag across the floor to reduce velocity.", ModuleCategory.Combat);

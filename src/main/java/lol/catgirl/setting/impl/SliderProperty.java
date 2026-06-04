@@ -2,17 +2,17 @@ package lol.catgirl.setting.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import lol.catgirl.setting.Setting;
+import lol.catgirl.setting.Property;
 import lombok.Getter;
 
 @Getter
-public class SliderSetting extends Setting<Float> {
+public class SliderProperty extends Property<Float> {
 
     private final float min;
     private final float max;
     private final float step;
 
-    public SliderSetting(String name, float value, float min, float max, float step) {
+    public SliderProperty(String name, float value, float min, float max, float step) {
         super(name, value);
         this.min = min;
         this.max = max;

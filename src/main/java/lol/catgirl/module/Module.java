@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import lol.catgirl.Catgirl;
 import lol.catgirl.file.Serializable;
 import lol.catgirl.module.client.InterfaceModule;
-import lol.catgirl.setting.Setting;
-import lol.catgirl.setting.impl.BoolSetting;
+import lol.catgirl.setting.Property;
+import lol.catgirl.setting.impl.BoolProperty;
 import lol.catgirl.utils.IMinecraft;
 import lol.catgirl.utils.keybind.KeybindRegistry;
 import lol.catgirl.utils.keybind.Keybindable;
@@ -28,7 +28,7 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
     private boolean expanded;
     private int key;
 
-    public BoolSetting isVisible = new BoolSetting("Is Visible", true);
+    public BoolProperty isVisible = new BoolProperty("Is Visible", true);
 
     public Module(String name, String description, ModuleCategory category) {
         this.name = name;
@@ -40,7 +40,7 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
 
     @Getter
     @Setter
-    public ArrayList<Setting<?>> settings = new ArrayList<>();
+    public ArrayList<Property<?>> properties = new ArrayList<>();
 
     @Override
     public boolean isEnabled() {
@@ -98,13 +98,13 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
         return "";
     }
 
-    public void addSetting(Setting<?> setting) {
-        settings.add(setting);
+    public void addSetting(Property<?> property) {
+        properties.add(property);
     }
 
     @SafeVarargs
-    public final void addSettings(Setting<?>... settings) {
-        this.settings.addAll(Arrays.asList(settings));
+    public final void addSettings(Property<?>... properties) {
+        this.properties.addAll(Arrays.asList(properties));
     }
 
     @Override
@@ -115,8 +115,8 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
         object.addProperty("key", key);
 
         JsonObject settingsObject = new JsonObject();
-        for (Setting<?> setting : settings) {
-            settingsObject.add(setting.getName(), setting.toJson());
+        for (Property<?> property : properties) {
+            settingsObject.add(property.getName(), property.toJson());
         }
         object.add("settings", settingsObject);
 
@@ -153,20 +153,20 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
             settingsObject = settingsElement.getAsJsonObject();
         }
 
-        for (Setting<?> setting : settings) {
+        for (Property<?> property : properties) {
             JsonElement settingElement = null;
 
-            if (settingsObject != null && settingsObject.has(setting.getName())) {
-                settingElement = settingsObject.get(setting.getName());
-            } else if (object.has(setting.getName())) {
-                settingElement = object.get(setting.getName());
+            if (settingsObject != null && settingsObject.has(property.getName())) {
+                settingElement = settingsObject.get(property.getName());
+            } else if (object.has(property.getName())) {
+                settingElement = object.get(property.getName());
             }
 
             if (settingElement != null) {
                 try {
-                    setting.fromJson(settingElement);
+                    property.fromJson(settingElement);
                 } catch (Exception e) {
-                    Catgirl.LOGGER.info("Failed to load setting {} for module:" + setting.getName() +" "+ name);
+                    Catgirl.LOGGER.info("Failed to load setting {} for module:" + property.getName() +" "+ name);
                 }
             }
         }

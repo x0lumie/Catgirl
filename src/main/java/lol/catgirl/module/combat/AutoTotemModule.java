@@ -4,8 +4,8 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumSetting;
-import lol.catgirl.setting.impl.SliderSetting;
+import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.setting.impl.SliderProperty;
 import lol.catgirl.utils.player.inventory.InventoryUtil;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.item.ItemStack;
@@ -18,10 +18,10 @@ public final class AutoTotemModule extends Module {
         Auto, Legit
     }
 
-    public final EnumSetting<Mode> mode =
-            new EnumSetting<>("Mode", Mode.Auto);
+    public final EnumProperty<Mode> mode =
+            new EnumProperty<>("Mode", Mode.Auto);
 
-    public final SliderSetting delay = new SliderSetting("Delay", 200, 0, 500, 25).hide(()-> !(mode.getValue() == Mode.Legit));
+    public final SliderProperty delay = new SliderProperty("Delay", 200, 0, 500, 25).hide(()-> !(mode.getValue() == Mode.Legit));
 
     public AutoTotemModule() {
         super("AutoTotem",

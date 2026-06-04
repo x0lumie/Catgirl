@@ -8,11 +8,11 @@ import java.util.function.BooleanSupplier;
 
 @Getter
 @Setter
-public abstract class Setting<T> implements Serializable {
+public abstract class Property<T> implements Serializable {
     private final String name;
     private T value;
 
-    public Setting(String name, T value) {
+    public Property(String name, T value) {
         this.name = name;
         this.value = value;
     }
@@ -24,7 +24,7 @@ public abstract class Setting<T> implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Setting<?>> I hide(BooleanSupplier hidden) {
+    public <I extends Property<?>> I hide(BooleanSupplier hidden) {
         this.hidden = hidden;
         return (I) this;
     }

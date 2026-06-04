@@ -7,6 +7,7 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import lol.catgirl.utils.client.ColorUtil;
+import lol.catgirl.utils.render.nanovg.ResourceManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -34,7 +35,9 @@ public class ImGuiImpl {
         fontConfig.setMergeMode(false);
         fontConfig.setPixelSnapH(true);
 
-        String fontPath = "assets/catgirl/fonts/Mojangles.ttf";
+        String getFont = ResourceManager.getSelectedFontAsString() + ".ttf";
+
+        String fontPath = "assets/catgirl/fonts/"+getFont;
         float fontSize = 18.0f;
 
         File tempFontFile = null;

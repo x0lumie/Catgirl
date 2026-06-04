@@ -2,10 +2,10 @@ package lol.catgirl.setting.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import lol.catgirl.setting.Setting;
+import lol.catgirl.setting.Property;
 
-public class BoolSetting extends Setting<Boolean> {
-    public BoolSetting(String name, Boolean value) {
+public class BoolProperty extends Property<Boolean> {
+    public BoolProperty(String name, Boolean value) {
         super(name, value);
     }
 

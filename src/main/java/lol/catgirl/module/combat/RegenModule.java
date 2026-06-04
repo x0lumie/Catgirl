@@ -4,19 +4,19 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PreMotionEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolSetting;
-import lol.catgirl.setting.impl.SliderSetting;
+import lol.catgirl.setting.impl.BoolProperty;
+import lol.catgirl.setting.impl.SliderProperty;
 import lol.catgirl.utils.player.PacketUtils;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 
 public final class RegenModule extends Module {
     public static final RegenModule INSTANCE = new RegenModule();
 
-    public final SliderSetting minHealth = new SliderSetting("Min health", 4f, 0, 20f, 0.1f);
-    public final SliderSetting packetAmount = new SliderSetting("Packet amount", 50, 0, 1000, 1);
-    public final BoolSetting ongroundCheck = new BoolSetting("On ground", false);
-    public final SliderSetting minHunger = new SliderSetting("Min hunger", 4f, 0, 20f, 0.1f);
-    public final BoolSetting packetOnGround = new BoolSetting("Packet on ground", false);
+    public final SliderProperty minHealth = new SliderProperty("Min health", 4f, 0, 20f, 0.1f);
+    public final SliderProperty packetAmount = new SliderProperty("Packet amount", 50, 0, 1000, 1);
+    public final BoolProperty ongroundCheck = new BoolProperty("On ground", false);
+    public final SliderProperty minHunger = new SliderProperty("Min hunger", 4f, 0, 20f, 0.1f);
+    public final BoolProperty packetOnGround = new BoolProperty("Packet on ground", false);
 
     public RegenModule() {
         super("Regen",

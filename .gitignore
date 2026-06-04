@@ -18,7 +18,7 @@ classes/
 
 # vscode
 
-.settings/
+.properties/
 .vscode/
 bin/
 .classpath

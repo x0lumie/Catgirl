@@ -1,18 +1,14 @@
 package lol.catgirl.ui.click.imgui;
 
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImString;
 import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.Setting;
-import lol.catgirl.setting.impl.BoolSetting;
-import lol.catgirl.setting.impl.EnumSetting;
-import lol.catgirl.setting.impl.SliderSetting;
+import lol.catgirl.setting.Property;
+import lol.catgirl.setting.impl.*;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -58,7 +54,7 @@ public class ClickGui extends Screen {
 
                 for (lol.catgirl.module.Module module : ModuleManager.getInstance().getModulesByCategory(moduleCategory)) {
                     ImGui.setCursorPosX(ImGui.getCursorPosX() + 25);
-                    if (ImGui.collapsingHeader(module.getName())) {
+                    if (ImGui.collapsingHeader(module.getDisplayName())) {
                         drawToggle(module);
 
                         this.module = module;
@@ -67,21 +63,27 @@ public class ClickGui extends Screen {
 
                         ImGui.sameLine();
 
-                        if (ImGui.button(keyBindingModule == module ? "Listening..." : "Key " + GLFW.glfwGetKeyName(module.getKey(), 0))) {
+                        String keyName = GLFW.glfwGetKeyName(module.getKey(), 0);
+
+                        if (ImGui.button(
+                                keyBindingModule == module
+                                        ? "Listening..."
+                                        : "Key " + (keyName != null ? keyName.toLowerCase() : "none"))) {
                             keyBindingModule = (keyBindingModule == module) ? null : module;
                         }
 
                         ImGui.separator();
 
-                        for (Setting<?> property : module.getSettings()) {
+                        for (Property<?> property : module.getProperties()) {
+                            if (property.isHidden()) continue;
 
-                            if (property instanceof BoolSetting booleanSetting) {
+                            if (property instanceof BoolProperty booleanSetting) {
                                 if (ImGui.checkbox(property.getName(), booleanSetting.getValue())) {
                                     booleanSetting.setValue(!booleanSetting.getValue());
                                 }
                             }
 
-                            if (property instanceof SliderSetting numberProperty) {
+                            if (property instanceof SliderProperty numberProperty) {
                                 ImFloat imFloat = new ImFloat((float) numberProperty.getValue());
 
                                 if (ImGui.sliderFloat("##" + numberProperty.getName(), imFloat.getData(), (float) numberProperty.getMin(), (float) numberProperty.getMax())) {
@@ -94,9 +96,9 @@ public class ClickGui extends Screen {
                                 imFloat.getData()[0] = (float) numberProperty.getValue();
                             }
 
-                            if (property instanceof EnumSetting<?> modeProperty) {
+                            if (property instanceof EnumProperty<?> modeProperty) {
                                 String propertyName = modeProperty.getName();
-                                String comboId = "##" + propertyName + "_" + module.getName();
+                                String comboId = "##" + propertyName + "_" + module.getDisplayName();
 
                                 String previewValue = String.valueOf(modeProperty.getValue());
 
@@ -158,7 +160,7 @@ public class ClickGui extends Screen {
         ImGui.sameLine(-16);
 
         ImGui.setCursorPosX(ImGui.getCursorPosX() + 20);
-        if (ImGui.checkbox("##T" + module.getName(), module.isEnabled())) {
+        if (ImGui.checkbox("##T" + module.getDisplayName(), module.isEnabled())) {
             module.toggle();
         }
     }

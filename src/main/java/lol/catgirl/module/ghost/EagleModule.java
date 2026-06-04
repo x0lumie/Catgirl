@@ -17,10 +17,10 @@ public class EagleModule extends Module {
         addSettings(delay, blockCheck, directionalCheck, pitch);
     }
 
-    public final SliderSetting delay = new SliderSetting("Delay", 50.0f, 0.0f, 200.0f, 10.0f);
-    public final BoolSetting blockCheck = new BoolSetting("Blocks Only", true);
-    public final BoolSetting directionalCheck = new BoolSetting("Directional Check", true);
-    public final SliderSetting pitch = new SliderSetting("Pitch", 60.0f, 0.0f, 90.0f, 1.0f);
+    public final SliderProperty delay = new SliderProperty("Delay", 50.0f, 0.0f, 200.0f, 10.0f);
+    public final BoolProperty blockCheck = new BoolProperty("Blocks Only", true);
+    public final BoolProperty directionalCheck = new BoolProperty("Directional Check", true);
+    public final SliderProperty pitch = new SliderProperty("Pitch", 60.0f, 0.0f, 90.0f, 1.0f);
 
     private boolean wasOverBlock = false;
     private long lastSneakTime = 0;

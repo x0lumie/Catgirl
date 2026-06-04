@@ -2,8 +2,8 @@ package lol.catgirl.module.client;
 
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumSetting;
-import lol.catgirl.setting.impl.SliderSetting;
+import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.setting.impl.SliderProperty;
 
 public class InterfaceModule extends Module {
     public static final InterfaceModule INSTANCE = new InterfaceModule();
@@ -27,10 +27,10 @@ public class InterfaceModule extends Module {
         Wave, Static, Pulse
     }
 
-    public final EnumSetting<FontMode> fontMode = new EnumSetting<>("Font Mode", FontMode.ProductSans);
-    public final EnumSetting<NamingStyle> namingStyle = new EnumSetting<>("Naming Style", NamingStyle.Normal);
-    public final EnumSetting<ColorMode> colorMode = new EnumSetting<>("Color Mode", ColorMode.Wave);
-    public final SliderSetting rgbSpeed = new SliderSetting("RGB speed", 2000f, 0f, 10000f, 100f);
+    public final EnumProperty<FontMode> fontMode = new EnumProperty<>("Font Mode", FontMode.ProductSans);
+    public final EnumProperty<NamingStyle> namingStyle = new EnumProperty<>("Naming Style", NamingStyle.Normal);
+    public final EnumProperty<ColorMode> colorMode = new EnumProperty<>("Color Mode", ColorMode.Wave);
+    public final SliderProperty rgbSpeed = new SliderProperty("RGB speed", 2000f, 0f, 10000f, 100f);
 
     public InterfaceModule() {
         super("Interface", "Settings on how the client should look.", ModuleCategory.Client);

@@ -5,8 +5,8 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolSetting;
-import lol.catgirl.setting.impl.EnumSetting;
+import lol.catgirl.setting.impl.BoolProperty;
+import lol.catgirl.setting.impl.EnumProperty;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 
@@ -37,10 +37,10 @@ public class WatermarkModule extends Module {
         Simple
     }
 
-    public final EnumSetting<Mode> mode = new EnumSetting<>("Mode", Mode.Catgirl);
-    public final BoolSetting watermarkVersion = new BoolSetting("Show Version", true);
-    public final BoolSetting shadow = new BoolSetting("Shadow", false);
-    public final EnumSetting<ThemeMode> themeMode = new EnumSetting<>("Theme Mode", ThemeMode.Default);
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
+    public final BoolProperty watermarkVersion = new BoolProperty("Show Version", true);
+    public final BoolProperty shadow = new BoolProperty("Shadow", false);
+    public final EnumProperty<ThemeMode> themeMode = new EnumProperty<>("Theme Mode", ThemeMode.Default);
 
     @EventHook
     public void onRender(RenderTickEvent event) {

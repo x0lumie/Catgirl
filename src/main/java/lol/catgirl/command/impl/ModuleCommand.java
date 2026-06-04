@@ -4,7 +4,7 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.command.Command;
-import lol.catgirl.setting.Setting;
+import lol.catgirl.setting.Property;
 import lol.catgirl.setting.impl.*;
 
 import java.util.Optional;
@@ -33,33 +33,33 @@ public class ModuleCommand extends Command {
             return;
         }
 
-        Setting<?> targetBaseSetting = null;
+        Property<?> targetBaseProperty = null;
 
         String normalizedInput = normalize(settingName);
 
-        for (Setting<?> baseSetting : module.get().getSettings()) {
-            if (normalize(baseSetting.getName()).equals(normalizedInput)) {
-                targetBaseSetting = baseSetting;
+        for (Property<?> baseProperty : module.get().getProperties()) {
+            if (normalize(baseProperty.getName()).equals(normalizedInput)) {
+                targetBaseProperty = baseProperty;
                 break;
             }
         }
 
-        if (targetBaseSetting == null) {
+        if (targetBaseProperty == null) {
             Catgirl.sendChatMessage("Setting not found: " + settingName);
             return;
         }
 
         try {
 
-            switch (targetBaseSetting) {
-                case BoolSetting booleanSetting -> booleanSetting.setValue(Boolean.parseBoolean(value));
-                case SliderSetting numberSetting -> {
+            switch (targetBaseProperty) {
+                case BoolProperty booleanSetting -> booleanSetting.setValue(Boolean.parseBoolean(value));
+                case SliderProperty numberSetting -> {
 
                     float parsedValue = Float.parseFloat(value);
 
                     numberSetting.setValue(parsedValue);
                 }
-                case @SuppressWarnings("all")EnumSetting enumSetting -> {
+                case @SuppressWarnings("all")EnumProperty enumSetting -> {
                     @SuppressWarnings("all")
                     final var current = (Enum) enumSetting.getValue();
                     final var enumClass = current.getDeclaringClass();

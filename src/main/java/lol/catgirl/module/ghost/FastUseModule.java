@@ -4,17 +4,17 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolSetting;
-import lol.catgirl.setting.impl.SliderSetting;
+import lol.catgirl.setting.impl.BoolProperty;
+import lol.catgirl.setting.impl.SliderProperty;
 import net.minecraft.world.item.*;
 
 public class FastUseModule extends Module {
     public static final FastUseModule INSTANCE = new FastUseModule();
 
-    public final SliderSetting delay = new SliderSetting("Delay", 0, 0, 50, 1);
-    public final BoolSetting includeBlocks = new BoolSetting("Include Blocks", false);
-    public final BoolSetting includeProjectiles = new BoolSetting("Include Projectiles", false);
-    public final BoolSetting includeXP = new BoolSetting("Include XP", true);
+    public final SliderProperty delay = new SliderProperty("Delay", 0, 0, 50, 1);
+    public final BoolProperty includeBlocks = new BoolProperty("Include Blocks", false);
+    public final BoolProperty includeProjectiles = new BoolProperty("Include Projectiles", false);
+    public final BoolProperty includeXP = new BoolProperty("Include XP", true);
 
     public FastUseModule() {
         super("FastUse", "Modifies the delay when using items.", ModuleCategory.Ghost);

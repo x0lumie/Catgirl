@@ -2,13 +2,13 @@ package lol.catgirl.setting.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import lol.catgirl.setting.Setting;
+import lol.catgirl.setting.Property;
 
-public class EnumSetting<E extends Enum<E>> extends Setting<E> {
+public class EnumProperty<E extends Enum<E>> extends Property<E> {
 
     private final E[] values;
 
-    public EnumSetting(String name, E defaultValue) {
+    public EnumProperty(String name, E defaultValue) {
         super(name, defaultValue);
         this.values = defaultValue.getDeclaringClass().getEnumConstants();
     }

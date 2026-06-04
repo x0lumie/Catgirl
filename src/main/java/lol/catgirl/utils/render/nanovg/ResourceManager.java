@@ -39,4 +39,17 @@ public class ResourceManager {
             case SFProDisplayBold -> FontResources.sfprobold;
         };
     }
+
+    public static String getSelectedFontAsString() {
+        InterfaceModule.FontMode mode =
+                InterfaceModule.INSTANCE.fontMode.getValue();
+
+        return switch (mode) {
+            case ProductSans -> "ProductSans-Bold";
+            case Minecraft -> "Mojangles";
+            case Comfortaa -> "Comfortaa";
+            case ComfortaaBold -> "Comfortaa-Bold";
+            case SFProDisplayBold -> "SF-Pro-Display-Bold";
+        };
+    }
 }
