@@ -1,9 +1,16 @@
 package lol.catgirl.module.client;
 
+import lol.catgirl.Catgirl;
+import lol.catgirl.event.EventHook;
+import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.ui.click.imgui.ClickGui;
+import lol.catgirl.utils.render.nanovg.DrawUtil;
+import lol.catgirl.utils.render.nanovg.ResourceManager;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
 
 public final class ClickGuiModule extends Module {
     public static final ClickGuiModule INSTANCE = new ClickGuiModule();
@@ -24,5 +31,4 @@ public final class ClickGuiModule extends Module {
         this.toggle();
         super.onEnable();
     }
-
 }

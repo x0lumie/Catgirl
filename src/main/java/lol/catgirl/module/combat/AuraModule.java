@@ -27,7 +27,8 @@ public class AuraModule extends Module {
     public static SliderSetting killRange = new SliderSetting("Kill Range", 3, 3, 6, 0.1f);
 
     public AuraModule() {
-        super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Movement);
+        super("Aura", "Automatically kills enemies in a specified vicinity.",
+                ModuleCategory.Combat);
         addSettings(mode, entities, seekRange, killRange); // dont forget this!
     }
 

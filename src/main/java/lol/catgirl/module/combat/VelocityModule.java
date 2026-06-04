@@ -120,4 +120,9 @@ public final class VelocityModule extends Module {
             }
         }
     }
+
+    @Override
+    public String suffix() {
+        return mode.getValue().toString();
+    }
 }

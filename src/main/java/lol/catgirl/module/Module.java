@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lol.catgirl.Catgirl;
 import lol.catgirl.file.Serializable;
+import lol.catgirl.module.client.InterfaceModule;
 import lol.catgirl.setting.Setting;
+import lol.catgirl.setting.impl.BoolSetting;
 import lol.catgirl.utils.IMinecraft;
 import lol.catgirl.utils.keybind.KeybindRegistry;
 import lol.catgirl.utils.keybind.Keybindable;
@@ -26,11 +28,14 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
     private boolean expanded;
     private int key;
 
+    public BoolSetting isVisible = new BoolSetting("Is Visible", true);
+
     public Module(String name, String description, ModuleCategory category) {
         this.name = name;
         this.category = category;
         this.description = description;
         KeybindRegistry.subscribe(this);
+        addSetting(isVisible);
     }
 
     @Getter
@@ -176,6 +181,23 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
                 }
             } catch (Exception ignored) {
             }
+        }
+    }
+
+    // sorry cpu );
+    public String getDisplayName() {
+        String raw = this.name;
+
+        InterfaceModule.NamingStyle style = InterfaceModule.INSTANCE.namingStyle.getValue();
+
+        String spaced = raw.replaceAll("([a-z])([A-Z])", "$1 $2");
+
+        switch (style) {
+            case Lowercase: return raw.toLowerCase();
+            case LowercaseSpaced: return spaced.toLowerCase();
+            case Normal: return raw;
+            case NormalSpaced: return spaced;
+            default: return raw;
         }
     }
 }

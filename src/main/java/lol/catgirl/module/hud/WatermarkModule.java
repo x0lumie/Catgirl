@@ -2,11 +2,9 @@ package lol.catgirl.module.hud;
 
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
-import lol.catgirl.event.impl.Render2DEvent;
 import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.module.client.InterfaceModule;
 import lol.catgirl.setting.impl.BoolSetting;
 import lol.catgirl.setting.impl.EnumSetting;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
@@ -20,13 +18,17 @@ import static lol.catgirl.utils.render.nanovg.ResourceManager.getSelectedFont;
 public class WatermarkModule extends Module {
     public static final WatermarkModule INSTANCE = new WatermarkModule();
 
-    private static final Color PINK = new Color(255, 105, 180);
-    private static final Color PURPLE = new Color(155, 89, 255);
-    // we need a theme manager
+    private final Color PINK = new Color(255, 105, 180);
+    public final Color PURPLE = new Color(155, 89, 255);
+
+    public enum ThemeMode {
+        Default,
+        Theme
+    }
 
     public WatermarkModule() {
         super("Watermark", "Shows the client watermark.", ModuleCategory.Hud);
-        addSettings(mode, watermarkVersion, shadow);
+        addSettings(mode, watermarkVersion, shadow, themeMode);
     }
 
     public enum Mode {
@@ -38,6 +40,7 @@ public class WatermarkModule extends Module {
     public final EnumSetting<Mode> mode = new EnumSetting<>("Mode", Mode.Catgirl);
     public final BoolSetting watermarkVersion = new BoolSetting("Show Version", true);
     public final BoolSetting shadow = new BoolSetting("Shadow", false);
+    public final EnumSetting<ThemeMode> themeMode = new EnumSetting<>("Theme Mode", ThemeMode.Default);
 
     @EventHook
     public void onRender(RenderTickEvent event) {

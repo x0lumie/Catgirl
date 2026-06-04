@@ -24,17 +24,20 @@ public class Catgirl implements ModInitializer {
 
 	public static Catgirl INSTANCE;
 	public EventBus eventBus;
+	public Handler theHandler;
 
 	@Override
 	public void onInitialize() {
 		INSTANCE = this;
 		eventBus = new EventBus();
+		theHandler = new Handler();
 
 		Handler.initialize();
 		ModuleManager.getInstance().init();
 		ManagerHandler.init();
 
 		eventBus.subscribe(ManagerHandler.commandManager);
+		eventBus.subscribe(theHandler);
 	}
 
 	public static void sendChatMessage(String message) {

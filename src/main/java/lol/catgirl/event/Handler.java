@@ -4,14 +4,19 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PostTickEvent;
 import lol.catgirl.event.impl.Render2DEvent;
+import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.utils.IMinecraft;
 import lol.catgirl.utils.keybind.KeybindRegistry;
 import lol.catgirl.utils.keybind.KeybindState;
 import lol.catgirl.utils.keybind.Keybindable;
+import lol.catgirl.utils.render.nanovg.DrawUtil;
+import lol.catgirl.utils.render.nanovg.ResourceManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.resources.Identifier;
+
+import java.awt.*;
 
 // I KNOW OKAY. THIS IS RETARDED BUT
 // it works.
@@ -62,4 +67,16 @@ public class Handler implements IMinecraft {
                     mc.getDeltaTracker().getRealtimeDeltaTicks()));
         });
     }
+
+    @EventHook
+    public void onRenderTick(RenderTickEvent event) {
+        int x = 1;
+        int y = 1;
+            DrawUtil.drawString(
+                    "a",
+                    x + x + 2 + x + 25, y,
+                    1, Color.WHITE,
+                    ResourceManager.FontResources.roboto
+            );
+        }
 }

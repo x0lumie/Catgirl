@@ -14,10 +14,10 @@ import lol.catgirl.module.combat.RegenModule;
 import lol.catgirl.module.combat.VelocityModule;
 import lol.catgirl.module.ghost.EagleModule;
 import lol.catgirl.module.ghost.FastUseModule;
+import lol.catgirl.module.hud.ModuleListModule;
 import lol.catgirl.module.hud.WatermarkModule;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.movement.SprintModule;
-import lol.catgirl.module.render.FullbrightModule;
 import lombok.Getter;
 
 @Getter
@@ -39,7 +39,7 @@ public final class ModuleManager {
         modules.add(WatermarkModule.INSTANCE);
         modules.add(EagleModule.INSTANCE);
         modules.add(FastUseModule.INSTANCE);
-        modules.add(FullbrightModule.INSTANCE);
+        modules.add(ModuleListModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

@@ -6,7 +6,7 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import lol.catgirl.utils.render.ColorUtil;
+import lol.catgirl.utils.client.ColorUtil;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
