@@ -1,0 +1,88 @@
+accessWidener	v2	named
+accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+accessible method net/minecraft/client/Minecraft startAttack ()Z
+accessible field net/minecraft/client/renderer/entity/LivingEntityRenderer model Lnet/minecraft/client/model/EntityModel;
+accessible field net/minecraft/client/Minecraft user Lnet/minecraft/client/User;
+mutable field net/minecraft/client/Minecraft user Lnet/minecraft/client/User;
+accessible field net/minecraft/network/Connection channel Lio/netty/channel/Channel;
+accessible field net/minecraft/client/Minecraft rightClickDelay I
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket x D
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket y D
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket z D
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket yRot F
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket xRot F
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket onGround Z
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket hasPos Z
+accessible field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket hasRot Z
+accessible method net/minecraft/client/Camera setRotation (FF)V
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket x D
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket y D
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket z D
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket yRot F
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket xRot F
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket onGround Z
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket hasPos Z
+mutable field net/minecraft/network/protocol/game/ServerboundMovePlayerPacket hasRot Z
+accessible field net/minecraft/world/entity/WalkAnimationState speedOld F
+accessible field net/minecraft/network/protocol/common/ClientboundPingPacket id I
+mutable field net/minecraft/network/protocol/common/ClientboundPingPacket id I
+
+accessible field net/minecraft/world/phys/Vec2 x F
+accessible field net/minecraft/world/phys/Vec2 y F
+
+mutable field net/minecraft/world/phys/Vec2 x F
+mutable field net/minecraft/world/phys/Vec2 y F
+
+accessible  class   net/minecraft/network/protocol/game/ServerboundInteractPacket$ActionType
+accessible	class	net/minecraft/network/protocol/game/ServerboundInteractPacket$InteractionAtLocationAction
+accessible	class	net/minecraft/network/protocol/game/ServerboundInteractPacket$Action
+accessible method net/minecraft/client/multiplayer/ClientLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+accessible method net/minecraft/client/Minecraft startUseItem ()V
+accessible field net/minecraft/network/protocol/game/ClientboundSetEntityMotionPacket movement Lnet/minecraft/world/phys/Vec3;
+mutable field net/minecraft/network/protocol/game/ClientboundSetEntityMotionPacket movement Lnet/minecraft/world/phys/Vec3;
+accessible method net/minecraft/client/multiplayer/MultiPlayerGameMode startPrediction (Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V
+accessible field net/minecraft/client/KeyMapping clickCount I
+
+accessible field net/minecraft/client/gui/font/FontManager providersToClose Ljava/util/List;
+accessible method net/minecraft/client/gui/font/FontManager createFontSet (Lnet/minecraft/resources/Identifier;Ljava/util/List;Ljava/util/Set;)Lnet/minecraft/client/gui/font/FontSet;
+accessible method net/minecraft/client/gui/font/FontManager getSpriteFont (Lnet/minecraft/network/chat/FontDescription$AtlasSprite;)Lnet/minecraft/client/gui/GlyphSource;
+accessible field net/minecraft/client/gui/font/FontManager playerProvider Lnet/minecraft/client/gui/font/PlayerGlyphProvider;
+accessible field net/minecraft/network/protocol/game/ServerboundInteractPacket entityId I
+accessible field net/minecraft/network/protocol/game/ServerboundInteractPacket action Lnet/minecraft/network/protocol/game/ServerboundInteractPacket$Action;
+accessible class net/minecraft/network/protocol/game/ServerboundInteractPacket$InteractionAction
+
+accessible field net/minecraft/client/renderer/LevelRenderer renderBuffers Lnet/minecraft/client/renderer/RenderBuffers;
+
+accessible field com/mojang/blaze3d/opengl/GlStateManager readFbo I
+accessible field com/mojang/blaze3d/opengl/GlStateManager writeFbo I
+accessible field com/mojang/blaze3d/opengl/GlDevice directStateAccess Lcom/mojang/blaze3d/opengl/DirectStateAccess;
+accessible field com/mojang/blaze3d/opengl/GlTexture id I
+accessible field com/mojang/blaze3d/opengl/GlTexture firstFboId I
+accessible field com/mojang/blaze3d/opengl/GlTextureView firstFboId I
+
+accessible field com/mojang/blaze3d/pipeline/RenderTarget colorTexture Lcom/mojang/blaze3d/textures/GpuTexture;
+accessible field com/mojang/blaze3d/pipeline/RenderTarget colorTextureView Lcom/mojang/blaze3d/textures/GpuTextureView;
+accessible field com/mojang/blaze3d/pipeline/RenderTarget depthTexture Lcom/mojang/blaze3d/textures/GpuTexture;
+accessible field com/mojang/blaze3d/pipeline/RenderTarget depthTextureView Lcom/mojang/blaze3d/textures/GpuTextureView;
+accessible field net/minecraft/client/Minecraft services Lnet/minecraft/server/Services;
+mutable field net/minecraft/client/Minecraft services Lnet/minecraft/server/Services;
+accessible field net/minecraft/client/Minecraft profileKeyPairManager Lnet/minecraft/client/multiplayer/ProfileKeyPairManager;
+mutable field net/minecraft/client/Minecraft profileKeyPairManager Lnet/minecraft/client/multiplayer/ProfileKeyPairManager;
+
+accessible method net/minecraft/world/entity/Entity getInputVector (Lnet/minecraft/world/phys/Vec3;FF)Lnet/minecraft/world/phys/Vec3;
+
+accessible method net/minecraft/client/renderer/GameRenderer getFov (Lnet/minecraft/client/Camera;FZ)F
+accessible method net/minecraft/client/renderer/GameRenderer bobHurt (Lcom/mojang/blaze3d/vertex/PoseStack;F)V
+accessible method net/minecraft/client/renderer/GameRenderer bobView (Lcom/mojang/blaze3d/vertex/PoseStack;F)V
+
+accessible method net/minecraft/client/player/LocalPlayer moveTowardsClosestSpace (DD)V
+mutable field net/minecraft/client/gui/screens/Screen font Lnet/minecraft/client/gui/Font;
+
+accessible field net/minecraft/client/gui/screens/ChatScreen commandSuggestions Lnet/minecraft/client/gui/components/CommandSuggestions;
+accessible method net/minecraft/client/renderer/entity/LivingEntityRenderer getRenderType (Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/renderer/rendertype/RenderType;
+accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyDelay I
+accessible method net/minecraft/client/renderer/LevelRenderer prepareCullFrustum (Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/client/renderer/culling/Frustum;
+accessible method net/minecraft/client/player/KeyboardInput calculateImpulse (ZZ)F
+accessible field net/minecraft/network/protocol/game/ClientboundExplodePacket playerKnockback Ljava/util/Optional;
+mutable field net/minecraft/network/protocol/game/ClientboundExplodePacket playerKnockback Ljava/util/Optional;
+accessible field net/minecraft/world/entity/LivingEntity noJumpDelay I

@@ -1,10 +1,13 @@
 package lol.catgirl.mixin;
 
+import com.mojang.blaze3d.platform.Window;
 import lol.catgirl.Catgirl;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -25,6 +28,16 @@ public class MinecraftMixin {
     private void initializeNanoVG(GameConfig args, CallbackInfo ci) {
         DrawUtil.init();
     }
+
+    @Shadow
+    @Final
+    private Window window;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void initImGui(GameConfig args, CallbackInfo ci) {
+        lol.catgirl.ui.click.imgui.ImGuiImpl.initialize(window.handle());
+    }
+
 
     @ModifyArg(
             method = "updateTitle",

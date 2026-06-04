@@ -6,8 +6,12 @@ import lol.catgirl.manager.ManagerHandler;
 import lol.catgirl.manager.ModuleManager;
 import net.fabricmc.api.ModInitializer;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static lol.catgirl.utils.IMinecraft.mc;
 
 public class Catgirl implements ModInitializer {
 	public static final String MOD_ID = "catgirl";
@@ -19,13 +23,29 @@ public class Catgirl implements ModInitializer {
 	public static final String windowTitle = NAME + " v" + VERSION;
 
 	public static Catgirl INSTANCE;
-	public final EventBus eventBus = new EventBus();
+	public EventBus eventBus;
 
 	@Override
 	public void onInitialize() {
 		INSTANCE = this;
+		eventBus = new EventBus();
+
 		Handler.initialize();
 		ModuleManager.getInstance().init();
 		ManagerHandler.init();
+
+		eventBus.subscribe(ManagerHandler.commandManager);
+	}
+
+	public static void sendChatMessage(String message) {
+		if (mc.player == null) return;
+
+		Component chat = Component.literal("[")
+				.withStyle(ChatFormatting.LIGHT_PURPLE)
+				.append(Component.literal("catgirl").withStyle(ChatFormatting.DARK_PURPLE))
+				.append(Component.literal("] ").withStyle(ChatFormatting.LIGHT_PURPLE))
+				.append(Component.literal(message).withStyle(ChatFormatting.WHITE));
+
+		mc.player.displayClientMessage(chat, false);
 	}
 }
