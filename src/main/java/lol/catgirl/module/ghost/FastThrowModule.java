@@ -9,7 +9,7 @@ import lol.catgirl.setting.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import net.minecraft.world.item.*;
 
-public class FastThrowModule extends Module {
+public final class FastThrowModule extends Module {
     public static final FastThrowModule INSTANCE = new FastThrowModule();
 
     public final SliderProperty delay = new SliderProperty("Delay", 0, 0, 50, 1);

@@ -8,11 +8,12 @@ import lol.catgirl.setting.impl.EnumProperty;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 
-public class NoWebModule extends Module {
+public final class NoWebModule extends Module {
     public static final NoWebModule INSTANCE = new NoWebModule();
 
     public enum Mode {
-        Intave
+        Intave,
+        Grim
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty("Mode", Mode.Intave);
@@ -37,6 +38,12 @@ public class NoWebModule extends Module {
                         mc.player.jumpFromGround();
                         MoveUtils.strafe(0.346f);
                     }
+                }
+            }
+
+            case Grim -> {
+                if (MoveUtils.isMoving()) {
+                    MoveUtils.setSpeed(0.644d);
                 }
             }
         }

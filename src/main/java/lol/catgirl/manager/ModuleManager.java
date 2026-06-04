@@ -50,6 +50,7 @@ public final class ModuleManager {
         modules.add(TargetHUDModule.INSTANCE);
         modules.add(NoFallModule.INSTANCE);
         modules.add(AntiFireballModule.INSTANCE);
+        modules.add(CriticalsModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

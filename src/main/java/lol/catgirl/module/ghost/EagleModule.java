@@ -7,7 +7,7 @@ import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.setting.impl.*;
 import net.minecraft.world.item.BlockItem;
 
-public class EagleModule extends Module {
+public final class EagleModule extends Module {
     public static final EagleModule INSTANCE = new EagleModule();
 
     public EagleModule() {

@@ -14,7 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AuraModule extends Module {
+public final class AuraModule extends Module {
 
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
     public static SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 2, 1, 5, 0.5f);

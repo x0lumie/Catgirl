@@ -14,7 +14,7 @@ import lol.catgirl.utils.render.nanovg.ResourceManager;
 import java.awt.*;
 import java.util.HashMap;
 
-public class ModuleListModule extends Module {
+public final class ModuleListModule extends Module {
     public static final ModuleListModule INSTANCE = new ModuleListModule();
 
     public final BoolProperty background = new BoolProperty("Background", true);

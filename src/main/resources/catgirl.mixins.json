@@ -17,6 +17,7 @@
 	"client": [
 		"ClientLevelMixin",
 		"ClientPacketListenerMixin",
+		"ClientPlayerInteractionManagerMixin",
 		"ClientPlayerNetworkHandlerMixin",
 		"DeltaTrackerTimerMixin",
 		"GameRendererMixin",

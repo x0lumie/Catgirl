@@ -15,7 +15,7 @@ import java.util.Objects;
 
 import static lol.catgirl.utils.render.nanovg.ResourceManager.getSelectedFont;
 
-public class WatermarkModule extends Module {
+public final class WatermarkModule extends Module {
     public static final WatermarkModule INSTANCE = new WatermarkModule();
 
     private final Color PINK = new Color(255, 105, 180);
