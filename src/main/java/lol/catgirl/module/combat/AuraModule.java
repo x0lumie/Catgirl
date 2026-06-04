@@ -11,18 +11,16 @@ import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class AuraModule extends Module {
 
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
+    public static SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 2, 1, 5, 0.5f);
 
     public static final AuraModule INSTANCE = new AuraModule();
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Combat);
-        addSettings(killRange);
+        addSettings(killRange, rotationSpeed);
     }
 
     public static LivingEntity target;
@@ -42,19 +40,30 @@ public class AuraModule extends Module {
     public void onPlayerRotation(PlayerRotationEvent event) {
         if (mc.player == null || target == null) return;
 
-        float[] rotations = RotationUtils.getRotations(
+        float[] targetRotations = RotationUtils.getRotations(
                 new float[]{event.yaw, event.pitch},
                 mc.player.getEyePosition(),
                 target
         );
 
-        rotations = RotationUtils.getFixedRotation(
-                rotations,
+        float smoothedYaw = RotationUtils.smoothRotation(
+                event.yaw,
+                targetRotations[0],
+                rotationSpeed.getValue() / 2
+        );
+        float smoothedPitch = RotationUtils.smoothRotation(
+                event.pitch,
+                targetRotations[1],
+                rotationSpeed.getValue() / 2
+        );
+
+        float[] finalRotations = RotationUtils.getFixedRotation(
+                new float[]{smoothedYaw, smoothedPitch},
                 new float[]{event.yaw, event.pitch}
         );
 
-        event.yaw = rotations[0];
-        event.pitch = rotations[1];
+        event.yaw = finalRotations[0];
+        event.pitch = finalRotations[1];
     }
 
     private void attack() {

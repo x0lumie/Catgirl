@@ -63,10 +63,12 @@ public class RotationUtils implements IMinecraft {
     public static float smoothRotation(float current, float target, float speed) {
         float diff = target - current;
         diff = Mth.wrapDegrees(diff);
-        if (speed < 1f) speed = 1f;
-        return current + diff / speed;
-    }
 
+        if (speed < 0f) speed = 0f;
+        if (speed > 1f) speed = 1f;
+
+        return current + diff * speed;
+    }
 
     public static double gcd() {
         double d = mc.options.sensitivity().get() * (double)0.6F + (double)0.2F;
