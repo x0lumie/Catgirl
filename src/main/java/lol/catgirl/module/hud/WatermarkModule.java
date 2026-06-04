@@ -21,11 +21,6 @@ public class WatermarkModule extends Module {
     private final Color PINK = new Color(255, 105, 180);
     public final Color PURPLE = new Color(155, 89, 255);
 
-    public enum ThemeMode {
-        Default,
-        Theme
-    }
-
     public WatermarkModule() {
         super("Watermark", "Shows the client watermark.", ModuleCategory.Hud);
         addSettings(mode, watermarkVersion, shadow);
