@@ -6,6 +6,7 @@ import java.util.List;
 import lol.catgirl.Catgirl;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.combat.AutoTotemModule;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.movement.SprintModule;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public final class ModuleManager {
     public void init() {
         modules.add(SprintModule.INSTANCE);
         modules.add(MovementFixModule.INSTANCE);
+        modules.add(AutoTotemModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
