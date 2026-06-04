@@ -40,17 +40,21 @@ public class AuraModule extends Module {
 
     @EventHook
     public void onPlayerRotation(PlayerRotationEvent event) {
-        calculateRotations();
-    }
-
-    private void calculateRotations() {
         if (mc.player == null || target == null) return;
 
-        RotationUtils.setRotations(RotationUtils.getRotations(
-                new float[]{RotationUtils.getLastRotationYaw(), RotationUtils.getLastRotationPitch()},
+        float[] rotations = RotationUtils.getRotations(
+                new float[]{event.yaw, event.pitch},
                 mc.player.getEyePosition(),
                 target
-        ));
+        );
+
+        rotations = RotationUtils.getFixedRotation(
+                rotations,
+                new float[]{event.yaw, event.pitch}
+        );
+
+        event.yaw = rotations[0];
+        event.pitch = rotations[1];
     }
 
     private void attack() {

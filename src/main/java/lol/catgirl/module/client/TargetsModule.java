@@ -56,6 +56,11 @@ public class TargetsModule extends Module {
     private static final TickingTimer switchTimer = new TickingTimer();
     private int targetIndex;
 
+    @Override
+    public void onEnable() {
+        toggle();
+    }
+
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
         if (mc.player == null) return;
