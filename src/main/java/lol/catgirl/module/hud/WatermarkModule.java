@@ -8,10 +8,12 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.InterfaceModule;
 import lol.catgirl.setting.impl.BoolSetting;
+import lol.catgirl.setting.impl.EnumSetting;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 
 import java.awt.*;
+import java.util.Objects;
 
 import static lol.catgirl.utils.render.nanovg.ResourceManager.getSelectedFont;
 
@@ -24,9 +26,16 @@ public class WatermarkModule extends Module {
 
     public WatermarkModule() {
         super("Watermark", "Shows the client watermark.", ModuleCategory.Hud);
-        addSettings(watermarkVersion, shadow);
+        addSettings(mode, watermarkVersion, shadow);
     }
 
+    public enum Mode {
+        Catgirl,
+        Catsense,
+        Simple
+    }
+
+    public final EnumSetting<Mode> mode = new EnumSetting<>("Mode", Mode.Catgirl);
     public final BoolSetting watermarkVersion = new BoolSetting("Show Version", true);
     public final BoolSetting shadow = new BoolSetting("Shadow", false);
 
@@ -34,73 +43,183 @@ public class WatermarkModule extends Module {
     public void onRender(RenderTickEvent event) {
         DrawUtil.begin();
 
-        float x = 5F;
-        float y = 5F;
+        switch (mode.getValue()) {
+            case Catgirl -> {
+                float x = 5F;
+                float y = 5F;
 
-        long time = System.currentTimeMillis();
+                long time = System.currentTimeMillis();
 
-        String watermark = Catgirl.NAME;
+                String watermark = Catgirl.NAME;
 
-        float size = 20F;
-        float height = size;
-        float padding = 4F;
+                float size = 20F;
+                float height = size;
+                float padding = 4F;
 
-        float offsetX = x + padding;
+                float offsetX = x + padding;
 
-        boolean drawVersion = watermarkVersion.getValue()
+                boolean drawVersion = watermarkVersion.getValue()
                         && watermark.equalsIgnoreCase("Catgirl");
 
-        for (int i = 0; i < watermark.length(); i++) {
+                for (int i = 0; i < watermark.length(); i++) {
 
-            char c = watermark.charAt(i);
-            String s = String.valueOf(c);
+                    char c = watermark.charAt(i);
+                    String s = String.valueOf(c);
 
-            float wave = (float) ((Math.sin((time / 350.0) + (i * 0.25)) + 1.0) / 2.0);
-            Color color = DrawUtil.interpolate(PINK, PURPLE, wave);
+                    float wave = (float) ((Math.sin((time / 350.0) + (i * 0.25)) + 1.0) / 2.0);
+                    Color color = DrawUtil.interpolate(PINK, PURPLE, wave);
 
-            float charWidth = (float) DrawUtil.getStringWidth(s, size, getSelectedFont());
+                    float charWidth = (float) DrawUtil.getStringWidth(s, size, getSelectedFont());
 
-            if(shadow.getValue()){
-                DrawUtil.drawShadow(
-                        offsetX - 1.5F,
-                        y + 1F,
-                        charWidth + 3.0F,
-                        height - 2F,
-                        4F,
-                        10F,
-                        new Color(color.getRed(), color.getGreen(), color.getBlue(), 90)
+                    if(shadow.getValue()){
+                        DrawUtil.drawShadow(
+                                offsetX - 1.5F,
+                                y + 1F,
+                                charWidth + 3.0F,
+                                height - 2F,
+                                4F,
+                                10F,
+                                new Color(color.getRed(), color.getGreen(), color.getBlue(), 90)
+                        );
+                    }
+
+                    DrawUtil.drawString(
+                            s, offsetX + 0.8F,
+                            y + height - 3.2F,
+                            size,
+                            new Color(0, 0, 0, 120),
+                            getSelectedFont()
+                    );
+
+                    DrawUtil.drawString(s, offsetX,
+                            y + height - 4F,
+                            size,
+                            color,
+                            getSelectedFont()
+                    );
+
+                    offsetX += charWidth;
+                }
+
+                if (drawVersion) {
+                    DrawUtil.drawString(
+                            Catgirl.VERSION,
+                            offsetX + 6F,
+                            y + height - 11,
+                            10,
+                            Color.GRAY,
+                            getSelectedFont()
+                    );
+                }
+            }
+            case Catsense -> {
+                Color DARK = new Color(50, 57, 57);
+                Color INNER = new Color(23, 23, 23);
+
+                float x = 5f;
+                float y = 5f;
+
+                String serverIp;
+                String ping;
+
+                if (mc.getCurrentServer() == null) {
+                    serverIp = "local";
+                    ping = "0ms";
+                } else {
+                    serverIp = Objects.requireNonNull(mc.getCurrentServer()).ip;
+                    ping = mc.getCurrentServer().ping + "ms";
+                }
+
+                String part1 = "cat";
+                String part2 = "sense";
+                String part3 = " - " + mc.player.getName().getString()
+                        + " - " + serverIp + " - " + ping;
+
+                float padding = 4f;
+                float textSize = 8f;
+                float height = 13F;
+                float radius = 0f;
+
+                float textWidth = (float) (DrawUtil.getStringWidth(part1, textSize)
+                        + DrawUtil.getStringWidth(part2, textSize)
+                        + DrawUtil.getStringWidth(part3, textSize));
+
+                float width = textWidth + (padding * 2f);
+
+                if (shadow.getValue()){
+                    DrawUtil.drawShadow(
+                            x - 2f,
+                            y - 1f,
+                            width,
+                            height,
+                            radius + 1f,
+                            8f,
+                            new Color(0, 0, 0, 140)
+                    );
+                }
+
+                DrawUtil.roundedRect(x, y, x + width, y + height, radius, DARK);
+
+                DrawUtil.roundedRect(
+                        x + 1.5f, y + 1.5f, x + width - 1.5f,
+                        y + height - 1.5f,
+                        radius, INNER
+                );
+
+                DrawUtil.roundedRect(
+                        x + 1.5F,
+                        y + height - 2.5F,
+                        x + width - 1.5F,
+                        y + height - 1.5F,
+                        radius,
+                        PURPLE
+                );
+
+                float textY = y + (height / 2f) + (textSize / 2f) - 2f;
+                float currentX = x + padding;
+
+                DrawUtil.drawString(part1, currentX,
+                        textY, textSize, Color.WHITE
+                );
+                currentX += (float) DrawUtil.getStringWidth(part1, textSize);
+
+                DrawUtil.drawString(part2, currentX, textY, textSize,
+                        PURPLE
+                );
+                currentX += (float) DrawUtil.getStringWidth(part2, textSize);
+
+                DrawUtil.drawString(
+                        part3,
+                        currentX,
+                        textY,
+                        textSize,
+                        Color.WHITE
                 );
             }
+            case Simple -> {
+                float x = 2f;
+                float y = 10f;
 
-            DrawUtil.drawString(
-                    s, offsetX + 0.8F,
-                    y + height - 3.2F,
-                    size,
-                    new Color(0, 0, 0, 120),
-                    getSelectedFont()
-            );
+                String name = Catgirl.NAME;
 
-            DrawUtil.drawString(s, offsetX,
-                    y + height - 4F,
-                    size,
-                    color,
-                    getSelectedFont()
-            );
+                DrawUtil.drawString(
+                        Catgirl.VERSION, x + x + 2 + x + 25, y,
+                        10, Color.WHITE,
+                        ResourceManager.FontResources.roboto
+                );
 
-            offsetX += charWidth;
-        }
-
-        if (drawVersion) {
-            DrawUtil.drawString(
-                    Catgirl.VERSION,
-                    offsetX + 6F,
-                    y + height - 11,
-                    10,
-                    Color.GRAY,
-                    getSelectedFont()
-            );
+                DrawUtil.drawString(
+                        name, x, y, 10, PURPLE,
+                        ResourceManager.FontResources.roboto
+                );
+            }
         }
 
         DrawUtil.end();
+    }
+
+    @Override
+    public String suffix() {
+        return mode.getValue().toString();
     }
 }

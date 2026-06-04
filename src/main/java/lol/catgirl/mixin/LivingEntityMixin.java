@@ -3,7 +3,7 @@ package lol.catgirl.mixin;
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.impl.PlayerJumpFactorEvent;
 import lol.catgirl.utils.IMinecraft;
-import lol.catgirl.utils.player.PlayerUtil;
+import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,14 +17,14 @@ public class LivingEntityMixin implements IMinecraft {
     @Inject(at = @At("HEAD"), method = "jumpFromGround")
     private void jump(CallbackInfo ci) {
         if((Object) this == mc.player) {
-            PlayerUtil.jumpAge = mc.player.tickCount;
-            PlayerUtil.lastModTime = System.currentTimeMillis();
+            PlayerUtils.jumpAge = mc.player.tickCount;
+            PlayerUtils.lastModTime = System.currentTimeMillis();
         }
     }
     @Inject(at = @At("HEAD"), method = "handleDamageEvent")
     private void onDamage(CallbackInfo info) {
         if((Object) this == mc.player) {
-            PlayerUtil.hurtAge = mc.player.tickCount;
+            PlayerUtils.hurtAge = mc.player.tickCount;
         }
     }
 

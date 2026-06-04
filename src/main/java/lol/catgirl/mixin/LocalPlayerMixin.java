@@ -1,6 +1,5 @@
 package lol.catgirl.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.authlib.GameProfile;
@@ -8,7 +7,7 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.event.impl.*;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.utils.IMinecraft;
-import lol.catgirl.utils.player.RotationUtil;
+import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -71,11 +70,11 @@ public abstract class LocalPlayerMixin extends
             method = "tick"
     )
     public void start(CallbackInfo ci) {
-        RotationUtil.setCamYaw(mc.player.getYRot());
-        RotationUtil.setCamPitch(mc.player.getXRot());
+        RotationUtils.setCamYaw(mc.player.getYRot());
+        RotationUtils.setCamPitch(mc.player.getXRot());
 
-        RotationUtil.setLastRotationYaw(RotationUtil.getRotationYaw());
-        RotationUtil.setLastRotationPitch(RotationUtil.getRotationPitch());
+        RotationUtils.setLastRotationYaw(RotationUtils.getRotationYaw());
+        RotationUtils.setLastRotationPitch(RotationUtils.getRotationPitch());
 
         PlayerRotationEvent rotationEvent = new PlayerRotationEvent(
                 this.getYRot(),
@@ -84,17 +83,17 @@ public abstract class LocalPlayerMixin extends
 
         Catgirl.INSTANCE.eventBus.post(rotationEvent);
 
-        RotationUtil.yawChanged = rotationEvent.yaw != this.getYRot();
-        RotationUtil.pitchChanged = rotationEvent.pitch != this.getXRot();
+        RotationUtils.yawChanged = rotationEvent.yaw != this.getYRot();
+        RotationUtils.pitchChanged = rotationEvent.pitch != this.getXRot();
 
-        RotationUtil.setRotationYaw(rotationEvent.yaw);
-        RotationUtil.setRotationPitch(rotationEvent.pitch);
+        RotationUtils.setRotationYaw(rotationEvent.yaw);
+        RotationUtils.setRotationPitch(rotationEvent.pitch);
 
 
         MovementFixModule movementFixModule = MovementFixModule.INSTANCE;
         if (movementFixModule != null && movementFixModule.isEnabled()) {
-            mc.player.setYRot(RotationUtil.getRotationYaw());
-            mc.player.setXRot(RotationUtil.getRotationPitch());
+            mc.player.setYRot(RotationUtils.getRotationYaw());
+            mc.player.setXRot(RotationUtils.getRotationPitch());
         }
     }
 
@@ -107,8 +106,8 @@ public abstract class LocalPlayerMixin extends
         MovementFixModule movementFixModule = MovementFixModule.INSTANCE;
 
         if (movementFixModule != null && movementFixModule.isEnabled()) {
-            mc.player.setYRot(RotationUtil.getCamYaw());
-            mc.player.setXRot(RotationUtil.getCamPitch());
+            mc.player.setYRot(RotationUtils.getCamYaw());
+            mc.player.setXRot(RotationUtils.getCamPitch());
         }
     }
 
@@ -129,10 +128,10 @@ public abstract class LocalPlayerMixin extends
                 this.getX(),
                 this.getBoundingBox().minY,
                 this.getZ(),
-                RotationUtil.getRotationYaw(),
-                RotationUtil.getRotationPitch(),
-                RotationUtil.getLastRotationYaw(),
-                RotationUtil.getLastRotationPitch(),
+                RotationUtils.getRotationYaw(),
+                RotationUtils.getRotationPitch(),
+                RotationUtils.getLastRotationYaw(),
+                RotationUtils.getLastRotationPitch(),
                 this.onGround(),
                 this.isShiftKeyDown(),
                 this.isSprinting(),

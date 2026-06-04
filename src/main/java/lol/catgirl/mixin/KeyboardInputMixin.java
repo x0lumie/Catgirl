@@ -2,7 +2,7 @@ package lol.catgirl.mixin;
 
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.utils.IMinecraft;
-import lol.catgirl.utils.player.RotationUtil;
+import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.util.Mth;
@@ -22,12 +22,12 @@ public class KeyboardInputMixin extends ClientInput implements IMinecraft {
         MovementFixModule movementFixModule = MovementFixModule.INSTANCE;
         if (movementFixModule != null && movementFixModule.isEnabled() && mc.player != null) {
 
-            float fixRotation = RotationUtil.getCamYaw();
+            float fixRotation = RotationUtils.getCamYaw();
 
             float mF = mc.player.input.getMoveVector().y;
             float mS = mc.player.input.getMoveVector().x;
 
-            float delta = (RotationUtil.getRotationYaw() - fixRotation) * Mth.DEG_TO_RAD;
+            float delta = (RotationUtils.getRotationYaw() - fixRotation) * Mth.DEG_TO_RAD;
             float cos = Mth.cos(delta);
             float sin = Mth.sin(delta);
 

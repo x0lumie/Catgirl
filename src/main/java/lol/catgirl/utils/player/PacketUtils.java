@@ -6,7 +6,7 @@ import net.minecraft.network.ClientboundPacketListener;
 import net.minecraft.network.protocol.Packet;
 
 @UtilityClass
-public class PacketUtil implements IMinecraft {
+public class PacketUtils implements IMinecraft {
     public static void sendSilentPacket(Packet<?> packet) {
         final var nh = mc.getConnection();
         if (nh == null) return;

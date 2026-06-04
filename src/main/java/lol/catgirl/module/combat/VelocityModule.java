@@ -7,7 +7,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.setting.impl.BoolSetting;
 import lol.catgirl.setting.impl.EnumSetting;
-import lol.catgirl.utils.player.PlayerUtil;
+import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -112,7 +112,7 @@ public final class VelocityModule extends Module {
         if (jumpTicks >= 0) {
             if (jumpTicks == 0) {
                 if (mc.player.onGround()) {
-                    PlayerUtil.jump();
+                    PlayerUtils.jump();
                 }
                 jumpTicks = -1;
             } else {

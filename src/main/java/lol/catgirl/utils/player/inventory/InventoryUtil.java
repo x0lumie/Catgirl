@@ -1,7 +1,7 @@
 package lol.catgirl.utils.player.inventory;
 
 import lol.catgirl.utils.IMinecraft;
-import lol.catgirl.utils.player.PlayerUtil;
+import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
@@ -217,7 +217,7 @@ public class InventoryUtil implements IMinecraft {
             return 0.0;
         }
 
-        double score = PlayerUtil.getStackAttackDamage(stack);
+        double score = PlayerUtils.getStackAttackDamage(stack);
 
         final int sharpnessLevel = calculateEnchantmentLevel(stack, Enchantments.SHARPNESS) + 1;
         score *= sharpnessLevel;
@@ -233,7 +233,7 @@ public class InventoryUtil implements IMinecraft {
             return 0.0;
         }
 
-        double score = PlayerUtil.getArmorProtection(stack);
+        double score = PlayerUtils.getArmorProtection(stack);
         int protectionLevel = calculateEnchantmentLevel(stack, Enchantments.PROTECTION);
         score *= protectionLevel;
 

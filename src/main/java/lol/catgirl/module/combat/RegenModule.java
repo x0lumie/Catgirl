@@ -6,7 +6,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.setting.impl.BoolSetting;
 import lol.catgirl.setting.impl.SliderSetting;
-import lol.catgirl.utils.player.PacketUtil;
+import lol.catgirl.utils.player.PacketUtils;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 
 public final class RegenModule extends Module {
@@ -44,7 +44,7 @@ public final class RegenModule extends Module {
 
         for (int i = 0; i < packetAmount.getValue().intValue(); i++) {
 
-            PacketUtil.sendSilentPacket(
+            PacketUtils.sendSilentPacket(
                     new ServerboundMovePlayerPacket.PosRot(
                             mc.player.getX(),
                             mc.player.getY(),

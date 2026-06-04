@@ -13,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class RotationUtil implements IMinecraft {
+public class RotationUtils implements IMinecraft {
     public static boolean yawChanged;
     public static boolean pitchChanged;
 
@@ -29,15 +29,15 @@ public class RotationUtil implements IMinecraft {
     public static boolean isFacing(Player self, Player target, float maxAngle) {
         Vec3 eye = self.getEyePosition();
 
-        Vec3 dirToTarget = PlayerUtil.getClosestPoint(target).subtract(eye);
+        Vec3 dirToTarget = PlayerUtils.getClosestPoint(target).subtract(eye);
 
         double distXZ = Math.sqrt(dirToTarget.x * dirToTarget.x + dirToTarget.z * dirToTarget.z);
 
         float targetYaw = (float) Math.toDegrees(Math.atan2(dirToTarget.z, dirToTarget.x)) - 90f;
         float targetPitch = (float) -Math.toDegrees(Math.atan2(dirToTarget.y, distXZ));
 
-        float yawDiff = Math.abs(Mth.wrapDegrees(RotationUtil.getRotationYaw() - targetYaw));
-        float pitchDiff = Math.abs(RotationUtil.getRotationPitch() - targetPitch);
+        float yawDiff = Math.abs(Mth.wrapDegrees(RotationUtils.getRotationYaw() - targetYaw));
+        float pitchDiff = Math.abs(RotationUtils.getRotationPitch() - targetPitch);
 
         return yawDiff <= maxAngle && pitchDiff <= maxAngle;
     }
@@ -75,7 +75,7 @@ public class RotationUtil implements IMinecraft {
 
 
     public static float[] getRotations(float[] last, Vec3 eye, Entity entity) {
-        Vec3 to = PlayerUtil.getClosestPoint(entity);
+        Vec3 to = PlayerUtils.getClosestPoint(entity);
         Vec3 diff = to.subtract(eye);
 
         double dist = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
@@ -88,8 +88,8 @@ public class RotationUtil implements IMinecraft {
         return new float[]{yaw, pitch};
     }
     public static float getLerpedPitch(float tickDelta, LivingEntity entity) {
-        if (RotationUtil.pitchChanged) {
-            return tickDelta == 1.0F ? RotationUtil.getRotationPitch() : Mth.lerp(tickDelta, RotationUtil.getLastRotationPitch(), RotationUtil.getRotationPitch());
+        if (RotationUtils.pitchChanged) {
+            return tickDelta == 1.0F ? RotationUtils.getRotationPitch() : Mth.lerp(tickDelta, RotationUtils.getLastRotationPitch(), RotationUtils.getRotationPitch());
         } else {
             return entity.getXRot(tickDelta);
         }
@@ -156,7 +156,7 @@ public class RotationUtil implements IMinecraft {
         );
 
 
-        yaw = unwrap(RotationUtil.getLastRotationYaw(),yaw);
+        yaw = unwrap(RotationUtils.getLastRotationYaw(),yaw);
 
         return new float[]{yaw, clampPitch(pitch)};
     }
@@ -216,7 +216,7 @@ public class RotationUtil implements IMinecraft {
 
     public static float getMovementDirectionYaw() {
         var actualYaw = MovementFixModule.INSTANCE.isEnabled()
-                ? RotationUtil.lastRotationYaw : RotationUtil.camYaw;
+                ? RotationUtils.lastRotationYaw : RotationUtils.camYaw;
         final var inp = mc.player.input.keyPresses;
         if (inp.backward() && !inp.forward()) {
             actualYaw += 180f;

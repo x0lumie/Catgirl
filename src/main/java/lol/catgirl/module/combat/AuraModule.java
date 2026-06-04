@@ -7,7 +7,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.setting.impl.EnumSetting;
 import lol.catgirl.setting.impl.SliderSetting;
-import lol.catgirl.utils.player.RotationUtil;
+import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -28,6 +28,7 @@ public class AuraModule extends Module {
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Movement);
+        addSettings(mode, entities, seekRange, killRange); // dont forget this!
     }
 
     public static LivingEntity target;
@@ -51,7 +52,7 @@ public class AuraModule extends Module {
     private void calculateRotations() {
         if (mc.player == null || target == null) return;
 
-        RotationUtil.setRotations(RotationUtil.getRotations(new float[]{RotationUtil.getLastRotationYaw(), RotationUtil.getLastRotationPitch()}, mc.player.getEyePosition(), target));
+        RotationUtils.setRotations(RotationUtils.getRotations(new float[]{RotationUtils.getLastRotationYaw(), RotationUtils.getLastRotationPitch()}, mc.player.getEyePosition(), target));
     }
 
     private void attack() {

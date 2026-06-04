@@ -4,7 +4,7 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.utils.player.RotationUtil;
+import lol.catgirl.utils.player.RotationUtils;
 
 public final class MovementFixModule extends Module {
     public static final MovementFixModule INSTANCE = new MovementFixModule();
@@ -17,11 +17,11 @@ public final class MovementFixModule extends Module {
     public void onRenderTick(RenderTickEvent event) {
         if (mc.player == null) return;
 
-        if (RotationUtil.yawChanged) {
-            mc.player.yBob = RotationUtil.getCamYaw();
+        if (RotationUtils.yawChanged) {
+            mc.player.yBob = RotationUtils.getCamYaw();
         }
-        if (RotationUtil.pitchChanged) {
-            mc.player.xBob = RotationUtil.getCamPitch();
+        if (RotationUtils.pitchChanged) {
+            mc.player.xBob = RotationUtils.getCamPitch();
         }
     }
 }

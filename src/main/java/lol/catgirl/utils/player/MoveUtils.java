@@ -8,10 +8,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public class MoveUtil implements IMinecraft {
+public class MoveUtils implements IMinecraft {
 
     public static void setSpeed(double speed) {
         double dir = direction();
@@ -191,7 +190,7 @@ public class MoveUtil implements IMinecraft {
         boolean useBaseModifiers = false;
         double horizontalDistance;
 
-        boolean inWeb = PlayerUtil.isInWeb();
+        boolean inWeb = PlayerUtils.isInWeb();
 
         if (inWeb) {
             horizontalDistance = 0.105;

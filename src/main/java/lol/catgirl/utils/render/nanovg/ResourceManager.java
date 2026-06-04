@@ -13,7 +13,7 @@ public class ResourceManager {
     public static class FontResources {
         public static FontResource regular;
         public static FontResource productSansBold, minecraft,
-        comfortaa, comfortaaBold, sfprobold
+        comfortaa, comfortaaBold, sfprobold, roboto
                 ;
 
         public static void init() throws IOException {
@@ -23,6 +23,7 @@ public class ResourceManager {
             comfortaa = new FontResource("Comfortaa");
             comfortaaBold = new FontResource("Comfortaa-Bold");
             sfprobold = new FontResource("SF-Pro-Display-Bold");
+            roboto = new FontResource("roboto");
         }
     }
 
