@@ -22,7 +22,20 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	
+
+	// Lombok
+	compileOnly "org.projectlombok:lombok:1.18.34"
+	annotationProcessor "org.projectlombok:lombok:1.18.34"
+
+	// NanoVG (LWJGL binding)
+	def lwjglVersion = "3.3.3" // match your MC's LWJGL version if different
+
+	implementation "org.lwjgl:lwjgl-nanovg:${lwjglVersion}"
+
+	runtimeOnly "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-windows"
+	runtimeOnly "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-linux"
+	runtimeOnly "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-macos"
+	runtimeOnly "org.lwjgl:lwjgl-nanovg:${lwjglVersion}:natives-macos-arm64"
 }
 
 processResources {
