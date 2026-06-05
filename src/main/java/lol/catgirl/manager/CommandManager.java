@@ -2,10 +2,7 @@ package lol.catgirl.manager;
 
 import lol.catgirl.Catgirl;
 import lol.catgirl.command.Command;
-import lol.catgirl.command.impl.BindCommand;
-import lol.catgirl.command.impl.HelpCommand;
-import lol.catgirl.command.impl.ModuleCommand;
-import lol.catgirl.command.impl.ToggleCommand;
+import lol.catgirl.command.impl.*;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ChatEvent;
 import lombok.Getter;
@@ -21,13 +18,15 @@ public class CommandManager {
     public final ToggleCommand toggleCommand = new ToggleCommand();
     public final HelpCommand helpCommand = new HelpCommand();
     public final ModuleCommand moduleCommand = new ModuleCommand();
+    public final ConfigCommand configCommand = new ConfigCommand();
 
     public CommandManager() {
         addCommands(
                 bindCommand,
                 toggleCommand,
                 helpCommand,
-                moduleCommand
+                moduleCommand,
+                configCommand
         );
     }
 
