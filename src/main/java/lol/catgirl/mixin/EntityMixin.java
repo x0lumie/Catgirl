@@ -35,11 +35,7 @@ public abstract class EntityMixin {
             )
     )
     private void mf(Args args) {
-        MovementFixModule test = MovementFixModule.INSTANCE;
-        if (test != null && test.isEnabled()) {
-            float customYaw = RotationUtils.getRotationYaw();
-            // args.set(2, customYaw);
-        }
+
     }
 
     @Inject(method = "push", at = @At("HEAD"), cancellable = true)

@@ -22,6 +22,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public final class ScaffoldModule extends Module {
 
     private enum Mode {
@@ -32,10 +34,12 @@ public final class ScaffoldModule extends Module {
     }
 
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
-    private final SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 2, 1, 10, 0.5f);
+    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 1f, 10, 0.1f);
+    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 1, 1f, 10, 0.1f);
     private final SliderProperty placeDelay = new SliderProperty("Place Delay", 0, 0, 10, 1);
     public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static BoolProperty strict = new BoolProperty("Strict Ray Cast", true).hide(() -> !rayCast.getValue());
+    public static BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
     public static BoolProperty sprint = new BoolProperty("Sprint", false);
     public static BoolProperty jump = new BoolProperty("Jump", false);
     public static BoolProperty keepY = new BoolProperty("Keep Y", false).hide(() -> !jump.getValue());
@@ -56,7 +60,7 @@ public final class ScaffoldModule extends Module {
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
-        addSettings(mode, rotationSpeed, placeDelay, rayCast, strict, sprint, jump, keepY, sneak, sneakEvery);
+        addSettings(mode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
     }
 
     @Override
@@ -86,6 +90,11 @@ public final class ScaffoldModule extends Module {
     public void onPreUpdate(PreUpdateEvent event) {
         if (mc.player == null) return;
 
+        if (maxRotationSpeed.getValue() < minRotationSpeed.getValue())
+            maxRotationSpeed.setValue(minRotationSpeed.getValue());
+        if (minRotationSpeed.getValue() > maxRotationSpeed.getValue())
+            minRotationSpeed.setValue(maxRotationSpeed.getValue());
+
         updateScaffoldYCoord();
         updateBlockPos();
 
@@ -101,6 +110,13 @@ public final class ScaffoldModule extends Module {
     @EventHook
     public void onPlayerRotation(PlayerRotationEvent event) {
         handleRotations(event);
+    }
+
+    private float randomRotationSpeed() {
+        float min = minRotationSpeed.getValue();
+        float max = maxRotationSpeed.getValue();
+        if (min >= max) return min;
+        return (float) ThreadLocalRandom.current().nextDouble(min, max);
     }
 
     private void updateScaffoldYCoord() {
@@ -246,10 +262,12 @@ public final class ScaffoldModule extends Module {
             }
         }
 
-        float smoothedYaw = RotationUtils.smoothRotation(event.yaw, targetRotations[0], rotationSpeed.getValue() / 2f);
-        float smoothedPitch = RotationUtils.smoothRotation(event.pitch, targetRotations[1], rotationSpeed.getValue() / 2f);
+        float[] currentRotations = new float[]{event.yaw, event.pitch};
 
-        float[] finalRotations = RotationUtils.getFixedRotation(new float[]{smoothedYaw, smoothedPitch}, new float[]{event.yaw, event.pitch});
+        float smoothedYaw = RotationUtils.getFixedRotation(targetRotations, currentRotations)[0];
+        float smoothedPitch = RotationUtils.getFixedRotation(targetRotations, currentRotations)[1];
+
+        float[] finalRotations = new float[]{RotationUtils.smoothRotation(currentRotations[0], smoothedYaw, randomRotationSpeed()), RotationUtils.smoothRotation(currentRotations[1], smoothedPitch, randomRotationSpeed())};
 
         event.yaw = finalRotations[0];
         event.pitch = finalRotations[1];
@@ -289,12 +307,19 @@ public final class ScaffoldModule extends Module {
             return;
         }
 
-        mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, new BlockHitResult(ScaffoldUtils.getNewVector(blockData), blockData.getFacing(), blockData.getPosition(), false));
-        mc.player.swing(InteractionHand.MAIN_HAND);
+        handlePlace();
 
         placedBlocks++;
     }
 
+    private void handlePlace() {
+        if (useMouseClick.getValue()) {
+            mc.startUseItem();
+        } else {
+            mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, new BlockHitResult(ScaffoldUtils.getNewVector(blockData), blockData.getFacing(), blockData.getPosition(), false));
+            mc.player.swing(InteractionHand.MAIN_HAND);
+        }
+    }
 
     private int getBlockSlot() {
         for (int i = 0; i < 9; i++) {

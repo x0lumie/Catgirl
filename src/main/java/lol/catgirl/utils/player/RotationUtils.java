@@ -11,8 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,13 +23,17 @@ public class RotationUtils implements IMinecraft {
     @Getter
     public static float rotationYaw, rotationPitch, lastRotationYaw, lastRotationPitch, camYaw, camPitch;
 
+    @Getter
+    @Setter
+    private static HitResult currentHitResult;
+
     public static float[] regularAuraRotations(float[] currentRotations, Entity targetEntity, float speed) {
         float[] targetRotations = getRotations(currentRotations, mc.player.getEyePosition(), targetEntity);
 
-        float smoothedYaw = smoothRotation(currentRotations[0], targetRotations[0], speed / 2f);
-        float smoothedPitch = smoothRotation(currentRotations[1], targetRotations[1], speed / 2f);
+        float smoothedYaw = getFixedRotation(targetRotations, currentRotations)[0];
+        float smoothedPitch = getFixedRotation(targetRotations, currentRotations)[1];
 
-        return getFixedRotation(new float[]{smoothedYaw, smoothedPitch}, currentRotations);
+        return new float[]{smoothRotation(currentRotations[0], smoothedYaw, speed), smoothRotation(currentRotations[1], smoothedPitch, speed)};
     }
 
     public static float[] puhfyAuraRotations(float[] currentRotations, final Entity entity, final float speed) {
@@ -65,10 +68,10 @@ public class RotationUtils implements IMinecraft {
 
         final float[] rotations = getRotationsToPoint(currentRotations, mc.player.getEyePosition(), bestPoint);
 
-        float smoothedYaw = smoothRotation(currentRotations[0], rotations[0], speed / 2f);
-        float smoothedPitch = smoothRotation(currentRotations[1], rotations[1], speed / 2f);
+        float smoothedYaw = getFixedRotation(rotations, currentRotations)[0];
+        float smoothedPitch = getFixedRotation(rotations, currentRotations)[1];
 
-        return getFixedRotation(new float[]{smoothedYaw, smoothedPitch}, currentRotations);
+        return new float[]{smoothRotation(currentRotations[0], smoothedYaw, speed), smoothRotation(currentRotations[1], smoothedPitch, speed)};
     }
 
     public static float[] polarAuraRotations(float[] currentRotations, final Entity entity) {
@@ -125,13 +128,17 @@ public class RotationUtils implements IMinecraft {
     }
 
     public static float smoothRotation(float current, float target, float speed) {
-        float diff = target - current;
-        diff = Mth.wrapDegrees(diff);
+        speed = Mth.clamp(speed, 0.0f, 1.0f);
 
-        if (speed < 0f) speed = 0f;
-        if (speed > 1f) speed = 1f;
+        float diff = Mth.wrapDegrees(target - current);
 
-        return current + diff * speed;
+        if (Math.abs(diff) < 0.01f) {
+            return target;
+        }
+
+        float smoothSpeed = speed * speed * (3.0f - 2.0f * speed);
+
+        return current + diff * smoothSpeed;
     }
 
     public static double gcd() {
@@ -312,5 +319,30 @@ public class RotationUtils implements IMinecraft {
         }
 
         return actualYaw;
+    }
+
+    public static Vec3 getHitPosition() {
+        if (currentHitResult != null) {
+            return currentHitResult.getLocation();
+        }
+        return null;
+    }
+
+    public static boolean isLookingAtEntity() {
+        return currentHitResult != null && currentHitResult.getType() == HitResult.Type.ENTITY;
+    }
+
+    public static Entity getTargetedEntity() {
+        if (currentHitResult instanceof EntityHitResult entityHit) {
+            return entityHit.getEntity();
+        }
+        return null;
+    }
+
+    public static BlockPos getTargetedBlockPos() {
+        if (currentHitResult instanceof BlockHitResult blockHit) {
+            return blockHit.getBlockPos();
+        }
+        return null;
     }
 }
