@@ -13,6 +13,7 @@ import lol.catgirl.setting.impl.SliderProperty;
 import lol.catgirl.utils.client.ItemAnimationUtil;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
@@ -56,7 +57,6 @@ public final class AuraModule extends Module {
     private boolean canAttack = true;
     public int hitTicks;
     // boi that's so tuff
-    // fakeBlocking isnt needed small bub
     private boolean realBlocking;
     int blockTicks = 0;
 
@@ -173,6 +173,7 @@ public final class AuraModule extends Module {
 
         switch (autoBlock.getValue()) {
             case Vanilla -> {
+                ItemAnimationUtil.setBlocking(target != null);
                 mc.player.connection.send(
                         new ServerboundUseItemPacket(
                                 InteractionHand.MAIN_HAND,
@@ -187,13 +188,14 @@ public final class AuraModule extends Module {
                 ItemAnimationUtil.setBlocking(target != null);
             }
             case Polar -> {
+                ItemAnimationUtil.setBlocking(target != null);
                 int slot = mc.player.getInventory().getSelectedSlot();
 
                 mc.player.connection.send(
                         new ServerboundPlayerActionPacket(
                                 ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
                                 mc.player.blockPosition(),
-                                mc.player.getDirection()
+                                Direction.DOWN
                         )
                 );
 
@@ -234,7 +236,7 @@ public final class AuraModule extends Module {
                     new ServerboundPlayerActionPacket(
                             ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
                             mc.player.blockPosition(),
-                            mc.player.getDirection()
+                            Direction.DOWN
                     )
             );
         }
