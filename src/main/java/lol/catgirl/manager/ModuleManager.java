@@ -71,6 +71,7 @@ public final class ModuleManager {
         modules.add(HitboxDesyncModule.INSTANCE);
         modules.add(PanicModule.INSTANCE);
         modules.add(InsultsModule.INSTANCE);
+        modules.add(NoRotateModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
