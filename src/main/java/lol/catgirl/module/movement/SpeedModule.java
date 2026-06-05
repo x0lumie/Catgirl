@@ -2,9 +2,12 @@ package lol.catgirl.module.movement;
 
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
+import lol.catgirl.event.impl.PlayerJumpFactorEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.GameTimer;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
@@ -16,14 +19,18 @@ public final class SpeedModule extends Module {
     public enum Mode {
         Legit,
         LegitExploit,
-        Intave
+        Intave,
+        Matrix
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Intave);
 
+    public final BoolProperty matrixLowHop = new BoolProperty("Low Hop", false).hide(()-> !(mode.getValue() == Mode.Matrix));
+    public final SliderProperty matrixGroundBoost = new SliderProperty("Ground Boost", 0.2f, 0f, 0.5f, 0.01f).hide(() -> mode.getValue() == Mode.Matrix);
+
     public SpeedModule() {
         super("Speed", "Allows you to go faster!!!", ModuleCategory.Movement);
-        addSetting(mode);
+        addSettings(mode, matrixLowHop, matrixGroundBoost);
     }
 
     private int airTicks, groundTicks;
@@ -59,6 +66,42 @@ public final class SpeedModule extends Module {
                 GameTimer.setSpeed(1.0075f);
             }
 
+            case Matrix -> {
+                if (mc.player.isInWater() || mc.player.isInLava() || mc.player.onClimbable()) return;
+                if (!MoveUtils.isMoving()) return;
+
+                Vec3 motion = mc.player.getDeltaMovement();
+
+                if (mc.player.onGround()) {
+
+                    PlayerUtils.jump();
+
+                    double boost = 1.0 + matrixGroundBoost.getValue();
+
+                    motion = mc.player.getDeltaMovement();
+
+                    mc.player.setDeltaMovement(
+                            motion.x * boost,
+                            0.42 - (matrixLowHop.getValue() ? 0.00348 : 0.0),
+                            motion.z * boost
+                    );
+
+                } else {
+
+                    if (motion.horizontalDistance() < 0.19) {
+                        mc.player.setDeltaMovement(
+                                motion.x * 1.01,
+                                motion.y,
+                                motion.z * 1.01
+                        );
+                    }
+
+                    float airSpeed = mc.player.fallDistance <= 0.4f ? 0.02035f : 0.02f;
+
+                    MoveUtils.setSpeed(airSpeed);
+                }
+            }
+
             case Intave -> {
                 if (mc.player.onGround() && MoveUtils.isMoving()) {
                     PlayerUtils.jump();
@@ -81,6 +124,16 @@ public final class SpeedModule extends Module {
 
                 GameTimer.setSpeed(1.0075f);
             }
+        }
+    }
+
+    @EventHook
+    public void onJumpFactor(PlayerJumpFactorEvent event) {
+        if (mc.player == null) return;
+
+        if (mode.getValue() == Mode.Matrix && matrixLowHop.getValue()
+                && MoveUtils.isMoving()) {
+            event.factor = 0.026f;
         }
     }
 

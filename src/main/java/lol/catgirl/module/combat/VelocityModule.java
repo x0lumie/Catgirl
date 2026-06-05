@@ -24,7 +24,8 @@ public final class VelocityModule extends Module {
     public enum Mode {
         Cancel,
         JumpReset,
-        Intave
+        Intave,
+        Matrix
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
@@ -41,7 +42,9 @@ public final class VelocityModule extends Module {
         if(mc.player == null) return;
         if(mc.player.isOnFire() && ignoreOnFire.getValue()) return;
 
+
         if (event.packet instanceof ClientboundSetEntityMotionPacket packet) {
+
             if (packet.getId() == mc.player.getId()) {
                 switch (mode.getValue()) {
                     case Cancel -> {
@@ -53,7 +56,17 @@ public final class VelocityModule extends Module {
                     }
 
                     case Intave -> {
-                       // todo new velocity
+
+                    }
+
+                    case Matrix -> {
+                        // IDK if this works anymore
+                        double motionX = packet.movement.x;
+                        double motionZ = packet.movement.z;
+                        motionZ *= 0.06;
+                        motionX *= 0.06;
+                        MoveUtils.setMotionX(motionX);
+                        MoveUtils.setMotionZ(motionZ);
                     }
                 }
             }
