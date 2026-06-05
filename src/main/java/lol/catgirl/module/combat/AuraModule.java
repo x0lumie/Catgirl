@@ -10,6 +10,7 @@ import lol.catgirl.module.client.TargetsModule;
 import lol.catgirl.setting.impl.BoolProperty;
 import lol.catgirl.setting.impl.EnumProperty;
 import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.utils.client.ItemAnimationUtil;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
@@ -55,7 +56,7 @@ public final class AuraModule extends Module {
     private boolean canAttack = true;
     public int hitTicks;
     // boi that's so tuff
-    private boolean fakeBlocking;
+    // fakeBlocking isnt needed small bub
     private boolean realBlocking;
     int blockTicks = 0;
 
@@ -78,6 +79,8 @@ public final class AuraModule extends Module {
     @Override
     public void onDisable() {
         unblock();
+        ItemAnimationUtil.setBlocking(false);
+
         super.onDisable();
     };
 
@@ -167,8 +170,6 @@ public final class AuraModule extends Module {
         if (mc.player == null || target == null || !oldCombat.getValue()) return;
         if (mc.player.distanceTo(target) > killRange.getValue()) return;
 
-        fakeBlocking = true;
-
         switch (autoBlock.getValue()) {
             case Vanilla -> {
                 mc.player.connection.send(
@@ -180,6 +181,9 @@ public final class AuraModule extends Module {
                         )
                 );
                 realBlocking = true;
+            }
+            case Fake -> {
+                ItemAnimationUtil.setBlocking(target != null);
             }
             case Polar -> {
                 int slot = mc.player.getInventory().getSelectedSlot();

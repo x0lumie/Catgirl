@@ -14,11 +14,9 @@ import lol.catgirl.module.ghost.*;
 import lol.catgirl.module.hud.ModuleListModule;
 import lol.catgirl.module.hud.TargetHUDModule;
 import lol.catgirl.module.hud.WatermarkModule;
-import lol.catgirl.module.movement.MovementFixModule;
-import lol.catgirl.module.movement.NoWebModule;
-import lol.catgirl.module.movement.SpeedModule;
-import lol.catgirl.module.movement.SprintModule;
+import lol.catgirl.module.movement.*;
 import lol.catgirl.module.player.*;
+import lol.catgirl.module.render.AnimationsModule;
 import lombok.Getter;
 
 @Getter
@@ -57,6 +55,8 @@ public final class ModuleManager {
         modules.add(NoJumpDelayModule.INSTANCE);
         modules.add(AutoClickerModule.INSTANCE);
         modules.add(AimAssistModule.INSTANCE);
+        modules.add(NoPushModule.INSTANCE);
+        modules.add(AnimationsModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
