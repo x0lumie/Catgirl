@@ -10,8 +10,7 @@ import lol.catgirl.module.client.ClickGuiModule;
 import lol.catgirl.module.client.InterfaceModule;
 import lol.catgirl.module.client.TargetsModule;
 import lol.catgirl.module.combat.*;
-import lol.catgirl.module.ghost.EagleModule;
-import lol.catgirl.module.ghost.FastThrowModule;
+import lol.catgirl.module.ghost.*;
 import lol.catgirl.module.hud.ModuleListModule;
 import lol.catgirl.module.hud.TargetHUDModule;
 import lol.catgirl.module.hud.WatermarkModule;
@@ -19,10 +18,7 @@ import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.movement.NoWebModule;
 import lol.catgirl.module.movement.SpeedModule;
 import lol.catgirl.module.movement.SprintModule;
-import lol.catgirl.module.player.AntiFireballModule;
-import lol.catgirl.module.player.NoFallModule;
-import lol.catgirl.module.player.NoSlowModule;
-import lol.catgirl.module.player.ScaffoldModule;
+import lol.catgirl.module.player.*;
 import lombok.Getter;
 
 @Getter
@@ -55,6 +51,12 @@ public final class ModuleManager {
         modules.add(CriticalsModule.INSTANCE);
         modules.add(NoSlowModule.INSTANCE);
         modules.add(ScaffoldModule.INSTANCE);
+        modules.add(TimerModule.INSTANCE);
+        modules.add(ChestStealerModule.INSTANCE);
+        modules.add(AutoComboModule.INSTANCE);
+        modules.add(NoJumpDelayModule.INSTANCE);
+        modules.add(AutoClickerModule.INSTANCE);
+        modules.add(AimAssistModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
