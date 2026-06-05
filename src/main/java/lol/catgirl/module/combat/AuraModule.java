@@ -52,10 +52,11 @@ public final class AuraModule extends Module {
     public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Regular);
     public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
 
-    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1.5f, 0.5f, 5, 0.1f);
-    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 2.5f, 0.5f, 5, 0.1f);
+    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 0.1f, 10, 0.1f);
+    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 1, 1f, 10, 0.1f);
 
     public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
+    public static BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
     public static BoolProperty oldCombat = new BoolProperty("Old Combat", false);
     public static SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1)
             .hide(() -> !oldCombat.getValue());
@@ -75,7 +76,7 @@ public final class AuraModule extends Module {
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Combat);
-        addSettings(killRange, rotations, targetPriority, minRotationSpeed, maxRotationSpeed, rayCast,
+        addSettings(killRange, rotations, targetPriority, minRotationSpeed, maxRotationSpeed, rayCast, useMouseClick,
                 oldCombat, minCps, maxCps, autoBlock);
     }
 
@@ -192,17 +193,24 @@ public final class AuraModule extends Module {
         if (oldCombat.getValue()) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastAttackTime >= nextAttackDelay) {
-                mc.gameMode.attack(mc.player, target);
-                mc.player.swing(InteractionHand.MAIN_HAND);
+                handleAttack();
                 hitTicks = 0;
                 lastAttackTime = currentTime;
                 nextAttackDelay = calculateCpsDelay(minCps.getValue(), maxCps.getValue());
             }
         } else {
             if (mc.player.getAttackStrengthScale(0.5f) < 1.0f) return;
+            handleAttack();
+            hitTicks = 0;
+        }
+    }
+
+    private void handleAttack() {
+        if (useMouseClick.getValue()) {
+            mc.startAttack();
+        } else {
             mc.gameMode.attack(mc.player, target);
             mc.player.swing(InteractionHand.MAIN_HAND);
-            hitTicks = 0;
         }
     }
 

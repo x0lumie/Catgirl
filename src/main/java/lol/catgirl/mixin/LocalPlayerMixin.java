@@ -9,6 +9,7 @@ import lol.catgirl.event.impl.*;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.player.NoSlowModule;
 import lol.catgirl.utils.IMinecraft;
+import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -97,6 +98,9 @@ public abstract class LocalPlayerMixin extends
             mc.player.setYRot(RotationUtils.getRotationYaw());
             mc.player.setXRot(RotationUtils.getRotationPitch());
         }
+
+        PlayerUtils.raycast(RotationUtils.getRotationYaw(), RotationUtils.getRotationPitch(), 6, false);
+        mc.hitResult = RotationUtils.getCurrentHitResult();
     }
 
     @Inject(

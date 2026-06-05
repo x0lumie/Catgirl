@@ -38,6 +38,34 @@ public class PlayerUtils implements IMinecraft {
     public static int hurtAge;
     public static long lastModTime;
 
+    // In PlayerUtils.java
+    public static HitResult raycast(float yaw, float pitch, double maxDistance, boolean includeFluids) {
+        Vec3 startPos = mc.player.getEyePosition();
+        Vec3 direction = mc.player.calculateViewVector(pitch, yaw);
+        Vec3 endPos = startPos.add(direction.scale(maxDistance));
+
+        HitResult blockHit = mc.level.clip(new ClipContext(
+                startPos, endPos,
+                ClipContext.Block.COLLIDER,
+                includeFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE,
+                mc.player
+        ));
+
+        EntityHitResult entityHit = raycastEntities(mc.level, mc.player, startPos, endPos, maxDistance);
+
+        HitResult finalHit = null;
+        if (entityHit != null && (blockHit == null || entityHit.getLocation().distanceToSqr(startPos) < blockHit.getLocation().distanceToSqr(startPos))) {
+            finalHit = entityHit;
+        } else if (blockHit != null) {
+            finalHit = blockHit;
+        }
+
+        // Store the hit result in RotationUtils
+        RotationUtils.setCurrentHitResult(finalHit);
+
+        return finalHit;
+    }
+
     public static double getBiblicallyAccurateDistanceToEntity(Entity target) {
         return mc.player.getEyePosition().distanceTo(getClosestPoint(target));
     }
@@ -96,26 +124,6 @@ public class PlayerUtils implements IMinecraft {
         return hb.getCenter();
     }
 
-    public static HitResult raycast(float yaw, float pitch, double maxDistance, boolean includeFluids) {
-        Vec3 startPos = mc.player.getEyePosition();
-        Vec3 direction = mc.player.calculateViewVector(pitch, yaw);
-        Vec3 endPos = startPos.add(direction.scale(maxDistance));
-
-        HitResult blockHit = mc.level.clip(new ClipContext(
-                startPos, endPos,
-                ClipContext.Block.COLLIDER,
-                includeFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE,
-                mc.player
-        ));
-
-        EntityHitResult entityHit = raycastEntities(mc.level, mc.player, startPos, endPos, maxDistance);
-
-        if (entityHit != null && (blockHit == null || entityHit.getLocation().distanceToSqr(startPos) < blockHit.getLocation().distanceToSqr(startPos))) {
-            return entityHit;
-        }
-
-        return null;
-    }
     public static BlockHitResult raycastBlocks(float yaw, float pitch, double maxDistance, boolean includeFluids) {
         Vec3 startPos = mc.player.getEyePosition();
 
