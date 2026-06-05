@@ -53,7 +53,7 @@ public final class ScaffoldModule extends Module {
     private BlockData blockData;
     private float placeYaw;
     private float placePitch;
-    private int offGroundTicks;
+    private boolean canPlace;
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
@@ -65,9 +65,9 @@ public final class ScaffoldModule extends Module {
         sameYPos = 0;
         placedBlocks = 0;
         sneakTicks = 0;
-        offGroundTicks = 0;
         shouldSneak = false;
         sameYPos = (int) (mc.player.position().y - 1);
+        canPlace = true;
         timer.reset();
         super.onEnable();
     }
@@ -86,12 +86,6 @@ public final class ScaffoldModule extends Module {
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
         if (mc.player == null) return;
-
-        if (mc.player.onGround()) {
-            offGroundTicks = 0;
-        } else {
-            offGroundTicks++;
-        }
 
         updateScaffoldYCoord();
         updateBlockPos();
@@ -178,9 +172,11 @@ public final class ScaffoldModule extends Module {
         switch (mode.getValue()) {
             case Normal -> getBaseRotations(event);
             case Telly -> {
-                if (offGroundTicks >= 3 && offGroundTicks <= 9) {
+                if (!mc.player.onGround()) {
                     getBaseRotations(event);
+                    canPlace = true;
                 } else {
+                    canPlace = false;
                     event.yaw = mc.player.getYRot();
                     event.pitch = 60;
                 }
@@ -233,6 +229,9 @@ public final class ScaffoldModule extends Module {
                     mc.options.keyJump.setDown(true);
                     placedBlocks = 0;
                 }
+                if (placedBlocks == 1 && mc.options.keyJump.isDown()) {
+                    mc.options.keyJump.setDown(false);
+                }
             }
         }
     }
@@ -263,6 +262,8 @@ public final class ScaffoldModule extends Module {
     private void place() {
 
         boolean STOP = false;
+
+        if (!canPlace) return;
 
         if (timer.hasTimeElapsed((long) (placeDelay.getValue() * 50L))) {
             timer.reset();
