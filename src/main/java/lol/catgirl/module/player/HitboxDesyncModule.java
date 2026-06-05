@@ -22,6 +22,7 @@ public class HitboxDesyncModule extends Module {
                 "Desyncs your hitbox.",
                 ModuleCategory.Player
                 );
+        addSetting(autoDesync);
     }
 
     private static final double MAGICNUMBER = .200009968835369999878673424677777777777761;
@@ -52,7 +53,9 @@ public class HitboxDesyncModule extends Module {
                 fin.z == 0 ? mc.player.getZ() : fin.z
         );
 
-        toggle();
+        if (!autoDesync.getValue()) {
+            toggle();
+        }
 
         Catgirl.sendChatMessage("Your hitbox has been desynced.");
     }
