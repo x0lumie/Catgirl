@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
-public class InventoryUtil implements IMinecraft {
+public class InventoryUtils implements IMinecraft {
     public static void move(int from, int to) {
         mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, from, 0, ClickType.PICKUP, mc.player);
         mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, to, 0, ClickType.PICKUP, mc.player);

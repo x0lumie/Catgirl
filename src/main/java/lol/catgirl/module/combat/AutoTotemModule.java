@@ -6,7 +6,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.setting.impl.EnumProperty;
 import lol.catgirl.setting.impl.SliderProperty;
-import lol.catgirl.utils.player.inventory.InventoryUtil;
+import lol.catgirl.utils.player.inventory.InventoryUtils;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,7 +56,7 @@ public final class AutoTotemModule extends Module {
                     return;
                 }
 
-                InventoryUtil.move(slot, OFFHAND);
+                InventoryUtils.move(slot, OFFHAND);
             }
 
             case Legit -> {
@@ -80,7 +80,7 @@ public final class AutoTotemModule extends Module {
 
                 if (mc.screen instanceof InventoryScreen && waitingForInventory) {
 
-                    InventoryUtil.move(targetSlot, OFFHAND);
+                    InventoryUtils.move(targetSlot, OFFHAND);
 
                     mc.player.closeContainer();
 

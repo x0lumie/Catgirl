@@ -57,6 +57,9 @@ public final class ModuleManager {
         modules.add(AimAssistModule.INSTANCE);
         modules.add(NoPushModule.INSTANCE);
         modules.add(AnimationsModule.INSTANCE);
+        modules.add(AutoArmorModule.INSTANCE);
+        modules.add(InventoryManagerModule.INSTANCE);
+        modules.add(InventoryMoveModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
