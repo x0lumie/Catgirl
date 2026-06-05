@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ConnectionMixin",
+    "EntityMixin",
     "GuiMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin"
