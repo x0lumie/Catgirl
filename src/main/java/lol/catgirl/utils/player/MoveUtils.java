@@ -143,26 +143,27 @@ public class MoveUtils implements IMinecraft {
     }
 
     public static float direction() {
-        float rotationYaw = mc.player.getYRot();
-        if (mc.player.zza < 0) {
-            rotationYaw += 180;
+        if (mc.player == null) {
+            return 0.0f;
         }
-
-        float forward = 1;
-
-        if (mc.player.zza  < 0) {
-            forward = -0.5F;
-        } else if (mc.player.zza  > 0) {
-            forward = 0.5F;
+        float yaw = mc.player.getYRot();
+        boolean forward = mc.options.keyUp.isDown();
+        boolean back = mc.options.keyDown.isDown();
+        boolean left = mc.options.keyLeft.isDown();
+        boolean right = mc.options.keyRight.isDown();
+        float result = 0.0f;
+        if (forward) {
+            result = left && !right ? -45.0f : (right && !left ? 45.0f : 0.0f);
+        } else if (back) {
+            result = left && !right ? -135.0f : (right && !left ? 135.0f : 180.0f);
+        } else if (left && !right) {
+            result = -90.0f;
+        } else if (right && !left) {
+            result = 90.0f;
         }
-
-        if (mc.player.xxa > 0) {
-            rotationYaw -= 90 * forward;
-        }
-        if (mc.player.xxa < 0) {
-            rotationYaw += 90 * forward;
-        }
-        return (float) Math.toRadians(rotationYaw);
+        float direction = yaw + result;
+        direction = (direction % 360.0f + 360.0f) % 360.0f;
+        return direction;
     }
 
     public static boolean isMoving() {

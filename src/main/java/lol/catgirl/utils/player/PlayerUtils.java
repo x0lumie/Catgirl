@@ -2,6 +2,7 @@ package lol.catgirl.utils.player;
 
 import lol.catgirl.utils.IMinecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -275,5 +276,22 @@ public class PlayerUtils implements IMinecraft {
         }
 
         return true;
+    }
+
+    public static boolean isLookingAtBlock(Direction facing, BlockPos position, boolean strict, float reach, float yaw, float pitch) {
+        BlockHitResult blockHitResult = raycastBlocks(yaw, pitch, reach, false);
+        if (blockHitResult == null) {
+            return false;
+        }
+
+        if (blockHitResult.getBlockPos().getX() == position.getX() && blockHitResult.getBlockPos().getY() == position.getY() && blockHitResult.getBlockPos().getZ() == position.getZ()) {
+            if (strict) {
+                return blockHitResult.getDirection() == facing;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 }
