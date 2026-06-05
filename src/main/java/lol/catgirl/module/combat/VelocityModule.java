@@ -1,5 +1,6 @@
 package lol.catgirl.module.combat;
 
+import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PacketReceivedEvent;
@@ -25,18 +26,13 @@ public final class VelocityModule extends Module {
         Intave
     }
 
-    public enum IntaveMode {
-        Blatent, Safe
-    }
-
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
     public final BoolProperty polar = new BoolProperty("Polar", false).hide(()-> !(mode.getValue() == Mode.JumpReset));
-    public final EnumProperty<IntaveMode> intaveMode = new EnumProperty<>("Intave Mode", IntaveMode.Blatent).hide(()-> !(mode.getValue() == Mode.Intave));
     public final BoolProperty ignoreOnFire = new BoolProperty("Ignore on fire", true);
 
     public VelocityModule() {
         super("Velocity", "Uses heavy dick and balls to drag across the floor to reduce velocity.", ModuleCategory.Combat);
-        addSettings(mode, intaveMode, ignoreOnFire);
+        addSettings(mode, ignoreOnFire);
     }
 
     @EventHook
@@ -56,32 +52,9 @@ public final class VelocityModule extends Module {
                     }
 
                     case Intave -> {
-                        var motionx = packet.getMovement().x() / 8000.0D;
-                        var motionz = packet.getMovement().z() / 8000.0D;
-
-                        if (intaveMode.getValue() == IntaveMode.Blatent) {
-                            if (mc.player.hurtTime > 0) {
-                                if (mc.player.onGround()) {
-                                    motionx *= 0.52;
-                                    motionz *= 0.52;
-                                } else {
-                                    motionx *= 0.8;
-                                    motionz *= 0.8;
-                                }
-                            }
-                        } else {
-                            if (mc.player.hurtTime > 0) {
-                                motionx *= 0.6;
-                                motionz *= 0.6;
-                            }
-                        }
-
-                        event.setCancelled(true);
-                        mc.player.setDeltaMovement(
-                                motionx,
-                                packet.getMovement().y() / 8000.0D,
-                                motionz
-                        );
+                        // TODO: new velocity
+                        //// its patched bruh
+                        Catgirl.sendChatMessage("it got patched and flags now ):");
                     }
                 }
             }

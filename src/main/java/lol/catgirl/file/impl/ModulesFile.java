@@ -10,7 +10,10 @@ public class ModulesFile extends AbstractBaseFile<JsonObject> {
     public static final ModulesFile DEFAULT = new ModulesFile("default.json");
 
     public ModulesFile(String name) {
-        super("configs/" + name, JsonObject.class, JsonObject::new);
+        super("configs/" + (name.endsWith(".json") ? name : name + ".json"),
+                JsonObject.class,
+                JsonObject::new
+        );
     }
 
     @Override
