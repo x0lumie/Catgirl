@@ -10,7 +10,8 @@ public final class MovementFixModule extends Module {
     public static final MovementFixModule INSTANCE = new MovementFixModule();
 
     public MovementFixModule() {
-        super("MovementFix", "Fixes your movement for anticheats.", ModuleCategory.Movement);
+        super("MovementFix",
+                "Fixes your movement for anticheats.", ModuleCategory.Movement);
     }
 
     @EventHook

@@ -26,7 +26,7 @@ public final class AutoComboModule extends Module {
     public AutoComboModule() {
         super("AutoCombo",
                 "Automatically combo's people doing more knockback.",
-                ModuleCategory.Combat
+                ModuleCategory.Ghost
         );
         addSettings(
                 mode, minTap, maxTap, minCooldown, maxCooldown,

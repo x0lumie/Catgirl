@@ -7,6 +7,7 @@ public class NoPushModule extends Module {
     public static final NoPushModule INSTANCE = new NoPushModule();
 
     public NoPushModule() {
-        super("NoPush", "Stop entities from displacing your collision.", ModuleCategory.Movement);
+        super("NoPush", "Stop entities from displacing your collision.",
+                ModuleCategory.Movement);
     }
 }

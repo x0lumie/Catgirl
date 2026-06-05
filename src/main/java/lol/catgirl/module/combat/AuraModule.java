@@ -62,7 +62,8 @@ public final class AuraModule extends Module {
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Combat);
-        addSettings(killRange, rotations, rotationSpeed, rayCast, oldCombat, minCps, maxCps, autoBlock);
+        addSettings(killRange, rotations, rotationSpeed, rayCast,
+                oldCombat, minCps, maxCps, autoBlock);
     }
 
     @Override

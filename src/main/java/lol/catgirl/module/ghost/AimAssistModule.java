@@ -26,7 +26,7 @@ public final class AimAssistModule extends Module {
     public AimAssistModule() {
         super("AimAssist",
                 "Automatically aims, works like a aim helper",
-                ModuleCategory.Combat);
+                ModuleCategory.Ghost);
         addSettings(
                 reach,
                 angle,

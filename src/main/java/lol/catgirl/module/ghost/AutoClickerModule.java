@@ -30,7 +30,7 @@ public final class AutoClickerModule extends Module {
     public AutoClickerModule() {
         super("AutoClicker",
                 "Automatically clicks the mouse with block-hit features.",
-                ModuleCategory.Combat
+                ModuleCategory.Ghost
         );
         addSettings(
                 disableWhileBreaking,

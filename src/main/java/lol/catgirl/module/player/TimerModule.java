@@ -10,7 +10,8 @@ import lol.catgirl.utils.client.GameTimer;
 public final class TimerModule extends Module {
     public static final TimerModule INSTANCE = new TimerModule();
 
-    public final SliderProperty speed = new SliderProperty("Speed", 1f, 0.1f, 10f, 1f);
+    public final SliderProperty speed = new SliderProperty("Speed",
+            1f, 0.1f, 10f, 1f);
 
     public TimerModule() {
         super("Timer",
