@@ -66,6 +66,7 @@ public final class SpeedModule extends Module {
             case Matrix -> {
                 if (mc.player.isInWater() || mc.player.isInLava()
                         || PlayerUtils.isInWeb() || mc.player.onClimbable()) return;
+//                GameTimer.setSpeed(1.0075f);
 
                 if (MoveUtils.isMoving()) {
                     if (mc.player.onGround()) {
@@ -75,7 +76,7 @@ public final class SpeedModule extends Module {
                                 0.42 - (matrixLowHop.getValue() ? 3.48E-3 : 0.0),
                                 mc.player.getDeltaMovement().z);
                     } else {
-                        if (MoveUtils.getSpeed() < 0.19) {
+                        if (MoveUtils.getSpeed() < 0.10) {
                             MoveUtils.strafe();
                         }
                     }

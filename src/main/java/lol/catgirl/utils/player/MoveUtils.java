@@ -17,6 +17,18 @@ public class MoveUtils implements IMinecraft {
         mc.player.setDeltaMovement(-Math.sin(dir) * speed, mc.player.getDeltaMovement().y, Math.cos(dir) * speed);
     }
 
+    public static void setMotion(double speed) {
+        if (isMoving()) {
+            mc.player.setDeltaMovement(
+                    -Math.sin(direction()) * speed,
+                    mc.player.getDeltaMovement().y,
+                    Math.cos(direction()) * speed
+            );
+        } else {
+            stop();
+        }
+    }
+
     public static void useDiagonalSpeed() {
         boolean isDiagonal = movementForward() != 0 && movementSideways() != 0;
         if (isDiagonal) {
