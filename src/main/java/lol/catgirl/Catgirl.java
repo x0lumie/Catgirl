@@ -40,6 +40,8 @@ public class Catgirl implements ModInitializer {
 		Handler.initialize();
 		ModuleManager.getInstance().init();
 		FriendManager.initialize();
+		soundManager = new SoundManager();
+
 		soundManager.init();
 
 		eventBus.subscribe(commandManager);
