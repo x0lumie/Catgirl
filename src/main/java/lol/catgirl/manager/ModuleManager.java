@@ -66,6 +66,11 @@ public final class ModuleManager {
         modules.add(OreESPModule.INSTANCE);
         modules.add(FriendsModule.INSTANCE);
         modules.add(AutoDisableModule.INSTANCE);
+        modules.add(SaveMoveKeysModule.INSTANCE);
+        modules.add(AirStuckModule.INSTANCE);
+        modules.add(HitboxDesyncModule.INSTANCE);
+        modules.add(PanicModule.INSTANCE);
+        modules.add(InsultsModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

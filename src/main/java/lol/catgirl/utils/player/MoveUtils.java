@@ -226,6 +226,36 @@ public class MoveUtils implements IMinecraft {
         return horizontalDistance;
     }
 
+    public static void moveFlying(double friction) {
+        float forward = movementForward();
+        float strafe = movementSideways();
+
+        float magnitude = forward * forward + strafe * strafe;
+
+        if (magnitude >= 1.0E-4F) {
+            magnitude = Mth.sqrt(magnitude);
+
+            if (magnitude < 1.0F) {
+                magnitude = 1.0F;
+            }
+
+            magnitude = (float) friction / magnitude;
+
+            forward *= magnitude;
+            strafe *= magnitude;
+
+            float yawRad = mc.player.getYRot() * ((float) Math.PI / 180F);
+            float sin = Mth.sin(yawRad);
+            float cos = Mth.cos(yawRad);
+
+            mc.player.addDeltaMovement(new Vec3(
+                    forward * cos - strafe * sin,
+                    0.0,
+                    strafe * cos + forward * sin
+            ));
+        }
+    }
+
     public static double getAllowedHorizontalDistance() {
         return getAllowedHorizontalDistance(true);
     }

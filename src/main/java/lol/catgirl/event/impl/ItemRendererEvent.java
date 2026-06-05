@@ -9,4 +9,6 @@ import net.minecraft.world.InteractionHand;
 public class ItemRendererEvent extends Event {
     public final InteractionHand hand;
     public final PoseStack poseStack;
+
+
 }

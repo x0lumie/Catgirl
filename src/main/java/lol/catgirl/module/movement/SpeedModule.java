@@ -47,6 +47,10 @@ public final class SpeedModule extends Module {
                 }
             }
 
+//            case Polar -> {
+//
+//            }
+
             case LegitExploit -> {
                 if (MoveUtils.isMoving() && mc.player.onGround()) {
                     PlayerUtils.jump();
@@ -83,6 +87,7 @@ public final class SpeedModule extends Module {
     @Override
     public void onDisable() {
         GameTimer.reset();
+
         airTicks = 0;
         groundTicks = 0;
         super.onDisable();
