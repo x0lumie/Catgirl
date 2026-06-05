@@ -7,33 +7,53 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.TargetsModule;
 import lol.catgirl.setting.impl.BoolProperty;
+import lol.catgirl.setting.impl.EnumProperty;
 import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class AuraModule extends Module {
 
+    public enum Rotations {
+        Regular,
+        Polar,
+        Puhfy
+    }
+
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
-    public static SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 2, 1, 5, 0.5f);
+    public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Regular);
+    public static SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 2, 1, 5, 0.1f);
+    public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static BoolProperty oldCombat = new BoolProperty("Old Combat", false);
     public static SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1)
-            .hide(()->!oldCombat.getValue())
-            ;
+            .hide(() -> !oldCombat.getValue());
     public static SliderProperty maxCps = new SliderProperty("Max CPS", 13, 1, 20, 1)
-            .hide(()->!oldCombat.getValue())
-            ;
+            .hide(() -> !oldCombat.getValue());
+
 
     public static final AuraModule INSTANCE = new AuraModule();
 
     private long lastAttackTime = 0L;
     private long nextAttackDelay = 0L;
+    private boolean canAttack = true;
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Combat);
-        addSettings(killRange, rotationSpeed, oldCombat, minCps, maxCps);
+        addSettings(killRange, rotations, rotationSpeed, rayCast, oldCombat, minCps, maxCps);
+    }
+
+    @Override
+    public void onEnable() {
+        // grrr I hate the world
+        nextAttackDelay = 0L;
+        lastAttackTime = 0L;
+        canAttack = true;
+        super.onEnable();
     }
 
     public static LivingEntity target;
@@ -61,34 +81,30 @@ public final class AuraModule extends Module {
     public void onPlayerRotation(PlayerRotationEvent event) {
         if (mc.player == null || target == null) return;
 
-        float[] targetRotations = RotationUtils.getRotations(
-                new float[]{event.yaw, event.pitch},
-                mc.player.getEyePosition(),
-                target
-        );
+        float[] finalRotations = new float[0];
 
-        float smoothedYaw = RotationUtils.smoothRotation(
-                event.yaw,
-                targetRotations[0],
-                rotationSpeed.getValue() / 2
-        );
-        float smoothedPitch = RotationUtils.smoothRotation(
-                event.pitch,
-                targetRotations[1],
-                rotationSpeed.getValue() / 2
-        );
+        float[] currentRotations = new float[]{event.yaw, event.pitch};
 
-        float[] finalRotations = RotationUtils.getFixedRotation(
-                new float[]{smoothedYaw, smoothedPitch},
-                new float[]{event.yaw, event.pitch}
-        );
+        switch (rotations.getValue()) {
+
+            case Regular ->
+                    finalRotations = RotationUtils.regularAuraRotations(currentRotations, target, rotationSpeed.getValue());
+            case Polar -> finalRotations = RotationUtils.polarAuraRotations(currentRotations, target);
+            case Puhfy ->
+                    finalRotations = RotationUtils.puhfyAuraRotations(currentRotations, target, rotationSpeed.getValue());
+        }
 
         event.yaw = finalRotations[0];
         event.pitch = finalRotations[1];
+
+        if (rayCast.getValue()) {
+            HitResult hitResult = PlayerUtils.raycast(event.yaw, event.pitch, killRange.getValue(), false);
+            canAttack = hitResult != null && hitResult.getType() == HitResult.Type.ENTITY;
+        }
     }
 
     private void attack() {
-        if (mc.player == null || mc.gameMode == null || target == null) return;
+        if (mc.player == null || mc.gameMode == null || target == null || !canAttack) return;
 
         if (mc.player.distanceTo(target) > killRange.getValue()) return;
 

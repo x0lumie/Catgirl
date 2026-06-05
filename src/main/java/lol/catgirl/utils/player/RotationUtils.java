@@ -11,7 +11,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RotationUtils implements IMinecraft {
     public static boolean yawChanged;
@@ -21,9 +24,70 @@ public class RotationUtils implements IMinecraft {
     @Getter
     public static float rotationYaw, rotationPitch, lastRotationYaw, lastRotationPitch, camYaw, camPitch;
 
-    public static void setRotations (float[] rotations) {
-        rotationYaw = rotations[0];
-        rotationPitch = rotations[1];
+    public static float[] regularAuraRotations(float[] currentRotations, Entity targetEntity, float speed) {
+        float[] targetRotations = getRotations(currentRotations, mc.player.getEyePosition(), targetEntity);
+
+        float smoothedYaw = smoothRotation(currentRotations[0], targetRotations[0], speed / 2f);
+        float smoothedPitch = smoothRotation(currentRotations[1], targetRotations[1], speed / 2f);
+
+        return getFixedRotation(new float[]{smoothedYaw, smoothedPitch}, currentRotations);
+    }
+
+    public static float[] puhfyAuraRotations(float[] currentRotations, final Entity entity, final float speed) {
+        Vec3 eyePos = new Vec3(mc.player.getX(), mc.player.getY() + mc.player.getEyeHeight(), mc.player.getZ());
+        AABB box = entity.getBoundingBox();
+
+        // i fucking love you puhfy
+        double centerX = (box.minX + box.maxX) / 2.0;
+        double centerY = (box.minY + box.maxY) / 2.0;
+        double centerZ = (box.minZ + box.maxZ) / 2.0;
+
+        double heightOffset = (box.maxY - box.minY) * 0.15;
+
+        Vec3[] points = new Vec3[]{
+                new Vec3(centerX, centerY - heightOffset, centerZ),
+                new Vec3(centerX, centerY, centerZ),
+                new Vec3(centerX, centerY + heightOffset, centerZ)
+        };
+
+        Vec3 bestPoint = null;
+        double closestDist = Double.MAX_VALUE;
+
+        for (Vec3 point : points) {
+            double dist = eyePos.distanceTo(point);
+            if (dist < closestDist) {
+                closestDist = dist;
+                bestPoint = point;
+            }
+        }
+
+        if (bestPoint == null) return new float[]{currentRotations[0], currentRotations[1]};
+
+        final float[] rotations = getRotationsToPoint(currentRotations, mc.player.getEyePosition(), bestPoint);
+
+        float smoothedYaw = smoothRotation(currentRotations[0], rotations[0], speed / 2f);
+        float smoothedPitch = smoothRotation(currentRotations[1], rotations[1], speed / 2f);
+
+        return getFixedRotation(new float[]{smoothedYaw, smoothedPitch}, currentRotations);
+    }
+
+    public static float[] polarAuraRotations(float[] currentRotations, final Entity entity) {
+        float speedVariance = ThreadLocalRandom.current().nextFloat(-0.25f, 0.25f);
+        float dynamicSpeed = 2f + speedVariance;
+
+        float[] targetRotations = puhfyAuraRotations(currentRotations, entity, dynamicSpeed);
+
+        if (targetRotations[0] == currentRotations[0] && targetRotations[1] == currentRotations[1]) {
+            return targetRotations;
+        }
+
+        float yawNoise = ThreadLocalRandom.current().nextFloat(-0.12f, 0.12f);
+        float pitchNoise = ThreadLocalRandom.current().nextFloat(-0.08f, 0.08f);
+
+        float randomizedYaw = targetRotations[0] + yawNoise;
+        float randomizedPitch = targetRotations[1] + pitchNoise;
+
+        return getFixedRotation(new float[]{randomizedYaw, randomizedPitch}, currentRotations);
     }
 
     public static boolean isFacing(Player self, Player target, float maxAngle) {
