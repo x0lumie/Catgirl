@@ -15,6 +15,8 @@ import java.util.Objects;
 
 import static lol.catgirl.utils.render.nanovg.ResourceManager.getSelectedFont;
 
+// if i wuz a catgurl wu u date m n stuf?!
+
 public final class WatermarkModule extends Module {
     public static final WatermarkModule INSTANCE = new WatermarkModule();
 
