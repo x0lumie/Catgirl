@@ -1,0 +1,56 @@
+{
+  "augustus-enable": {
+    "sounds": [
+      "catgirl:augustus-enable"
+    ]
+  },
+  "augustus-disable": {
+    "sounds": [
+      "catgirl:augustus-disable"
+    ]
+  },
+
+  "note-enable": {
+    "sounds": [
+      "catgirl:note-enable"
+    ]
+  },
+  "note-disable": {
+    "sounds": [
+      "catgirl:note-disable"
+    ]
+  },
+
+  "sigmaenable": {
+    "sounds": [
+      "catgirl:sigmaenable"
+    ]
+  },
+  "sigmadisable": {
+    "sounds": [
+      "catgirl:sigmadisable"
+    ]
+  },
+
+  "simp-enable": {
+    "sounds": [
+      "catgirl:simp-enable"
+    ]
+  },
+  "simp-disable": {
+    "sounds": [
+      "catgirl:simp-disable"
+    ]
+  },
+
+  "smoothenable": {
+    "sounds": [
+      "catgirl:smoothenable"
+    ]
+  },
+  "smoothdisable": {
+    "sounds": [
+      "catgirl:smoothdisable"
+    ]
+  }
+}

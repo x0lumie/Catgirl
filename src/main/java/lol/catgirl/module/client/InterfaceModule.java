@@ -27,14 +27,26 @@ public class InterfaceModule extends Module {
         Wave, Static, Pulse
     }
 
+    public enum ToggleSoundsSounds {
+        None,
+        Minecraft,
+        Sigma,
+        Augustus,
+        Note,
+        Simp,
+        Smooth
+    }
+
     public final EnumProperty<FontMode> fontMode = new EnumProperty<>("Font Mode", FontMode.ProductSans);
     public final EnumProperty<NamingStyle> namingStyle = new EnumProperty<>("Naming Style", NamingStyle.Normal);
     public final EnumProperty<ColorMode> colorMode = new EnumProperty<>("Color Mode", ColorMode.Wave);
+    public final EnumProperty<ToggleSoundsSounds> toggleSoundsMode = new EnumProperty<>("Color Mode", ToggleSoundsSounds.Simp);
+
     public final SliderProperty rgbSpeed = new SliderProperty("RGB speed", 2000f, 0f, 10000f, 100f);
 
     public InterfaceModule() {
         super("Interface", "Settings on how the client should look.", ModuleCategory.Client);
-        addSettings(fontMode, namingStyle, colorMode, rgbSpeed);
+        addSettings(fontMode, namingStyle, colorMode, toggleSoundsMode, rgbSpeed);
     }
 
 }

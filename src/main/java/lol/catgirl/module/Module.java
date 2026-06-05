@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lol.catgirl.Catgirl;
 import lol.catgirl.file.Serializable;
+import lol.catgirl.manager.SoundManager;
 import lol.catgirl.module.client.InterfaceModule;
 import lol.catgirl.property.Property;
 import lol.catgirl.property.impl.BoolProperty;
@@ -13,6 +14,7 @@ import lol.catgirl.utils.keybind.Keybindable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +73,69 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
                 onDisable();
                 Catgirl.INSTANCE.eventBus.unsubscribe(this);
 
+            }
+        }
+        toggleSounds();
+    }
+
+    public void toggleSounds() {
+        var interfaceMod = InterfaceModule.INSTANCE;
+
+        if (interfaceMod == null || mc.player == null) {
+            return;
+        }
+
+        switch (interfaceMod.toggleSoundsMode.getValue()) {
+            case Minecraft -> {
+                if (enabled) {
+                    mc.player.playSound(SoundEvents.LEVER_CLICK, 1.0F, 0.6F);
+                } else {
+                    mc.player.playSound(SoundEvents.LEVER_CLICK, 1.0F, 0.5F);
+                }
+            }
+
+            case Sigma -> {
+                if (enabled) {
+                    SoundManager.Sounds.SIGMA_ON.play();
+                } else {
+                    SoundManager.Sounds.SIGMA_OFF.play();
+                }
+            }
+
+            case Smooth -> {
+                if (enabled) {
+                    SoundManager.Sounds.SMOOTH_ON.play();
+                } else {
+                    SoundManager.Sounds.SMOOTH_OFF.play();
+                }
+            }
+
+            case Note -> {
+                if (enabled) {
+                    SoundManager.Sounds.NOTE_ON.play();
+                } else {
+                    SoundManager.Sounds.NOTE_OFF.play();
+                }
+            }
+
+            case Augustus -> {
+                if (enabled) {
+                    SoundManager.Sounds.AUGUSTUS_ON.play();
+                } else {
+                    SoundManager.Sounds.AUGUSTUS_OFF.play();
+                }
+            }
+
+            case Simp -> {
+                if (enabled) {
+                    SoundManager.Sounds.SIMP_ON.play();
+                } else {
+                    SoundManager.Sounds.SIMP_OFF.play();
+                }
+            }
+
+            case None -> {
+                // no sound
             }
         }
     }

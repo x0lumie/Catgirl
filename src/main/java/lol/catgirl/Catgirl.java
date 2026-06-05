@@ -5,6 +5,7 @@ import lol.catgirl.event.Handler;
 import lol.catgirl.manager.CommandManager;
 import lol.catgirl.manager.FriendManager;
 import lol.catgirl.manager.ModuleManager;
+import lol.catgirl.manager.SoundManager;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.ChatFormatting;
@@ -27,6 +28,7 @@ public class Catgirl implements ModInitializer {
 	public EventBus eventBus;
 	public Handler theHandler;
 	public CommandManager commandManager;
+	public SoundManager soundManager;
 
 	@Override
 	public void onInitialize() {
@@ -38,6 +40,7 @@ public class Catgirl implements ModInitializer {
 		Handler.initialize();
 		ModuleManager.getInstance().init();
 		FriendManager.initialize();
+		soundManager.init();
 
 		eventBus.subscribe(commandManager);
 		eventBus.subscribe(theHandler);
