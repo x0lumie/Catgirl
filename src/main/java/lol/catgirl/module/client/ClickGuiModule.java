@@ -18,7 +18,10 @@ public final class ClickGuiModule extends Module {
     private boolean didInitImgui = false;
 
     public ClickGuiModule() {
-        super("ClickGUI", "Renders the interface to customize and toggle modules.", ModuleCategory.Movement);
+        super("ClickGUI",
+                "Renders the interface to customize and toggle modules.",
+                ModuleCategory.Movement
+        );
         setKey(GLFW.GLFW_KEY_RIGHT_SHIFT);
     }
 

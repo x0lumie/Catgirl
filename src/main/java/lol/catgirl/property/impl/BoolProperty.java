@@ -1,8 +1,8 @@
-package lol.catgirl.setting.impl;
+package lol.catgirl.property.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import lol.catgirl.setting.Property;
+import lol.catgirl.property.Property;
 
 public class BoolProperty extends Property<Boolean> {
     public BoolProperty(String name, Boolean value) {

@@ -3,8 +3,8 @@ package lol.catgirl.module.player;
 
 import lol.catgirl.Catgirl;
 import lol.catgirl.module.combat.AuraModule;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.inventory.InventoryUtils;

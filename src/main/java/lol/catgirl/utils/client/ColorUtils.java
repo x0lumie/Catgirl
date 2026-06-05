@@ -4,7 +4,7 @@ import lol.catgirl.module.hud.WatermarkModule;
 
 import java.awt.Color;
 
-public class ColorUtil {
+public class ColorUtils {
 
     public static Color changeOpacity(Color color, int opacity) {
         if (opacity < 1 || opacity > 255) {

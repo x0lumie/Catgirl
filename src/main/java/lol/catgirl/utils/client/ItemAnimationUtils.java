@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-public class ItemAnimationUtil {
+public class ItemAnimationUtils {
 
     @Setter
     @Getter

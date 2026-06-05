@@ -10,7 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
 import lol.catgirl.module.Module;
-import lol.catgirl.setting.impl.*;
+import lol.catgirl.property.impl.*;
 
 public final class AimAssistModule extends Module {
     public static final AimAssistModule INSTANCE = new AimAssistModule();

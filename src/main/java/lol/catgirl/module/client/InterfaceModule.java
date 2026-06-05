@@ -2,8 +2,8 @@ package lol.catgirl.module.client;
 
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumProperty;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.property.impl.SliderProperty;
 
 public class InterfaceModule extends Module {
     public static final InterfaceModule INSTANCE = new InterfaceModule();

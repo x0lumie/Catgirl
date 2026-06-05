@@ -4,7 +4,7 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 

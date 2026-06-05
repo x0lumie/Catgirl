@@ -9,7 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.impl.Render3DEvent;
-import lol.catgirl.utils.render.RenderUtil;
+import lol.catgirl.utils.render.RenderUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
@@ -21,8 +21,6 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 @Mixin(GameRenderer.class)
@@ -39,10 +37,10 @@ public class GameRendererMixin {
 
         matrix.mulPose(positionMatrix);
 
-        RenderUtil.lastProjMat.set(projectionMatrix);
-        RenderUtil.lastModMat.set(RenderSystem.getModelViewMatrix());
-        RenderUtil.lastWorldSpaceMatrix.set(matrix.last().pose());
-        GL11.glGetIntegerv(GL11.GL_VIEWPORT, RenderUtil.lastViewport);
+        RenderUtils.lastProjMat.set(projectionMatrix);
+        RenderUtils.lastModMat.set(RenderSystem.getModelViewMatrix());
+        RenderUtils.lastWorldSpaceMatrix.set(matrix.last().pose());
+        GL11.glGetIntegerv(GL11.GL_VIEWPORT, RenderUtils.lastViewport);
 
         GlStateManager._depthMask(true);
         GlStateManager._disableBlend();

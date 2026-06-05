@@ -3,7 +3,7 @@ package lol.catgirl.module.player;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.combat.AuraModule;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.inventory.InventoryUtils;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;

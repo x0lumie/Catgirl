@@ -4,7 +4,7 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolProperty;
+import lol.catgirl.property.impl.BoolProperty;
 
 public final class SprintModule extends Module {
     public static final SprintModule INSTANCE = new SprintModule();

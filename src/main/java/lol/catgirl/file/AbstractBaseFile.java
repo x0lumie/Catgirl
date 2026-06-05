@@ -3,7 +3,7 @@ package lol.catgirl.file;
 import com.google.gson.JsonElement;
 import lol.catgirl.Catgirl;
 import lol.catgirl.utils.IMinecraft;
-import lol.catgirl.utils.client.FileUtil;
+import lol.catgirl.utils.client.FileUtils;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public abstract class AbstractBaseFile<T extends JsonElement> implements IMinecr
     @SneakyThrows
     public T loadFromFile() {
         try {
-            var loaded = FileUtil.loadJson(path, tClass);
+            var loaded = FileUtils.loadJson(path, tClass);
 
             if (loaded == null) {
                 loaded = factory.get();

@@ -4,11 +4,10 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.client.GameTimer;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public final class SpeedModule extends Module {

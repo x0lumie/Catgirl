@@ -1,8 +1,8 @@
-package lol.catgirl.setting.impl;
+package lol.catgirl.property.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import lol.catgirl.setting.Property;
+import lol.catgirl.property.Property;
 import lombok.Getter;
 
 @Getter

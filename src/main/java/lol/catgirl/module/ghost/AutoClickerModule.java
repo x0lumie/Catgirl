@@ -3,10 +3,10 @@ package lol.catgirl.module.ghost;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.SliderProperty;
-import lol.catgirl.utils.client.ClickUtil;
-import lol.catgirl.utils.client.MathUtil;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.utils.client.ClickUtils;
+import lol.catgirl.utils.client.MathUtils;
 import lol.catgirl.utils.client.TickingTimer;
 import net.minecraft.world.phys.HitResult;
 import lol.catgirl.module.Module;
@@ -72,27 +72,27 @@ public final class AutoClickerModule extends Module {
 
             if (mc.player.pick(mc.player.blockInteractionRange(), mc.player.attackAnim, false).getType() == HitResult.Type.BLOCK
                     && disableWhileBreaking.getValue()) {
-                ClickUtil.action(ClickUtil.Button.LEFT, true);
+                ClickUtils.action(ClickUtils.Button.LEFT, true);
                 return;
             }
 
             if (leftTimerUtil.hasTimeElapsed(1000 / currentLeftCPS, true)) {
 
                 if (blockHit.getValue()
-                        && MathUtil.randomInt(0, 100) <= blockHitChance.getValue()
+                        && MathUtils.randomInt(0, 100) <= blockHitChance.getValue()
                         && !blockingPaused) {
 
                     blockingPaused = true;
                     blockHitTimerUtil.reset();
 
-                    ClickUtil.action(ClickUtil.Button.RIGHT, false);
+                    ClickUtils.action(ClickUtils.Button.RIGHT, false);
 
-                    ClickUtil.action(ClickUtil.Button.LEFT, true);
-                    currentLeftCPS = MathUtil.randomInt(
+                    ClickUtils.action(ClickUtils.Button.LEFT, true);
+                    currentLeftCPS = MathUtils.randomInt(
                             Math.round(minLeftCps.getValue()),
                             Math.round(maxLeftCps.getValue())
                     );
-                    ClickUtil.action(ClickUtil.Button.LEFT, false);
+                    ClickUtils.action(ClickUtils.Button.LEFT, false);
 
                     return;
                 }
@@ -101,20 +101,20 @@ public final class AutoClickerModule extends Module {
                     blockingPaused = false;
                 }
 
-                ClickUtil.action(ClickUtil.Button.LEFT, true);
-                currentLeftCPS = MathUtil.randomInt(
+                ClickUtils.action(ClickUtils.Button.LEFT, true);
+                currentLeftCPS = MathUtils.randomInt(
                         Math.round(minLeftCps.getValue()),
                         Math.round(maxLeftCps.getValue())
                 );
-                ClickUtil.action(ClickUtil.Button.LEFT, false);
+                ClickUtils.action(ClickUtils.Button.LEFT, false);
             }
         }
 
         if (mc.mouseHandler.isRightPressed() && rightClicker.getValue()){
             if (rightTimerUtil.hasTimeElapsed(1000 / currentRightCPS, true)){
-                ClickUtil.action(ClickUtil.Button.RIGHT, true);
-                currentRightCPS = MathUtil.randomInt(Math.round(minRightCps.getValue()), Math.round(maxRightCps.getValue()));
-                ClickUtil.action(ClickUtil.Button.RIGHT, false);
+                ClickUtils.action(ClickUtils.Button.RIGHT, true);
+                currentRightCPS = MathUtils.randomInt(Math.round(minRightCps.getValue()), Math.round(maxRightCps.getValue()));
+                ClickUtils.action(ClickUtils.Button.RIGHT, false);
 
             }
         }

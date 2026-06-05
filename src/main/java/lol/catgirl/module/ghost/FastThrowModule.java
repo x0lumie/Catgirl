@@ -4,8 +4,8 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import net.minecraft.world.item.*;
 

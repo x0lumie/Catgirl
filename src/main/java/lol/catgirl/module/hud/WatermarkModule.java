@@ -5,8 +5,8 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 

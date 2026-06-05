@@ -2,12 +2,11 @@ package lol.catgirl.module.hud;
 
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.Render2DEvent;
-import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.TargetsModule;
-import lol.catgirl.setting.impl.EnumProperty;
-import lol.catgirl.utils.client.ColorUtil;
+import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.utils.client.ColorUtils;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 import net.minecraft.client.gui.GuiGraphics;
@@ -175,7 +174,7 @@ public final class TargetHUDModule extends Module {
                 new Color(21, 21, 21, 150).getRGB()
         );
 
-        Color themeColor = ColorUtil.getClientTheme();
+        Color themeColor = ColorUtils.getClientTheme();
 
         graphics.fill(
                 (int) x + 44,
@@ -224,7 +223,7 @@ public final class TargetHUDModule extends Module {
 
         animatedHealth += (targetHealthWidth - animatedHealth) * 0.1F;
 
-        Color theme = ColorUtil.getClientTheme();
+        Color theme = ColorUtils.getClientTheme();
 
         DrawUtil.begin();
         DrawUtil.roundedRect(

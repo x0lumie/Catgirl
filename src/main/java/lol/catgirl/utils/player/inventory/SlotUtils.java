@@ -4,7 +4,7 @@ import lol.catgirl.utils.IMinecraft;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
 
-public class SlotUtil implements IMinecraft {
+public class SlotUtils implements IMinecraft {
     public static final int HOTBAR_START = 0;
     public static final int HOTBAR_END = 8;
     public static final int MAIN_START = 9;

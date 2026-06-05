@@ -2,10 +2,11 @@ package lol.catgirl.module.client;
 
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PreUpdateEvent;
+import lol.catgirl.manager.FriendManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumProperty;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import lombok.Getter;
 import lombok.Setter;
@@ -120,6 +121,18 @@ public class TargetsModule extends Module {
     }
 
     private boolean isValidEntity(LivingEntity entity) {
+        if (entity instanceof Player player) {
+
+            if (FriendManager.isFriend(player)) {
+                return false;
+            }
+
+            if (AntiBotModule.INSTANCE.isEnabled()
+                    && AntiBotModule.INSTANCE.isBot(player)) {
+                return false;
+            }
+        }
+
         return switch (entities.getValue()) {
             case Optimal -> entity instanceof Player || entity instanceof Mob;
             case Players -> entity instanceof Player;

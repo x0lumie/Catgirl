@@ -1,10 +1,9 @@
 package lol.catgirl.utils.client;
 
 import lol.catgirl.utils.IMinecraft;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 
-public class ClickUtil implements IMinecraft {
+public class ClickUtils implements IMinecraft {
 
     public static void action(Button button, boolean action) {
         KeyMapping bind = switch (button) {

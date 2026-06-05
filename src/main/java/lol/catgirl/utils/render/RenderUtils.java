@@ -23,7 +23,7 @@ import org.joml.Vector4f;
 
 import java.awt.*;
 
-public class RenderUtil implements IMinecraft {
+public class RenderUtils implements IMinecraft {
     public static final int[] lastViewport = new int[4];
     public static final Matrix4f lastProjMat = new Matrix4f();
     public static final Matrix4f lastModMat = new Matrix4f();

@@ -1,4 +1,4 @@
-package lol.catgirl.setting;
+package lol.catgirl.property;
 
 import lol.catgirl.file.Serializable;
 import lombok.Getter;

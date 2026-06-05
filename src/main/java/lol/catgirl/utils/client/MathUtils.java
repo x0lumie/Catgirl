@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Range;
 import java.security.SecureRandom;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MathUtil {
+public class MathUtils {
     private static final SecureRandom RAND = new SecureRandom();
 
     public static float clamp(float value, float min, float max) {

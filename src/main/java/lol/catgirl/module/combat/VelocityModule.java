@@ -6,8 +6,8 @@ import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PacketReceivedEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 

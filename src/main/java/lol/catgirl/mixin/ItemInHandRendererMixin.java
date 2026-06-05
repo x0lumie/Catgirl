@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.impl.ItemRendererEvent;
 import lol.catgirl.module.render.AnimationsModule;
-import lol.catgirl.utils.client.ItemAnimationUtil;
+import lol.catgirl.utils.client.ItemAnimationUtils;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -34,12 +34,12 @@ public class ItemInHandRendererMixin {
                             int light,
                             CallbackInfo ci) {
 
-        if (hand == InteractionHand.OFF_HAND && ItemAnimationUtil.isBlocking()) {
+        if (hand == InteractionHand.OFF_HAND && ItemAnimationUtils.isBlocking()) {
             ci.cancel();
             return;
         }
 
-        ItemStack spoofed = ItemAnimationUtil.getSpoofedItem();
+        ItemStack spoofed = ItemAnimationUtils.getSpoofedItem();
 
         if (hand == InteractionHand.MAIN_HAND
                 && spoofed != null
@@ -73,7 +73,7 @@ public class ItemInHandRendererMixin {
     private boolean hookUsingItem(AbstractClientPlayer player) {
         var stack = player.getMainHandItem();
 
-        if (ItemAnimationUtil.isBlocking() && stack.is(ItemTags.SWORDS)) {
+        if (ItemAnimationUtils.isBlocking() && stack.is(ItemTags.SWORDS)) {
             return true;
         }
 
@@ -90,7 +90,7 @@ public class ItemInHandRendererMixin {
     private InteractionHand hookActiveHand(AbstractClientPlayer player) {
         var stack = player.getMainHandItem();
 
-        if (ItemAnimationUtil.isBlocking() && stack.is(ItemTags.SWORDS)) {
+        if (ItemAnimationUtils.isBlocking() && stack.is(ItemTags.SWORDS)) {
             return InteractionHand.MAIN_HAND;
         }
 
@@ -107,8 +107,8 @@ public class ItemInHandRendererMixin {
     private int hookUseTime(AbstractClientPlayer player) {
         var stack = player.getMainHandItem();
 
-        if (ItemAnimationUtil.getSpoofedItem() != null
-                || (ItemAnimationUtil.isBlocking()
+        if (ItemAnimationUtils.getSpoofedItem() != null
+                || (ItemAnimationUtils.isBlocking()
                 && stack.getUseAnimation() == ItemUseAnimation.BLOCK)) {
             return 7200;
         }
@@ -123,7 +123,7 @@ public class ItemInHandRendererMixin {
             )
     )
     private ItemUseAnimation hookUseAnimation(ItemStack stack) {
-        if (ItemAnimationUtil.isBlocking() && stack.is(ItemTags.SWORDS)) {
+        if (ItemAnimationUtils.isBlocking() && stack.is(ItemTags.SWORDS)) {
             return ItemUseAnimation.BLOCK;
         }
 
@@ -161,7 +161,7 @@ public class ItemInHandRendererMixin {
 
         float intensity = sin1 * 0.6F + sin2 * 0.4F;
 
-        ItemAnimationUtil.animate(poseStack, swing, intensity);
+        ItemAnimationUtils.animate(poseStack, swing, intensity);
 
 //        poseStack.translate(0.0, ItemAnimationUtil.height, 0.0);
     }

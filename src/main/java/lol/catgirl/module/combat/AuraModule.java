@@ -7,10 +7,10 @@ import lol.catgirl.event.impl.PreUpdateEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.TargetsModule;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.EnumProperty;
-import lol.catgirl.setting.impl.SliderProperty;
-import lol.catgirl.utils.client.ItemAnimationUtil;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.utils.client.ItemAnimationUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
 import net.minecraft.core.Direction;
@@ -92,7 +92,7 @@ public final class AuraModule extends Module {
     @Override
     public void onDisable() {
         unblock();
-        ItemAnimationUtil.setBlocking(false);
+        ItemAnimationUtils.setBlocking(false);
         super.onDisable();
     }
 
@@ -212,15 +212,15 @@ public final class AuraModule extends Module {
 
         switch (autoBlock.getValue()) {
             case Vanilla -> {
-                ItemAnimationUtil.setBlocking(true);
+                ItemAnimationUtils.setBlocking(true);
                 mc.player.connection.send(new ServerboundUseItemPacket(
                         InteractionHand.MAIN_HAND, 0,
                         mc.player.getYRot(), mc.player.getXRot()));
                 realBlocking = true;
             }
-            case Fake -> ItemAnimationUtil.setBlocking(true);
+            case Fake -> ItemAnimationUtils.setBlocking(true);
             case Polar -> {
-                ItemAnimationUtil.setBlocking(true);
+                ItemAnimationUtils.setBlocking(true);
                 int slot = mc.player.getInventory().getSelectedSlot();
                 mc.player.connection.send(new ServerboundPlayerActionPacket(
                         ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,

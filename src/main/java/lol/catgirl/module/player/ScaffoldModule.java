@@ -5,9 +5,9 @@ import lol.catgirl.event.impl.PlayerRotationEvent;
 import lol.catgirl.event.impl.PreUpdateEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.BoolProperty;
-import lol.catgirl.setting.impl.EnumProperty;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
@@ -21,7 +21,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 public final class ScaffoldModule extends Module {
 

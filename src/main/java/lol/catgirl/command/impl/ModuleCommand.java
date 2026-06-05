@@ -4,8 +4,8 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.command.Command;
-import lol.catgirl.setting.Property;
-import lol.catgirl.setting.impl.*;
+import lol.catgirl.property.Property;
+import lol.catgirl.property.impl.*;
 
 import java.util.Optional;
 

@@ -6,7 +6,7 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import lol.catgirl.utils.client.ColorUtil;
+import lol.catgirl.utils.client.ColorUtils;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 import org.lwjgl.glfw.GLFW;
 
@@ -139,32 +139,32 @@ public class ImGuiImpl {
         Color mainColorDarkerDarkerDarker = mainColor.darker().darker().darker();
         Color mainColorDarkerDarkerDarkerDarkerDarker = mainColor.darker().darker().darker().darker().darker();
 
-        setColColor(ImGuiCol.FrameBgHovered, ColorUtil.changeOpacity(mainColorDarkerDarker, 199));
+        setColColor(ImGuiCol.FrameBgHovered, ColorUtils.changeOpacity(mainColorDarkerDarker, 199));
         setColColor(ImGuiCol.FrameBgActive, mainColorDarker);
         setColColor(ImGuiCol.TitleBg, mainColorDarkerDarkerDarker);
         setColColor(ImGuiCol.TitleBgActive, mainColorDarkerDarker);// needs to be a bit lighter
-        setColColor(ImGuiCol.ScrollbarGrabHovered, ColorUtil.changeOpacity(mainColorDarkerDarker, 199));
+        setColColor(ImGuiCol.ScrollbarGrabHovered, ColorUtils.changeOpacity(mainColorDarkerDarker, 199));
         setColColor(ImGuiCol.ScrollbarGrabActive, mainColorDarker);
         setColColor(ImGuiCol.CheckMark, mainColor);
         setColColor(ImGuiCol.SliderGrab, mainColor);
         setColColor(ImGuiCol.SliderGrabActive, mainColor);
-        setColColor(ImGuiCol.ButtonHovered, ColorUtil.changeOpacity(mainColorDarker, 219));
+        setColColor(ImGuiCol.ButtonHovered, ColorUtils.changeOpacity(mainColorDarker, 219));
         setColColor(ImGuiCol.ButtonActive, mainColorDarkerDarker);
-        setColColor(ImGuiCol.Header, ColorUtil.changeOpacity(mainColorDarkerDarkerDarker, 194));
-        setColColor(ImGuiCol.HeaderHovered, ColorUtil.changeOpacity(mainColorDarkerDarker, 219));
+        setColColor(ImGuiCol.Header, ColorUtils.changeOpacity(mainColorDarkerDarkerDarker, 194));
+        setColColor(ImGuiCol.HeaderHovered, ColorUtils.changeOpacity(mainColorDarkerDarker, 219));
         setColColor(ImGuiCol.HeaderActive, mainColorDarker);
-        setColColor(ImGuiCol.SeparatorHovered, ColorUtil.changeOpacity(mainColorDarker, 199));
+        setColColor(ImGuiCol.SeparatorHovered, ColorUtils.changeOpacity(mainColorDarker, 199));
         setColColor(ImGuiCol.SeparatorActive, mainColor);
-        setColColor(ImGuiCol.ResizeGripHovered, ColorUtil.changeOpacity(mainColorDarker, 199));
+        setColColor(ImGuiCol.ResizeGripHovered, ColorUtils.changeOpacity(mainColorDarker, 199));
         setColColor(ImGuiCol.ResizeGripActive, mainColorDarker);
-        setColColor(ImGuiCol.Tab, ColorUtil.changeOpacity(mainColorDarkerDarker, 220));
+        setColColor(ImGuiCol.Tab, ColorUtils.changeOpacity(mainColorDarkerDarker, 220));
         setColColor(ImGuiCol.TabHovered, mainColor);
         setColColor(ImGuiCol.TabActive, mainColor);
-        setColColor(ImGuiCol.TabUnfocused, ColorUtil.changeOpacity(mainColorDarkerDarkerDarkerDarkerDarker, 248));
+        setColColor(ImGuiCol.TabUnfocused, ColorUtils.changeOpacity(mainColorDarkerDarkerDarkerDarkerDarker, 248));
         setColColor(ImGuiCol.TabUnfocusedActive, mainColorDarker);
         setColColor(ImGuiCol.PlotLinesHovered, mainColorDarkerDarkerDarker);
         setColColor(ImGuiCol.PlotHistogramHovered, mainColorDarkerDarkerDarker);
-        setColColor(ImGuiCol.TextSelectedBg, ColorUtil.changeOpacity(mainColorDarker, 199));
+        setColColor(ImGuiCol.TextSelectedBg, ColorUtils.changeOpacity(mainColorDarker, 199));
         setColColor(ImGuiCol.NavHighlight, mainColor);
     }
 

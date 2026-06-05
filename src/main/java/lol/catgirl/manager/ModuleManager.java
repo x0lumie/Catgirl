@@ -6,9 +6,7 @@ import java.util.List;
 import lol.catgirl.Catgirl;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.module.client.ClickGuiModule;
-import lol.catgirl.module.client.InterfaceModule;
-import lol.catgirl.module.client.TargetsModule;
+import lol.catgirl.module.client.*;
 import lol.catgirl.module.combat.*;
 import lol.catgirl.module.ghost.*;
 import lol.catgirl.module.hud.ModuleListModule;
@@ -16,7 +14,7 @@ import lol.catgirl.module.hud.TargetHUDModule;
 import lol.catgirl.module.hud.WatermarkModule;
 import lol.catgirl.module.movement.*;
 import lol.catgirl.module.player.*;
-import lol.catgirl.module.render.AnimationsModule;
+import lol.catgirl.module.render.*;
 import lombok.Getter;
 
 @Getter
@@ -60,6 +58,13 @@ public final class ModuleManager {
         modules.add(AutoArmorModule.INSTANCE);
         modules.add(InventoryManagerModule.INSTANCE);
         modules.add(InventoryMoveModule.INSTANCE);
+        modules.add(ChinaHatModule.INSTANCE);
+        modules.add(FullbrightModule.INSTANCE);
+        modules.add(PlayerESPModule.INSTANCE);
+        modules.add(StorageESPModule.INSTANCE);
+        modules.add(AntiBotModule.INSTANCE);
+        modules.add(OreESPModule.INSTANCE);
+        modules.add(FriendsModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

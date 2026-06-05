@@ -5,8 +5,8 @@ import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PlayerAttackPreEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.*;
-import lol.catgirl.utils.client.MathUtil;
+import lol.catgirl.property.impl.*;
+import lol.catgirl.utils.client.MathUtils;
 
 public final class AutoComboModule extends Module {
     public static final AutoComboModule INSTANCE = new AutoComboModule();
@@ -49,12 +49,12 @@ public final class AutoComboModule extends Module {
         long now = System.currentTimeMillis();
         if (now < cooldownEnd) return;
 
-        long tapTime = MathUtil.randomLong(
+        long tapTime = MathUtils.randomLong(
                 minTap.getValue().longValue(),
                 maxTap.getValue().longValue()
         );
 
-        long cooldown = MathUtil.randomLong(
+        long cooldown = MathUtils.randomLong(
                 minCooldown.getValue().longValue(),
                 maxCooldown.getValue().longValue()
         );

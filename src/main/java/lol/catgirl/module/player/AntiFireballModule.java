@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import java.util.Comparator;
 import java.util.stream.StreamSupport;
 

@@ -14,7 +14,7 @@ public class FontResource {
     public FontResource(String fontName) throws IOException {
         this.identifier = fontName;
 
-        this.resource = MiscUtil.getResourceAsByteBuffer("fonts/" + fontName + ".ttf");
+        this.resource = MiscUtils.getResourceAsByteBuffer("fonts/" + fontName + ".ttf");
 
         int handle = NanoVG.nvgCreateFontMem(
                 DrawUtil.context,

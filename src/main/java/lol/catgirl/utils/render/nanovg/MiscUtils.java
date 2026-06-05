@@ -8,14 +8,14 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-public class MiscUtil {
+public class MiscUtils {
 
     public static ByteBuffer getResourceAsByteBuffer(String resource) throws IOException {
         return getResourceAsByteBuffer(resource, 1024);
     }
 
     public static ByteBuffer getResourceAsByteBuffer(String resource, int bufferSize) throws IOException {
-        try (InputStream source = MiscUtil.class.getResourceAsStream("/assets/catgirl/" + resource)) {
+        try (InputStream source = MiscUtils.class.getResourceAsStream("/assets/catgirl/" + resource)) {
             if (source == null) throw new IllegalArgumentException("Resource not found: " + resource);
 
             try (ReadableByteChannel rbc = Channels.newChannel(source)) {

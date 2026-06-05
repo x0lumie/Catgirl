@@ -4,7 +4,7 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.SliderProperty;
+import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.GameTimer;
 
 public final class TimerModule extends Module {

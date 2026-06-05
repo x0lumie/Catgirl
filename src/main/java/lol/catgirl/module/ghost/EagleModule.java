@@ -4,7 +4,7 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.*;
+import lol.catgirl.property.impl.*;
 import net.minecraft.world.item.BlockItem;
 
 public final class EagleModule extends Module {

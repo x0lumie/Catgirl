@@ -13,7 +13,7 @@ import java.util.Arrays;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
-public class FileUtil {
+public class FileUtils {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .create();

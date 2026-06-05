@@ -143,7 +143,7 @@ public class InventoryUtils implements IMinecraft {
     }
 
     public static void pickup(int i) {
-        click(SlotUtil.indexToId(i));
+        click(SlotUtils.indexToId(i));
     }
 
     public static void click(int id) {
@@ -154,7 +154,7 @@ public class InventoryUtils implements IMinecraft {
     }
 
     public static boolean swap(int slot, boolean swpBack) {
-        if(slot == SlotUtil.OFFHAND) return true;
+        if(slot == SlotUtils.OFFHAND) return true;
         if(slot < 0 || slot > 8) return false;
         if(swpBack && previousSlot == -1) previousSlot = mc.player.getInventory().getSelectedSlot();
         else if (!swpBack) previousSlot = -1;

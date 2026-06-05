@@ -2,7 +2,7 @@ package lol.catgirl.module.render;
 
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.setting.impl.EnumProperty;
+import lol.catgirl.property.impl.EnumProperty;
 
 public class AnimationsModule extends Module {
 
