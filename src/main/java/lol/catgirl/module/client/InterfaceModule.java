@@ -40,7 +40,7 @@ public class InterfaceModule extends Module {
     public final EnumProperty<FontMode> fontMode = new EnumProperty<>("Font Mode", FontMode.ProductSans);
     public final EnumProperty<NamingStyle> namingStyle = new EnumProperty<>("Naming Style", NamingStyle.Normal);
     public final EnumProperty<ColorMode> colorMode = new EnumProperty<>("Color Mode", ColorMode.Wave);
-    public final EnumProperty<ToggleSoundsSounds> toggleSoundsMode = new EnumProperty<>("Color Mode", ToggleSoundsSounds.Simp);
+    public final EnumProperty<ToggleSoundsSounds> toggleSoundsMode = new EnumProperty<>("Toggle Sounds", ToggleSoundsSounds.Simp);
 
     public final SliderProperty rgbSpeed = new SliderProperty("RGB speed", 2000f, 0f, 10000f, 100f);
 
