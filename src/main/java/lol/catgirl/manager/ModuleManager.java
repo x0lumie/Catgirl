@@ -65,6 +65,7 @@ public final class ModuleManager {
         modules.add(AntiBotModule.INSTANCE);
         modules.add(OreESPModule.INSTANCE);
         modules.add(FriendsModule.INSTANCE);
+        modules.add(AutoDisableModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

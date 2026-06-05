@@ -8,6 +8,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 
@@ -52,9 +53,7 @@ public final class VelocityModule extends Module {
                     }
 
                     case Intave -> {
-                        // TODO: new velocity
-                        //// its patched bruh
-                        Catgirl.sendChatMessage("it got patched and flags now ):");
+                       // todo new velocity
                     }
                 }
             }
