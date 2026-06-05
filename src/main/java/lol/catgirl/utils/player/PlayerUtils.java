@@ -95,8 +95,8 @@ public class PlayerUtils implements IMinecraft {
         return hb.getCenter();
     }
 
-    public static HitResult raycast(float yaw, float pitch, double maxDistance, float tickDelta, boolean includeFluids) {
-        Vec3 startPos = mc.player.getEyePosition(tickDelta);
+    public static HitResult raycast(float yaw, float pitch, double maxDistance, boolean includeFluids) {
+        Vec3 startPos = mc.player.getEyePosition();
         Vec3 direction = mc.player.calculateViewVector(pitch, yaw);
         Vec3 endPos = startPos.add(direction.scale(maxDistance));
 
