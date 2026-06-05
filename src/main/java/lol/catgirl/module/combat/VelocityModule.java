@@ -4,6 +4,8 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PacketReceivedEvent;
+import lol.catgirl.event.impl.PlayerAttackPreEvent;
+import lol.catgirl.event.impl.PlayerUseMultiplierEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.property.impl.BoolProperty;
@@ -37,6 +39,9 @@ public final class VelocityModule extends Module {
         addSettings(mode, ignoreOnFire);
     }
 
+    private boolean intaveOnAttack;
+    private boolean intaveIsHitSlow;
+
     @EventHook
     public void onPacket(PacketReceivedEvent event) {
         if(mc.player == null) return;
@@ -56,7 +61,21 @@ public final class VelocityModule extends Module {
                     }
 
                     case Intave -> {
+                        if (mc.player.onGround()) {
+                            if (intaveOnAttack && intaveIsHitSlow
+                                    && mc.player.isSprinting()) {
+                                double motionX = packet.movement.x;
+                                double motionZ = packet.movement.z;
+                                motionZ *= 0.06;
+                                motionX *= 0.06;
+                                MoveUtils.setMotionX(motionX);
+                                MoveUtils.setMotionZ(motionZ);
+                                mc.player.setSprinting(false);
+                            }
 
+                            intaveOnAttack = false;
+                            intaveIsHitSlow = false;
+                        }
                     }
 
                     case Matrix -> {
@@ -71,6 +90,18 @@ public final class VelocityModule extends Module {
                 }
             }
         }
+    }
+
+    @EventHook
+    public void onSlowdown(PlayerUseMultiplierEvent event) {
+        if(!(mode.getValue() == Mode.Intave)) return;
+        intaveIsHitSlow = true;
+    }
+
+    @EventHook
+    public void onAttack(PlayerAttackPreEvent event) {
+        if(!(mode.getValue() == Mode.Intave)) return;
+        intaveOnAttack = true;
     }
 
     @EventHook

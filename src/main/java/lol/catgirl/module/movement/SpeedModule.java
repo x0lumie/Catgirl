@@ -5,6 +5,7 @@ import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PlayerJumpFactorEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.player.ScaffoldModule;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
@@ -26,7 +27,7 @@ public final class SpeedModule extends Module {
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Intave);
 
     public final BoolProperty matrixLowHop = new BoolProperty("Low Hop", false).hide(()-> !(mode.getValue() == Mode.Matrix));
-    public final SliderProperty matrixGroundBoost = new SliderProperty("Ground Boost", 0.2f, 0f, 0.5f, 0.01f).hide(() -> mode.getValue() == Mode.Matrix);
+    public final SliderProperty matrixGroundBoost = new SliderProperty("Ground Boost", 0.2f, 0f, 0.5f, 0.01f).hide(() -> !(mode.getValue() == Mode.Matrix));
 
     public SpeedModule() {
         super("Speed", "Allows you to go faster!!!", ModuleCategory.Movement);
@@ -54,10 +55,6 @@ public final class SpeedModule extends Module {
                 }
             }
 
-//            case Polar -> {
-//
-//            }
-
             case LegitExploit -> {
                 if (MoveUtils.isMoving() && mc.player.onGround()) {
                     PlayerUtils.jump();
@@ -67,38 +64,22 @@ public final class SpeedModule extends Module {
             }
 
             case Matrix -> {
-                if (mc.player.isInWater() || mc.player.isInLava() || mc.player.onClimbable()) return;
-                if (!MoveUtils.isMoving()) return;
+                if (mc.player.isInWater() || mc.player.isInLava()
+                        || PlayerUtils.isInWeb() || mc.player.onClimbable()) return;
+//                GameTimer.setSpeed(1.0075f);
 
-                Vec3 motion = mc.player.getDeltaMovement();
-
-                if (mc.player.onGround()) {
-
-                    PlayerUtils.jump();
-
-                    double boost = 1.0 + matrixGroundBoost.getValue();
-
-                    motion = mc.player.getDeltaMovement();
-
-                    mc.player.setDeltaMovement(
-                            motion.x * boost,
-                            0.42 - (matrixLowHop.getValue() ? 0.00348 : 0.0),
-                            motion.z * boost
-                    );
-
-                } else {
-
-                    if (motion.horizontalDistance() < 0.19) {
-                        mc.player.setDeltaMovement(
-                                motion.x * 1.01,
-                                motion.y,
-                                motion.z * 1.01
-                        );
+                if (MoveUtils.isMoving()) {
+                    if (mc.player.onGround()) {
+                        double speed = MoveUtils.getBaseMoveSpeed();
+                        MoveUtils.strafe(speed);
+                        mc.player.setDeltaMovement(mc.player.getDeltaMovement().x,
+                                0.42 - (matrixLowHop.getValue() ? 3.48E-3 : 0.0),
+                                mc.player.getDeltaMovement().z);
+                    } else {
+                        if (MoveUtils.getSpeed() < 0.10) {
+                            MoveUtils.strafe();
+                        }
                     }
-
-                    float airSpeed = mc.player.fallDistance <= 0.4f ? 0.02035f : 0.02f;
-
-                    MoveUtils.setSpeed(airSpeed);
                 }
             }
 
@@ -106,7 +87,6 @@ public final class SpeedModule extends Module {
                 if (mc.player.onGround() && MoveUtils.isMoving()) {
                     PlayerUtils.jump();
                 }
-
 
                 Vec3 motion = mc.player.getDeltaMovement();
 
