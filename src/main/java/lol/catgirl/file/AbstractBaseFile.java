@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 
 public abstract class AbstractBaseFile<T extends JsonElement> implements IMinecraft {
-    public static final Path BASE_DIRECTORY = Path.of(mc.gameDirectory + "/Equinox");
+    public static final Path BASE_DIRECTORY = Path.of(mc.gameDirectory + "/Catgirl");
 
     public final String name;
     public final Path path;

@@ -19,6 +19,7 @@ public class CommandManager {
     public final HelpCommand helpCommand = new HelpCommand();
     public final ModuleCommand moduleCommand = new ModuleCommand();
     public final ConfigCommand configCommand = new ConfigCommand();
+    public final FriendCommand friendCommand = new FriendCommand();
 
     public CommandManager() {
         addCommands(
@@ -26,7 +27,8 @@ public class CommandManager {
                 toggleCommand,
                 helpCommand,
                 moduleCommand,
-                configCommand
+                configCommand,
+                friendCommand
         );
     }
 
