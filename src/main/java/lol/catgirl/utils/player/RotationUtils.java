@@ -200,6 +200,16 @@ public class RotationUtils implements IMinecraft {
         return new float[]{yaw, clampPitch(pitch)};
     }
 
+    public static float[] getRotationsToPosition(Vec3 eye, Vec3 target) {
+        Vec3 diff = target.subtract(eye);
+
+        double dist = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
+
+        float pitch = (float) Math.toDegrees(-Math.atan2(diff.y, dist));
+        float yaw = (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90;
+
+        return new float[]{yaw, clampPitch(pitch)};
+    }
 
     public static float[] getBlockRotations(BlockPos blockPos, Direction facing) {
         Vec3 direction = blockPos.getCenter().add(Vec3.atLowerCornerOf(facing.getUnitVec3i()).scale(0.5).subtract(mc.player.getEyePosition()));
