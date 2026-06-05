@@ -141,7 +141,7 @@ public final class WatermarkModule extends Module {
                         ping = "0ms";
                     }
                 }
-                
+
                 String part1 = "cat";
                 String part2 = "sense";
                 String part3 = " - " + mc.player.getName().getString()
