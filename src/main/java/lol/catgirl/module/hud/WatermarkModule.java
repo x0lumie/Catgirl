@@ -125,10 +125,23 @@ public final class WatermarkModule extends Module {
                     serverIp = "local";
                     ping = "0ms";
                 } else {
-                    serverIp = Objects.requireNonNull(mc.getCurrentServer()).ip;
-                    ping = mc.getCurrentServer().ping + "ms";
-                }
+                    serverIp = mc.getCurrentServer().ip;
 
+                    var connection = mc.getConnection();
+
+                    if (mc.player != null && connection != null) {
+                        var info = connection.getPlayerInfo(mc.player.getUUID());
+
+                        if (info != null) {
+                            ping = info.getLatency() + "ms";
+                        } else {
+                            ping = "0ms";
+                        }
+                    } else {
+                        ping = "0ms";
+                    }
+                }
+                
                 String part1 = "cat";
                 String part2 = "sense";
                 String part3 = " - " + mc.player.getName().getString()
