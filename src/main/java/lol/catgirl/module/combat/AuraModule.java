@@ -50,6 +50,7 @@ public final class AuraModule extends Module {
 
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
     public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Regular);
+    public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
 
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1.5f, 0.5f, 5, 0.1f);
     public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 2.5f, 0.5f, 5, 0.1f);
@@ -62,7 +63,6 @@ public final class AuraModule extends Module {
             .hide(() -> !oldCombat.getValue());
     public final EnumProperty<AutoBlock> autoBlock = new EnumProperty<>("Auto Block", AutoBlock.None)
             .hide(() -> !oldCombat.getValue());
-    public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
 
     public static final AuraModule INSTANCE = new AuraModule();
 
@@ -75,8 +75,8 @@ public final class AuraModule extends Module {
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Combat);
-        addSettings(killRange, rotations, minRotationSpeed, maxRotationSpeed, rayCast,
-                oldCombat, minCps, maxCps, autoBlock, targetPriority);
+        addSettings(killRange, rotations, targetPriority, minRotationSpeed, maxRotationSpeed, rayCast,
+                oldCombat, minCps, maxCps, autoBlock);
     }
 
     @Override
