@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class AuraModule extends Module {
 
     public enum Rotations {
-        Regular,
+        Normal,
         Polar,
         Puhfy
     }
@@ -49,12 +49,10 @@ public final class AuraModule extends Module {
     }
 
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
-    public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Regular);
+    public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Normal);
     public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
-
-    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 0.1f, 10, 0.1f);
+    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 1f, 10, 0.1f);
     public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 1, 1f, 10, 0.1f);
-
     public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
     public static BoolProperty oldCombat = new BoolProperty("Old Combat", false);
@@ -160,8 +158,8 @@ public final class AuraModule extends Module {
         float speed = randomRotationSpeed();
 
         finalRotations = switch (rotations.getValue()) {
-            case Regular -> RotationUtils.regularAuraRotations(currentRotations, target, speed);
-            case Polar   -> RotationUtils.polarAuraRotations(currentRotations, target);
+            case Normal -> RotationUtils.regularAuraRotations(currentRotations, target, speed);
+            case Polar   -> RotationUtils.polarAuraRotations(currentRotations, target, speed);
             case Puhfy   -> RotationUtils.puhfyAuraRotations(currentRotations, target, speed);
         };
 
@@ -271,5 +269,10 @@ public final class AuraModule extends Module {
         if (min >= max) return (long) (1000.0 / min);
         double randomCps = ThreadLocalRandom.current().nextDouble(min, max);
         return (long) (1000.0 / randomCps);
+    }
+
+    @Override
+    protected String getFinalSuffix() {
+        return rotations.getValue().toString();
     }
 }
