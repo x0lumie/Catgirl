@@ -18,7 +18,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.event.impl.*;
 
 
-public class TriggerBotModule extends Module {
+public final class TriggerBotModule extends Module {
     public static final TriggerBotModule INSTANCE = new TriggerBotModule();
 
     private enum AttackMode {

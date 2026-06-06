@@ -25,6 +25,7 @@
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",
     "KeyboardInputMixin",
+    "KeyboardHandlerMixin",
     "KeyMappingAccessor",
     "LevelRendererMixin",
     "LivingEntityRendererMixin",
