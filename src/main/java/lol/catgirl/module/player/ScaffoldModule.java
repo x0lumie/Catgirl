@@ -382,4 +382,9 @@ public final class ScaffoldModule extends Module {
             this.facing = facing;
         }
     }
+
+    @Override
+    protected String getFinalSuffix() {
+        return mode.getValue().toString();
+    }
 }
