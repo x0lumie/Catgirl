@@ -9,6 +9,7 @@ import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.*;
 import lol.catgirl.module.combat.*;
 import lol.catgirl.module.ghost.*;
+import lol.catgirl.module.hud.FunnyDisplayerModule;
 import lol.catgirl.module.hud.ModuleListModule;
 import lol.catgirl.module.hud.TargetHUDModule;
 import lol.catgirl.module.hud.WatermarkModule;
@@ -72,6 +73,7 @@ public final class ModuleManager {
         modules.add(PanicModule.INSTANCE);
         modules.add(InsultsModule.INSTANCE);
         modules.add(NoRotateModule.INSTANCE);
+        modules.add(FunnyDisplayerModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
