@@ -65,7 +65,7 @@ public class CatgirlDropdown extends Screen implements IMinecraft {
         int index = 0;
 
         for (ModuleCategory category : ModuleCategory.values()) {
-            if (category == ModuleCategory.Ghost) continue;
+//            if (category == ModuleCategory.Ghost) continue;
 
             float startX = defaultOffsetX + (index * 110);
             CatgirlPanel.draw(category, startX, defaultOffsetY, mouseX, mouseY, partialTick);
