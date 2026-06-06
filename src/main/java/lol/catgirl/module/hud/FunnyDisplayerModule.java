@@ -68,7 +68,6 @@ public final class FunnyDisplayerModule extends Module {
     private void handleDragging() {
         if (mc.screen instanceof ChatScreen) {
 
-            // Get scaled mouse coordinates
             double mouseX = mc.mouseHandler.xpos() * (double) mc.getWindow().getGuiScaledWidth() / (double) mc.getWindow().getWidth();
             double mouseY = mc.mouseHandler.ypos() * (double) mc.getWindow().getGuiScaledHeight() / (double) mc.getWindow().getHeight();
 
@@ -76,7 +75,6 @@ public final class FunnyDisplayerModule extends Module {
 
             if (isMouseDown) {
                 if (!dragging) {
-                    // Check if mouse is within the bounding box of the HUD element
                     if (mouseX >= x && mouseX <= x + size.getValue().intValue() && mouseY >= y && mouseY <= y + size.getValue().intValue()) {
                         dragging = true;
                         dragX = (float) (mouseX - x);
