@@ -41,6 +41,12 @@ public class CatgirlPanel {
     private static float dragOffsetX = 0f;
     private static float dragOffsetY = 0f;
 
+    private static Module hoveredModuleThisFrame = null;
+    private static Module lastHoveredModule = null;
+    private static final Animation tooltipAnimation = new Animation(Easing.DECELERATE, 70L);
+    private static float interpolatedTooltipX = 0f;
+    private static float interpolatedTooltipY = 0f;
+
     public static Point.Float getPosition(ModuleCategory category, float defaultX, float defaultY) {
         return panelPositions.computeIfAbsent(category, c -> new Point.Float(defaultX, defaultY));
     }
@@ -99,6 +105,10 @@ public class CatgirlPanel {
 
         if (collapseProgress < 0.01f) return;
 
+        if (category == ModuleCategory.values()[0] || lastHoveredModule == null || lastHoveredModule.getCategory() == category) {
+            hoveredModuleThisFrame = null;
+        }
+
         String query = CatgirlDropdown.getSearchQuery();
 
         float totalContentHeight = 4f;
@@ -151,6 +161,12 @@ public class CatgirlPanel {
 
             DrawUtil.roundedRect(minX, minY, maxX, maxY, 2f, mainColor);
 
+            boolean isWithinScissorBounds = moduleY >= (y + headerHeight) && (moduleY + rowHeight) <= (y + headerHeight + animatedBodyHeight);
+            if (isWithinScissorBounds && mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY && draggingCategory == null) {
+                hoveredModuleThisFrame = module;
+                lastHoveredModule = module;
+            }
+
             Animation toggleAnim = toggleAnimations.computeIfAbsent(module, mod -> new Animation(Easing.DECELERATE, 300L));
             toggleAnim.run(module.isEnabled() ? 1f : 0f);
             float enableProgress = toggleAnim.getValue();
@@ -168,7 +184,7 @@ public class CatgirlPanel {
 
             float moduleNameTextWidth = (float) DrawUtil.getStringWidth(moduleNameText, 8f, ResourceManager.getSelectedFont());
             float moduleNameCenterX = x + (100f / 2f) - (moduleNameTextWidth / 2f);
-            DrawUtil.drawString(moduleNameText, moduleNameCenterX, moduleY + 7, 8f, Color.WHITE, ResourceManager.getSelectedFont());
+            DrawUtil.drawString(moduleNameText, moduleNameCenterX, moduleY + 8, 8f, Color.WHITE, ResourceManager.getSelectedFont());
 
             moduleY += rowHeight + 4;
 
@@ -228,6 +244,35 @@ public class CatgirlPanel {
         colorSolid.free();
 
         NanoVG.nvgRestore(vg);
+
+        tooltipAnimation.run(hoveredModuleThisFrame != null ? 1f : 0f);
+        float tooltipProgress = tooltipAnimation.getValue();
+
+        if (tooltipProgress > 0.01f && lastHoveredModule != null) {
+            String desc = lastHoveredModule.getDescription();
+            if (desc != null && !desc.isEmpty()) {
+                float fontSize = 7.5f;
+                float textPadding = 5f;
+                float maxTextWidth = (float) DrawUtil.getStringWidth(desc, fontSize, ResourceManager.getSelectedFont());
+
+                float boxWidth = maxTextWidth + (textPadding * 2f);
+                float boxHeight = fontSize + (textPadding * 2f) + 1f;
+
+                float targetTooltipX = mouseX + 8f;
+                float targetTooltipY = mouseY + 8f;
+                interpolatedTooltipX += (targetTooltipX - interpolatedTooltipX) * 0.3f * (partialTick * 2f);
+                interpolatedTooltipY += (targetTooltipY - interpolatedTooltipY) * 0.3f * (partialTick * 2f);
+
+                int bgAlpha = (int) (240 * tooltipProgress);
+                int textAlpha = (int) (255 * tooltipProgress);
+
+                Color tooltipBg = new Color(10, 10, 10, bgAlpha);
+                Color tooltipText = new Color(220, 220, 220, textAlpha);
+
+                DrawUtil.roundedRect(interpolatedTooltipX, interpolatedTooltipY, interpolatedTooltipX + boxWidth, interpolatedTooltipY + boxHeight, 3f, tooltipBg);
+                DrawUtil.drawString(desc, interpolatedTooltipX + textPadding, interpolatedTooltipY + textPadding + fontSize, fontSize, tooltipText, ResourceManager.getSelectedFont());
+            }
+        }
     }
 
     public static void handleScroll(ModuleCategory category, double deltaY) {
