@@ -30,6 +30,10 @@
     "MinecraftMixin",
     "MouseMixin",
     "PacketSendMixin",
-    "RenderMixin"
+    "RenderMixin",
+    "blur.GameRendererAccessor",
+    "blur.BlurRendererMixin",
+    "blur.PostEffectPassAccessor",
+    "blur.PostEffectProcessorAccessor"
   ]
 }

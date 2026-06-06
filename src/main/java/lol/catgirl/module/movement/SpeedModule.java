@@ -20,8 +20,6 @@ import net.minecraft.world.phys.Vec3;
 public final class SpeedModule extends Module {
     public static final SpeedModule INSTANCE = new SpeedModule();
 
-    private int polarGoyer = 0;
-
     public enum Mode {
         Legit,
         LegitExploit,

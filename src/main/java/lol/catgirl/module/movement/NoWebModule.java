@@ -13,7 +13,8 @@ public final class NoWebModule extends Module {
 
     public enum Mode {
         Intave,
-        Grim
+        Grim,
+        Matrix
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty("Mode", Mode.Intave);
@@ -45,6 +46,10 @@ public final class NoWebModule extends Module {
                 if (MoveUtils.isMoving()) {
                     MoveUtils.setSpeed(0.644d);
                 }
+            }
+
+            case Matrix -> {
+                MoveUtils.setSpeed(0.30d);
             }
         }
     }

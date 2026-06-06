@@ -1,21 +1,23 @@
 package lol.catgirl.module.client;
 
-import lol.catgirl.Catgirl;
-import lol.catgirl.event.EventHook;
-import lol.catgirl.event.impl.RenderTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.ui.click.dropdown.CatgirlDropdown;
 import lol.catgirl.ui.click.imgui.ClickGui;
-import lol.catgirl.utils.render.nanovg.DrawUtil;
-import lol.catgirl.utils.render.nanovg.ResourceManager;
 import org.lwjgl.glfw.GLFW;
-
-import java.awt.*;
 
 public final class ClickGuiModule extends Module {
     public static final ClickGuiModule INSTANCE = new ClickGuiModule();
 
     private boolean didInitImgui = false;
+
+    public enum Mode {
+        Menu,
+        Dropdown
+    }
+
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Menu);
 
     public ClickGuiModule() {
         super("ClickGUI",
@@ -23,14 +25,20 @@ public final class ClickGuiModule extends Module {
                 ModuleCategory.Movement
         );
         setKey(GLFW.GLFW_KEY_RIGHT_SHIFT);
+        addSetting(mode);
     }
 
     @Override
     public void onEnable() {
-        if (mc.getWindow() != null && !didInitImgui) {
-            didInitImgui = true;
+        if (mode.getValue() == Mode.Menu) {
+            if (mc.getWindow() != null && !didInitImgui) {
+                didInitImgui = true;
+            }
+            mc.setScreen(new ClickGui());
+        } else {
+            mc.setScreen(new CatgirlDropdown());
         }
-        mc.setScreen(new ClickGui());
+
         this.toggle();
         super.onEnable();
     }

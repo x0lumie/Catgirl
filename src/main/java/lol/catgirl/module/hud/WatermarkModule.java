@@ -25,7 +25,7 @@ public final class WatermarkModule extends Module {
 
     public WatermarkModule() {
         super("Watermark", "Shows the client watermark.", ModuleCategory.Hud);
-        addSettings(mode, watermarkVersion, shadow);
+        addSettings(mode, watermarkVersion, shadow, lowercase);
     }
 
     public enum Mode {
@@ -37,6 +37,7 @@ public final class WatermarkModule extends Module {
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
     public final BoolProperty watermarkVersion = new BoolProperty("Show Version", true);
     public final BoolProperty shadow = new BoolProperty("Shadow", false).hide(()->mode.getValue()== Mode.Simple);
+    public final BoolProperty lowercase = new BoolProperty("Lowercase", true).hide(()-> !(mode.getValue() == Mode.Catgirl));
 
     @EventHook
     public void onRender(RenderTickEvent event) {
@@ -49,7 +50,13 @@ public final class WatermarkModule extends Module {
 
                 long time = System.currentTimeMillis();
 
-                String watermark = Catgirl.NAME;
+                String watermark;
+
+                if (lowercase.getValue()) {
+                    watermark = Catgirl.NAME.toLowerCase();
+                } else {
+                    watermark = Catgirl.NAME;
+                }
 
                 float size = 20F;
                 float height = size;
