@@ -12,6 +12,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.*;
+import org.joml.Vector2f;
+import org.joml.Vector3d;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -344,5 +346,53 @@ public class RotationUtils implements IMinecraft {
             return blockHit.getBlockPos();
         }
         return null;
+    }
+
+    private static final float TO_DEGREES = (float) (180.0 / Math.PI);
+
+    public static Vec2 calculate(final Vec3 from, final Vec3 to) {
+        final Vec3 diff = to.subtract(from);
+        final double distance = Math.hypot(diff.x(), diff.z());
+
+        // Mth.atan2 replaces MathHelper.atan2
+        final float yaw = (float) (Mth.atan2(diff.z(), diff.x()) * TO_DEGREES) - 90.0F;
+        final float pitch = (float) (-(Mth.atan2(diff.y(), distance) * TO_DEGREES));
+
+        return new Vec2(yaw, pitch);
+    }
+
+    public static Vec2 calculate(final Entity entity) {
+        if (mc.player == null) return Vec2.ZERO;
+
+        AABB boundingBox = entity.getBoundingBox();
+        double entityHeight = boundingBox.maxY - boundingBox.minY;
+
+        // Custom position vectors are usually just .position() in modern versions
+        Vec3 entityPos = entity.position();
+
+        return calculate(entityPos.add(0, Math.max(0, Math.min(
+                mc.player.getY() - entity.getY() + mc.player.getEyeHeight(),
+                entityHeight * 0.9
+        )), 0));
+    }
+
+    // Modern Minecraft uses Vec3 for everything that Vector3d used to handle
+    public static Vec2 calculate(final Vec3 to) {
+        if (mc.player == null) return Vec2.ZERO;
+        return calculate(mc.player.position().add(0, mc.player.getEyeHeight(), 0), to);
+    }
+
+    public static Vec2 calculate(final BlockPos to) {
+        if (mc.player == null) return Vec2.ZERO;
+        // BlockPos center calculation done via .getBottomCenterWithOffset or explicitly adding 0.5
+        return calculate(mc.player.position().add(0, mc.player.getEyeHeight(), 0), Vec3.atCenterOf(to));
+    }
+
+    public static Vec2 calculate(final Vec3 position, final Direction direction) {
+        double x = position.x() + 0.5D + direction.getStepX() * 0.5D;
+        double y = position.y() + 0.5D + direction.getStepY() * 0.5D;
+        double z = position.z() + 0.5D + direction.getStepZ() * 0.5D;
+
+        return calculate(new Vec3(x, y, z));
     }
 }

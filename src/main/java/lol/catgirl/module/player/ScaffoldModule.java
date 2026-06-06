@@ -14,6 +14,7 @@ import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
 import lol.catgirl.utils.player.ScaffoldUtils;
 import lombok.Getter;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -21,6 +22,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector2f;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -178,7 +183,7 @@ public final class ScaffoldModule extends Module {
         if (jump.getValue()) {
             if (!MoveUtils.isMoving() || mc.options.keyJump.isDown()) return;
             if (mc.player.onGround()) {
-                mc.player.jumpFromGround();
+                PlayerUtils.jump();
             }
         }
     }
@@ -252,13 +257,39 @@ public final class ScaffoldModule extends Module {
     }
 
     private void getBaseRotations(PlayerRotationEvent event) {
-        float[] targetRotations = new float[]{mc.player.getYRot() - 180, 82.5f};
-        for (float possibleYaw = mc.player.getYRot() - 180; possibleYaw <= mc.player.getYRot() + 360 - 180; possibleYaw += 45) {
-            for (float possiblePitch = 90; possiblePitch > 30; possiblePitch -= possiblePitch > (mc.player.hasEffect(MobEffects.SPEED) ? 60 : 80) ? 1 : 10) {
-                if (PlayerUtils.isLookingAtBlock(blockData.getFacing(), blockData.getPosition(), true, 5, possibleYaw, possiblePitch)) {
-                    targetRotations[0] = possibleYaw;
-                    targetRotations[1] = possiblePitch;
+        float[] targetRotations = new float[]{mc.player.getYRot() - 180f, 82.5f};
+        boolean foundValidRotation = false;
+
+        double difference = mc.player.getY() + mc.player.getEyeHeight() - blockData.position.getY() -
+                0.5 - (Math.random() - 0.5) * 0.1;
+
+        HitResult hitResult = null;
+
+        for (int offset = -180; offset <= 180; offset += 45) {
+            mc.player.setPos(mc.player.getX(), mc.player.getY() - difference, mc.player.getZ());
+            hitResult = PlayerUtils.raycastBlocks(mc.player.getYRot() + (offset * 3), 0f, 4.5f, false);
+            mc.player.setPos(mc.player.getX(), mc.player.getY() + difference, mc.player.getZ());
+
+            if (hitResult != null && hitResult.getLocation() != null) {
+                Vec2 rotations = RotationUtils.calculate(hitResult.getLocation());
+
+                if (PlayerUtils.isLookingAtBlock(blockData.facing, blockData.position, true, 4.5f, rotations.x, rotations.y)) {
+                    targetRotations[0] = rotations.x;
+                    targetRotations[1] = rotations.y;
+                    foundValidRotation = true;
+                    break;
                 }
+            }
+        }
+
+        if (!foundValidRotation) {
+            final Vec2 rotations = RotationUtils.calculate(
+                    new Vec3(blockData.getPosition().getX(), blockData.getPosition().getY(), blockData.getPosition().getZ()), blockData.getFacing());
+
+            if (PlayerUtils.isLookingAtBlock(blockData.facing, blockData.position, true, 4.5f, rotations.x, rotations.y)) {
+                targetRotations[0] = rotations.x;
+                targetRotations[1] = rotations.y;
+                foundValidRotation = true;
             }
         }
 
@@ -267,7 +298,10 @@ public final class ScaffoldModule extends Module {
         float smoothedYaw = RotationUtils.getFixedRotation(targetRotations, currentRotations)[0];
         float smoothedPitch = RotationUtils.getFixedRotation(targetRotations, currentRotations)[1];
 
-        float[] finalRotations = new float[]{RotationUtils.smoothRotation(currentRotations[0], smoothedYaw, randomRotationSpeed()), RotationUtils.smoothRotation(currentRotations[1], smoothedPitch, randomRotationSpeed())};
+        float[] finalRotations = new float[]{
+                RotationUtils.smoothRotation(currentRotations[0], smoothedYaw, randomRotationSpeed()),
+                RotationUtils.smoothRotation(currentRotations[1], smoothedPitch, randomRotationSpeed())
+        };
 
         event.yaw = finalRotations[0];
         event.pitch = finalRotations[1];
