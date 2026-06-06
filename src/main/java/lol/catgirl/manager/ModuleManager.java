@@ -74,6 +74,7 @@ public final class ModuleManager {
         modules.add(InsultsModule.INSTANCE);
         modules.add(NoRotateModule.INSTANCE);
         modules.add(FunnyDisplayerModule.INSTANCE);
+        modules.add(WallClimbModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
