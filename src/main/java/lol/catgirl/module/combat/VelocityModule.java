@@ -13,6 +13,7 @@ import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -27,7 +28,8 @@ public final class VelocityModule extends Module {
         Cancel,
         JumpReset,
         Intave,
-        Matrix
+        Matrix,
+        MatrixNew
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
@@ -58,6 +60,26 @@ public final class VelocityModule extends Module {
 
                     case JumpReset -> {
                         // ontick
+                    }
+
+                    case MatrixNew -> {
+                        if (mc.player != null && mc.player.hurtTime > 0 && !mc.player.onGround()) {
+                            double yawRad = mc.player.getYRot() * 0.017453292F;
+
+                            Vec3 velocity = mc.player.getDeltaMovement();
+                            double horizontalSpeed = Math.sqrt(
+                                    velocity.x * velocity.x +
+                                            velocity.z * velocity.z
+                            );
+
+                            mc.player.setDeltaMovement(
+                                    -Math.sin(yawRad) * horizontalSpeed,
+                                    velocity.y,
+                                    Math.cos(yawRad) * horizontalSpeed
+                            );
+
+                            mc.player.setSprinting(mc.player.tickCount % 2 != 0);
+                        }
                     }
 
                     case Intave -> {
