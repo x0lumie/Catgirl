@@ -1,5 +1,6 @@
 package lol.catgirl.utils.player;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.utils.IMinecraft;
 import lombok.Getter;
@@ -13,11 +14,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.*;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class RotationUtils implements IMinecraft {
     public static boolean yawChanged;
     public static boolean pitchChanged;
+    private static final NoiseUtils polarNoise = new NoiseUtils(2749);
 
     @Setter
     @Getter
@@ -74,23 +74,34 @@ public class RotationUtils implements IMinecraft {
         return new float[]{smoothRotation(currentRotations[0], smoothedYaw, speed), smoothRotation(currentRotations[1], smoothedPitch, speed)};
     }
 
-    public static float[] polarAuraRotations(float[] currentRotations, final Entity entity) {
-        float speedVariance = ThreadLocalRandom.current().nextFloat(-0.25f, 0.25f);
-        float dynamicSpeed = 2f + speedVariance;
+    public static float[] polarAuraRotations(float[] currentRotations, final Entity entity, float speed) {
 
-        float[] targetRotations = puhfyAuraRotations(currentRotations, entity, dynamicSpeed);
+        float[] targetRotations = puhfyAuraRotations(currentRotations, entity, speed);
 
         if (targetRotations[0] == currentRotations[0] && targetRotations[1] == currentRotations[1]) {
             return targetRotations;
         }
 
-        float yawNoise = ThreadLocalRandom.current().nextFloat(-0.12f, 0.12f);
-        float pitchNoise = ThreadLocalRandom.current().nextFloat(-0.08f, 0.08f);
+        int sped = 8;
+        int existed = mc.player.tickCount * sped;
 
-        float randomizedYaw = targetRotations[0] + yawNoise;
-        float randomizedPitch = targetRotations[1] + pitchNoise;
+        float dist = mc.player.distanceTo(entity);
+        float horizontalScale = (float) (1.9f + Math.max(-0.65, ((3 - dist) / 3)));
+        float verticalScale   = (float) (1.5f + Math.max(-0.65, ((3 - dist) / 3)));
 
-        return getFixedRotation(new float[]{randomizedYaw, randomizedPitch}, currentRotations);
+        double randomizedX = entity.getX() + (polarNoise.GetNoise(existed + 50,  existed + 250) / horizontalScale);
+        double randomizedY = entity.getY() + 0.7 + (polarNoise.GetNoise(existed + 100, existed + 100) / verticalScale);
+        double randomizedZ = entity.getZ() + (polarNoise.GetNoise(existed + 0,   existed + 150) / horizontalScale);
+
+        Vec3 eye = mc.player.getEyePosition();
+        Vec3 target3 = new Vec3(randomizedX, randomizedY, randomizedZ);
+        Vec3 diff = target3.subtract(eye);
+
+        double horizontal = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
+        float yaw   = (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90;
+        float pitch = (float) Math.toDegrees(-Math.atan2(diff.y, horizontal));
+
+        return getFixedRotation(new float[]{yaw, clampPitch(pitch)}, currentRotations);
     }
 
     public static boolean isFacing(Player self, Player target, float maxAngle) {
@@ -142,7 +153,7 @@ public class RotationUtils implements IMinecraft {
     }
 
     public static double gcd() {
-        double d = mc.options.sensitivity().get() * (double)0.6F + (double)0.2F;
+        double d = mc.options.sensitivity().get() * (double) 0.6F + (double) 0.2F;
         return d * d * d * 1.2;
     }
 
@@ -153,13 +164,14 @@ public class RotationUtils implements IMinecraft {
 
         double dist = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
 
-        float pitch = (float) Math.toDegrees(-Math.atan2(diff.y , dist));
+        float pitch = (float) Math.toDegrees(-Math.atan2(diff.y, dist));
         float yaw = (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90;
 
         yaw = unwrap(last[0], yaw);
 
         return new float[]{yaw, pitch};
     }
+
     public static float getLerpedPitch(float tickDelta, LivingEntity entity) {
         if (RotationUtils.pitchChanged) {
             return tickDelta == 1.0F ? RotationUtils.getRotationPitch() : Mth.lerp(tickDelta, RotationUtils.getLastRotationPitch(), RotationUtils.getRotationPitch());
@@ -167,13 +179,14 @@ public class RotationUtils implements IMinecraft {
             return entity.getXRot(tickDelta);
         }
     }
+
     public static float[] getCentreRotations(float[] last, Vec3 eye, Entity entity) {
         Vec3 to = entity.getBoundingBox().getCenter();
         Vec3 diff = to.subtract(eye);
 
         double dist = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
 
-        float pitch = (float) Math.toDegrees(-Math.atan2(diff.y , dist));
+        float pitch = (float) Math.toDegrees(-Math.atan2(diff.y, dist));
         float yaw = (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90;
 
         yaw = unwrap(last[0], yaw);
@@ -239,7 +252,7 @@ public class RotationUtils implements IMinecraft {
         );
 
 
-        yaw = unwrap(RotationUtils.getLastRotationYaw(),yaw);
+        yaw = unwrap(RotationUtils.getLastRotationYaw(), yaw);
 
         return new float[]{yaw, clampPitch(pitch)};
     }
@@ -306,9 +319,9 @@ public class RotationUtils implements IMinecraft {
         }
         var forwardMultiplier =
                 inp.backward()
-                && !inp.forward()
-                ? -0.5f : inp.forward()
-                && !inp.backward() ? 0.5f : 1f;
+                        && !inp.forward()
+                        ? -0.5f : inp.forward()
+                        && !inp.backward() ? 0.5f : 1f;
 
         if (inp.left() && !inp.right()) {
             actualYaw -= 90f * forwardMultiplier;
@@ -344,5 +357,53 @@ public class RotationUtils implements IMinecraft {
             return blockHit.getBlockPos();
         }
         return null;
+    }
+
+    private static final float TO_DEGREES = (float) (180.0 / Math.PI);
+
+    public static Vec2 calculate(final Vec3 from, final Vec3 to) {
+        final Vec3 diff = to.subtract(from);
+        final double distance = Math.hypot(diff.x(), diff.z());
+
+        // Mth.atan2 replaces MathHelper.atan2
+        final float yaw = (float) (Mth.atan2(diff.z(), diff.x()) * TO_DEGREES) - 90.0F;
+        final float pitch = (float) (-(Mth.atan2(diff.y(), distance) * TO_DEGREES));
+
+        return new Vec2(yaw, pitch);
+    }
+
+    public static Vec2 calculate(final Entity entity) {
+        if (mc.player == null) return Vec2.ZERO;
+
+        AABB boundingBox = entity.getBoundingBox();
+        double entityHeight = boundingBox.maxY - boundingBox.minY;
+
+        // Custom position vectors are usually just .position() in modern versions
+        Vec3 entityPos = entity.position();
+
+        return calculate(entityPos.add(0, Math.max(0, Math.min(
+                mc.player.getY() - entity.getY() + mc.player.getEyeHeight(),
+                entityHeight * 0.9
+        )), 0));
+    }
+
+    // Modern Minecraft uses Vec3 for everything that Vector3d used to handle
+    public static Vec2 calculate(final Vec3 to) {
+        if (mc.player == null) return Vec2.ZERO;
+        return calculate(mc.player.position().add(0, mc.player.getEyeHeight(), 0), to);
+    }
+
+    public static Vec2 calculate(final BlockPos to) {
+        if (mc.player == null) return Vec2.ZERO;
+        // BlockPos center calculation done via .getBottomCenterWithOffset or explicitly adding 0.5
+        return calculate(mc.player.position().add(0, mc.player.getEyeHeight(), 0), Vec3.atCenterOf(to));
+    }
+
+    public static Vec2 calculate(final Vec3 position, final Direction direction) {
+        double x = position.x() + 0.5D + direction.getStepX() * 0.5D;
+        double y = position.y() + 0.5D + direction.getStepY() * 0.5D;
+        double z = position.z() + 0.5D + direction.getStepZ() * 0.5D;
+
+        return calculate(new Vec3(x, y, z));
     }
 }

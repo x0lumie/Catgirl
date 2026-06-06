@@ -24,7 +24,8 @@ public final class FunnyDisplayerModule extends Module {
 
     private float dragX, dragY;
     private boolean dragging;
-    private float x = 100, y = 100;
+
+    private float x = -1, y = -1;
 
     public FunnyDisplayerModule() {
         super("Funny Displayer", "Shows the funnies.", ModuleCategory.Hud);
@@ -33,6 +34,11 @@ public final class FunnyDisplayerModule extends Module {
 
     @EventHook
     public void onRender(Render2DEvent event) {
+        if (x == -1 && y == -1 && mc.getWindow() != null) {
+            x = mc.getWindow().getGuiScaledWidth() - size.getValue().intValue();
+            y = mc.getWindow().getGuiScaledHeight() - size.getValue().intValue();
+        }
+
         handleDragging();
 
         Identifier imageLocation = getTexturePath(funny.getValue());

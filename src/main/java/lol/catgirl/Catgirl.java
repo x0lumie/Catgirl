@@ -2,16 +2,16 @@ package lol.catgirl;
 
 import lol.catgirl.event.EventBus;
 import lol.catgirl.event.Handler;
-import lol.catgirl.manager.CommandManager;
-import lol.catgirl.manager.FriendManager;
-import lol.catgirl.manager.ModuleManager;
-import lol.catgirl.manager.SoundManager;
+import lol.catgirl.file.impl.ModulesFile;
+import lol.catgirl.manager.*;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 import static lol.catgirl.utils.IMinecraft.mc;
 
@@ -29,6 +29,7 @@ public class Catgirl implements ModInitializer {
 	public Handler theHandler;
 	public CommandManager commandManager;
 	public SoundManager soundManager;
+	private IssueManager issueManager;
 
 	@Override
 	public void onInitialize() {
@@ -36,16 +37,28 @@ public class Catgirl implements ModInitializer {
 		eventBus = new EventBus();
 		theHandler = new Handler();
 		commandManager = new CommandManager();
+		issueManager = new IssueManager();
+		soundManager = new SoundManager();
 
 		Handler.initialize();
 		ModuleManager.getInstance().init();
 		FriendManager.initialize();
-		soundManager = new SoundManager();
 
 		soundManager.init();
 
 		eventBus.subscribe(commandManager);
+		eventBus.subscribe(issueManager);
 		eventBus.subscribe(theHandler);
+
+		if (doesFileExist("default")) {
+			new ModulesFile("default").loadFromFile();
+		}
+	}
+
+	private boolean doesFileExist(String name) {
+		File dir = ModulesFile.BASE_DIRECTORY.resolve("configs/").toFile();
+		File file = new File(dir, name + ".json");
+		return file.exists();
 	}
 
 	public static void sendChatMessage(String message) {
