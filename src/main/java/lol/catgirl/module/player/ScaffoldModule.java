@@ -1,7 +1,9 @@
 package lol.catgirl.module.player;
 
+import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PlayerRotationEvent;
+import lol.catgirl.event.impl.PreMotionEvent;
 import lol.catgirl.event.impl.PreUpdateEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
@@ -38,7 +40,14 @@ public final class ScaffoldModule extends Module {
         God
     }
 
+    public enum TowerMode {
+        None,
+        Matrix
+    }
+
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
+    private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Mode", TowerMode.Matrix.Matrix);
+
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 1f, 10, 0.1f);
     public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 1, 1f, 10, 0.1f);
     private final SliderProperty placeDelay = new SliderProperty("Place Delay", 0, 0, 10, 1);
@@ -65,7 +74,7 @@ public final class ScaffoldModule extends Module {
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
-        addSettings(mode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
+        addSettings(mode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
     }
 
     @Override
@@ -256,6 +265,13 @@ public final class ScaffoldModule extends Module {
         }
     }
 
+    @EventHook
+    public void onPreMotion(PreMotionEvent event) {
+        if (towerMode.getValue() == TowerMode.Matrix) {
+            Towers.matrix(event);
+        }
+    }
+
     private void getBaseRotations(PlayerRotationEvent event) {
         float[] targetRotations = new float[]{mc.player.getYRot() - 180f, 82.5f};
         boolean foundValidRotation = false;
@@ -386,5 +402,19 @@ public final class ScaffoldModule extends Module {
     @Override
     protected String getFinalSuffix() {
         return mode.getValue().toString();
+    }
+
+    // TODO: matrix tower flags but doesnt setback so..
+    
+    public static class Towers {
+        public static void matrix(PreMotionEvent event) {
+            if (mc.options.keyJump.isDown()
+                    && PlayerUtils.isBlockUnder(2, false)
+                    && mc.player.getDeltaMovement().y < 0.2) {
+                mc.player.jumpFromGround();
+
+                event.onGround = true;
+            }
+        }
     }
 }

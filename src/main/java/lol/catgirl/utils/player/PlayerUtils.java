@@ -38,6 +38,41 @@ public class PlayerUtils implements IMinecraft {
     public static int hurtAge;
     public static long lastModTime;
 
+    public static boolean isBlockUnder(double height) {
+        return isBlockUnder(height, true);
+    }
+
+    public static boolean isBlockUnder(double height, boolean boundingBox) {
+        if (mc.player == null || mc.level == null) {
+            return false;
+        }
+
+        if (boundingBox) {
+            AABB box = mc.player.getBoundingBox().move(0.0, -height, 0.0);
+
+            return !mc.level.getBlockCollisions(mc.player, box)
+                    .iterator()
+                    .hasNext();
+        } else {
+            for (int offset = 0; offset < height; offset++) {
+                BlockPos pos = BlockPos.containing(
+                        mc.player.getX(),
+                        mc.player.getY() - offset,
+                        mc.player.getZ()
+                );
+
+                BlockState state = mc.level.getBlockState(pos);
+
+                if (state.isCollisionShapeFullBlock(mc.level, pos)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     // In PlayerUtils.java
     public static HitResult raycast(float yaw, float pitch, double maxDistance, boolean includeFluids) {
         Vec3 startPos = mc.player.getEyePosition();
