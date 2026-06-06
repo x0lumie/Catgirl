@@ -25,14 +25,15 @@
     "ItemInHandRendererInvoker",
     "ItemInHandRendererMixin",
     "KeyboardInputMixin",
+    "KeyMappingAccessor",
     "LevelRendererMixin",
     "LivingEntityRendererMixin",
     "MinecraftMixin",
     "MouseMixin",
     "PacketSendMixin",
     "RenderMixin",
-    "blur.GameRendererAccessor",
     "blur.BlurRendererMixin",
+    "blur.GameRendererAccessor",
     "blur.PostEffectPassAccessor",
     "blur.PostEffectProcessorAccessor"
   ]
