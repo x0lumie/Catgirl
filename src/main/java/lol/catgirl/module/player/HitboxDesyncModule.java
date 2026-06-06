@@ -55,9 +55,8 @@ public class HitboxDesyncModule extends Module {
 
         if (!autoDesync.getValue()) {
             toggle();
+            Catgirl.sendChatMessage("Your hitbox has been desynced.");
         }
-
-        Catgirl.sendChatMessage("Your hitbox has been desynced.");
     }
 
     @EventHook
