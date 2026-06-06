@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.*;
 import lol.catgirl.event.impl.Render3DEvent;
 import lol.catgirl.utils.IMinecraft;
 import net.minecraft.client.Camera;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -55,6 +56,16 @@ public class RenderUtils implements IMinecraft {
                     .withCull(false)
                     .build()
     );
+
+    public static void drawImage(GuiGraphics guiGraphics, Identifier identifier, int x, int y, int imgWidth, int imgHeight) {
+        guiGraphics.blit(
+                RenderPipelines.GUI_TEXTURED, identifier,
+                x, y,
+                0, 0,
+                imgWidth, imgHeight,
+                imgWidth, imgHeight
+        );
+    }
 
     public static void renderBlockOutline(BlockPos pos, Render3DEvent event, Color color) {
         double camX = mc.gameRenderer.getMainCamera().position().x;
