@@ -1,6 +1,5 @@
 package lol.catgirl.module.combat;
 
-import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PacketReceivedEvent;
@@ -29,7 +28,7 @@ public final class VelocityModule extends Module {
         JumpReset,
         Intave,
         Matrix,
-        MatrixNew
+        MatrixSprint
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
@@ -62,7 +61,7 @@ public final class VelocityModule extends Module {
                         // ontick
                     }
 
-                    case MatrixNew -> {
+                    case MatrixSprint -> {
                         if (mc.player != null && mc.player.hurtTime > 0 && !mc.player.onGround()) {
                             double yawRad = mc.player.getYRot() * 0.017453292F;
 
