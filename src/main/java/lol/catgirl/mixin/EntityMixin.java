@@ -1,5 +1,7 @@
 package lol.catgirl.mixin;
 
+import lol.catgirl.Catgirl;
+import lol.catgirl.event.impl.PlayerStrafeEvent;
 import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.module.movement.NoPushModule;
 import lol.catgirl.utils.player.RotationUtils;
@@ -36,6 +38,31 @@ public abstract class EntityMixin {
     )
     private void mf(Args args) {
 
+    }
+
+    @ModifyArgs(
+            method = "moveRelative",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/Entity;getInputVector(Lnet/minecraft/world/phys/Vec3;FF)Lnet/minecraft/world/phys/Vec3;"
+            )
+    )
+    private void strafeHook(Args args) {
+        if ((Object) this != mc.player) {
+            return;
+        }
+
+        Vec3 input = args.get(0);
+        float speed = args.get(1);
+        float yaw = args.get(2);
+
+        PlayerStrafeEvent event = new PlayerStrafeEvent(input, speed, yaw);
+
+        Catgirl.INSTANCE.eventBus.post(event);
+
+        args.set(0, event.getMovementInput());
+        args.set(1, event.getSpeed());
+        args.set(2, event.getYaw());
     }
 
     @Inject(method = "push", at = @At("HEAD"), cancellable = true)

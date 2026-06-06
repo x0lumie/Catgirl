@@ -1,8 +1,11 @@
 package lol.catgirl.module.movement;
 
+import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
+import lol.catgirl.event.impl.PlayerJumpEvent;
 import lol.catgirl.event.impl.PlayerJumpFactorEvent;
+import lol.catgirl.event.impl.PlayerStrafeEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.player.ScaffoldModule;
@@ -17,11 +20,14 @@ import net.minecraft.world.phys.Vec3;
 public final class SpeedModule extends Module {
     public static final SpeedModule INSTANCE = new SpeedModule();
 
+    private int polarGoyer = 0;
+
     public enum Mode {
         Legit,
         LegitExploit,
         Intave,
-        Matrix
+        Matrix,
+        Polar
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Intave);
@@ -53,6 +59,10 @@ public final class SpeedModule extends Module {
                 if (MoveUtils.isMoving() && mc.player.onGround()) {
                     mc.player.jumpFromGround();
                 }
+            }
+
+            case Polar -> {
+                GameTimer.setSpeed(1.009f); // yo.
             }
 
             case LegitExploit -> {
@@ -114,6 +124,38 @@ public final class SpeedModule extends Module {
         if (mode.getValue() == Mode.Matrix && matrixLowHop.getValue()
                 && MoveUtils.isMoving()) {
             event.factor = 0.026f;
+        }
+    }
+
+    @EventHook
+    public void onStrafe(PlayerStrafeEvent event) {
+        if(mc.player == null) return;
+
+        if(mode.getValue() == Mode.Polar) {
+            if (mc.player.getId() == 1) {}
+
+            if (mc.player.getId() == 5 && polarGoyer % 2 != 0) {
+                var a = mc.player.getDeltaMovement().y;
+                a -= 0.03;
+                MoveUtils.setMotionY(a);
+            }
+
+            if (mc.player.onGround()) {
+                PlayerUtils.jump();
+            }
+
+            if (polarGoyer % 2 != 0) {
+                Catgirl.sendChatMessage(String.valueOf(mc.player.getId()));
+            }
+
+            MoveUtils.moveFlying(0.002);
+        }
+    }
+
+    @EventHook
+    public void onJump(PlayerJumpEvent event) {
+        if(mode.getValue() == Mode.Polar) {
+            polarGoyer++;
         }
     }
 

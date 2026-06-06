@@ -1,6 +1,7 @@
 package lol.catgirl.mixin;
 
 import lol.catgirl.Catgirl;
+import lol.catgirl.event.impl.PlayerJumpEvent;
 import lol.catgirl.event.impl.PlayerJumpFactorEvent;
 import lol.catgirl.utils.IMinecraft;
 import lol.catgirl.utils.player.PlayerUtils;
@@ -21,6 +22,8 @@ public class LivingEntityMixin implements IMinecraft {
             PlayerUtils.lastModTime = System.currentTimeMillis();
         }
     }
+
+
     @Inject(at = @At("HEAD"), method = "handleDamageEvent")
     private void onDamage(CallbackInfo info) {
         if((Object) this == mc.player) {
@@ -48,6 +51,13 @@ public class LivingEntityMixin implements IMinecraft {
             );
             self.needsSync = true;
             info.cancel();
+        }
+    }
+
+    @Inject(method = "jumpFromGround", at = @At("HEAD"))
+    private void onJump(CallbackInfo ci) {
+        if ((Object)this == mc.player) {
+            Catgirl.INSTANCE.eventBus.post(new PlayerJumpEvent());
         }
     }
 }
