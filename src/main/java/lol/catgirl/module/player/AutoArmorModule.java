@@ -3,9 +3,13 @@ package lol.catgirl.module.player;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.combat.AuraModule;
+import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.utils.client.SilentScreen;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.inventory.InventoryUtils;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -25,12 +29,24 @@ public class AutoArmorModule extends Module {
 
     public final SliderProperty delay = new SliderProperty("Delay", 75, 0f, 500f, 1);
 
+    public enum Mode {
+        Auto,
+        OpenInv
+    }
+
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Auto);
+    public final BoolProperty silentScreen = new BoolProperty("Silent Screen", false);
+
+    private float animProgress = 0f;
+    private int totalArmorPieces = 4;
+    private int completedArmorPieces = 0;
+
     public AutoArmorModule() {
         super("AutoArmor",
                 "Automatically equips armor.",
                 ModuleCategory.Player
         );
-        addSetting(delay);
+        addSettings(mode, delay);
     }
 
     @EventHook
@@ -38,9 +54,25 @@ public class AutoArmorModule extends Module {
         if (mc.player == null) return;
         if(!this.isEnabled()) return;
 
-        if (!(mc.screen instanceof InventoryScreen) &&
-                !InventoryMoveModule.INSTANCE.isEnabled()) {
-            return;
+        Screen currentScreen = mc.screen;
+
+        if (mode.getValue() == Mode.OpenInv) {
+
+            if (silentScreen.getValue()
+                    && currentScreen instanceof InventoryScreen
+                    && !(currentScreen instanceof SilentScreen)) {
+
+                mc.setScreen(new SilentScreen(currentScreen));
+                return;
+            }
+
+            if (currentScreen instanceof SilentScreen silent) {
+                currentScreen = silent.getWrapped();
+            }
+
+            if (!(currentScreen instanceof InventoryScreen)) {
+                return;
+            }
         }
 
         var aura = AuraModule.INSTANCE;
@@ -55,17 +87,29 @@ public class AutoArmorModule extends Module {
 
         for (EquipmentSlot type : EquipmentSlot.values()) {
 
+            if (!type.isArmor()) {
+                continue;
+            }
+
             Slot bestSlot = playerHandler.slots.stream()
                     .filter(s -> isArmorForSlot(s, type))
                     .max(Comparator.comparingDouble(s ->
                             getArmorValue(s.getItem())))
                     .orElse(null);
 
-            if (bestSlot == null) continue;
+            if (bestSlot == null) {
+                continue;
+            }
 
             ItemStack equipped = mc.player.getItemBySlot(type);
+
             double equippedValue = getArmorValue(equipped);
             double bestValue = getArmorValue(bestSlot.getItem());
+
+            if (!equipped.isEmpty() && equippedValue >= bestValue) {
+                completedArmorPieces++;
+                continue;
+            }
 
             if (equipped.isEmpty() || bestValue > equippedValue) {
                 InventoryUtils.shiftClick(playerHandler, bestSlot.index, 0);
@@ -108,4 +152,11 @@ public class AutoArmorModule extends Module {
 
         return score;
     }
+
+    @Override
+    protected String getFinalSuffix() {
+        return mode.getValue().toString();
+    }
+
+
 }

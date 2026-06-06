@@ -4,8 +4,10 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.utils.client.SilentScreen;
 import lol.catgirl.utils.player.inventory.InventoryUtils;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.item.ItemStack;
@@ -18,8 +20,8 @@ public final class AutoTotemModule extends Module {
         Auto, Legit
     }
 
-    public final EnumProperty<Mode> mode =
-            new EnumProperty<>("Mode", Mode.Auto);
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Auto);
+    public final BoolProperty silentScreen = new BoolProperty("Silent Screen", false).hide(()-> !(mode.getValue() == Mode.Legit));
 
     public final SliderProperty delay = new SliderProperty("Delay", 200, 0, 500, 25).hide(()-> !(mode.getValue() == Mode.Legit));
 
@@ -28,7 +30,7 @@ public final class AutoTotemModule extends Module {
                 "Immediately equips a totem in pvp",
                 ModuleCategory.Combat
         );
-        addSettings(mode, delay);
+        addSettings(mode, delay, silentScreen);
     }
 
     private static final int OFFHAND = 45;
@@ -72,7 +74,11 @@ public final class AutoTotemModule extends Module {
                         return;
                     }
 
-                    mc.setScreen(new InventoryScreen(mc.player));
+                    if (silentScreen.getValue()) {
+                        mc.setScreen(new SilentScreen(new InventoryScreen(mc.player)));
+                    } else {
+                        mc.setScreen(new InventoryScreen(mc.player));
+                    }
 
                     waitingForInventory = true;
                     return;

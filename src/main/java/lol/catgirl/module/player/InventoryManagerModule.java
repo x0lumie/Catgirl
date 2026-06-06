@@ -3,7 +3,9 @@ package lol.catgirl.module.player;
 
 import lol.catgirl.Catgirl;
 import lol.catgirl.module.combat.AuraModule;
+import lol.catgirl.module.combat.AutoTotemModule;
 import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.client.TickingTimer;
 import lol.catgirl.utils.player.PlayerUtils;
@@ -73,12 +75,20 @@ public class InventoryManagerModule extends Module {
 
     public final TickingTimer timer = new TickingTimer();
 
+    public enum Mode {
+        Auto,
+        OpenInv
+    }
+
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Auto);
+
     public InventoryManagerModule() {
         super("InventoryManager",
                 "Helps you manage your inventory items and slots.",
                 ModuleCategory.Player
         );
         addSettings(
+                mode,
                 swordSlot,
                 pickaxeSlot,
                 axeSlot,
@@ -112,9 +122,16 @@ public class InventoryManagerModule extends Module {
         if(!this.isEnabled()) return;
 
         if (mc.player == null || mc.level == null) return;
-        if (!(mc.screen instanceof InventoryScreen) &&
-                !InventoryMoveModule.INSTANCE.isEnabled()) {
-            return;
+        switch (mode.getValue()) {
+            case Auto -> {
+                // always
+            }
+
+            case OpenInv -> {
+                if (!(mc.screen instanceof InventoryScreen)) {
+                    return;
+                }
+            }
         }
 
         AuraModule auraModule = AuraModule.INSTANCE;
@@ -430,5 +447,10 @@ public class InventoryManagerModule extends Module {
         score -= durability * 0.2;
 
         return score;
+    }
+
+    @Override
+    protected String getFinalSuffix() {
+        return mode.getValue().toString();
     }
 }
