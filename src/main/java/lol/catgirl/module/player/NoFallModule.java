@@ -13,6 +13,7 @@ import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 public final class NoFallModule extends Module {
@@ -38,11 +39,13 @@ public final class NoFallModule extends Module {
     public final BoolProperty collectWater = new BoolProperty("Collect Water", true).hide(()-> !(mode.getValue() == Mode.MLG));
 
     private final Map<Mode, NoFallMode>
-            nofallModes = Map.of(
-            Mode.MLG, new MLGNoFallMode(this),
-            Mode.CubeCraft, new CubeCraftNoFallMode(),
-            Mode.OnGround, new OnGroundNoFallMode()
-    );
+            nofallModes = new EnumMap<>(Mode.class);
+
+    {
+        nofallModes.put(Mode.MLG, new MLGNoFallMode(this));
+        nofallModes.put(Mode.CubeCraft, new CubeCraftNoFallMode());
+        nofallModes.put(Mode.OnGround, new OnGroundNoFallMode());
+    }
 
     @EventHook
     public void onPreMotion(PreMotionEvent event) {

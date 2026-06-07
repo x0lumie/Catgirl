@@ -15,6 +15,7 @@ import net.minecraft.world.item.*;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 public final class NoSlowModule extends Module {
@@ -49,14 +50,17 @@ public final class NoSlowModule extends Module {
         Matrix
     }
 
-    private final Map<Mode, NoSlowMode> noSlowMode = Map.of(
-            Mode.NCP, new NCPNoSlowMode(),
-            Mode.Jump, new JumpNoSlowMode(),
-            Mode.Intave, new IntaveNoSlowMode(),
-            Mode.Polar, new PolarNoSlowMode(this),
-            Mode.Matrix, new MatrixNoSlowMode(this)
+    private final Map<Mode, NoSlowMode> noSlowMode;
 
-    );
+    {
+        noSlowMode = new EnumMap<>(Mode.class);
+
+        noSlowMode.put(Mode.NCP, new NCPNoSlowMode());
+        noSlowMode.put(Mode.Jump, new JumpNoSlowMode());
+        noSlowMode.put(Mode.Intave, new IntaveNoSlowMode());
+        noSlowMode.put(Mode.Polar, new PolarNoSlowMode(this));
+        noSlowMode.put(Mode.Matrix, new MatrixNoSlowMode(this));
+    }
 
     @EventHook
     public void onPreMotion(PreMotionEvent event) {
