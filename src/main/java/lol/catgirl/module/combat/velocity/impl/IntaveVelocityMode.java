@@ -2,39 +2,54 @@ package lol.catgirl.module.combat.velocity.impl;
 
 import lol.catgirl.event.impl.PacketReceivedEvent;
 import lol.catgirl.event.impl.ClientTickEvent;
+import lombok.Getter;
 import lol.catgirl.module.combat.velocity.VelocityMode;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class IntaveVelocityMode implements VelocityMode {
-    
+
     private int velocityTicks = 0;
     private int noMovementTicks = 0;
     private double lastReduction = 0;
-    
+
+    private final Queue<Long> flagTimes = new LinkedList<>();
+    private int consecutiveFlags = 0;
+    private int hitsSinceReset = 0;
+    private boolean forceLegit = false;
+    private int legitTicks = 0;
+
     @Override
     public void onPacketRecieved(PacketReceivedEvent event) {
         if (event.packet instanceof ClientboundSetEntityMotionPacket) {
             ClientboundSetEntityMotionPacket packet = (ClientboundSetEntityMotionPacket) event.packet;
-            
+
             if (packet.getId() == mc.player.getId()) {
                 Vec3 original = packet.getMovement();
-                
+
                 if (Math.abs(original.x) < 0.05 && Math.abs(original.z) < 0.05) {
                     return;
                 }
-                
+
+                if (forceLegit || shouldTakeFullKnockback()) {
+                    hitsSinceReset = 0;
+                    return;
+                }
+
                 boolean moving = MoveUtils.isMoving();
                 boolean inWeb = PlayerUtils.isInWeb();
                 boolean inWater = mc.player.isInWater();
                 boolean onGround = mc.player.onGround();
                 boolean sneaking = mc.player.isShiftKeyDown();
                 boolean sprinting = mc.player.isSprinting();
-                
+
                 double reduction = 1.0;
-                
+
                 if (inWeb) {
                     reduction = 0.65;
                 }
@@ -54,24 +69,28 @@ public class IntaveVelocityMode implements VelocityMode {
                 else if (sprinting) {
                     reduction = 0.95;
                 }
-                
-                reduction += (Math.random() - 0.5) * 0.03;
+
+                if (consecutiveFlags > 0) {
+                    reduction = Math.min(0.92, reduction + 0.08);
+                }
+
+                reduction += (Math.random() - 0.5) * 0.02;
                 reduction = Math.max(0.65, Math.min(0.98, reduction));
-                
+
                 double newX = original.x * reduction;
                 double newZ = original.z * reduction;
                 double newY = original.y * 0.75;
-                
+
                 newX += (Math.random() - 0.5) * 0.002;
                 newZ += (Math.random() - 0.5) * 0.002;
-                
+
                 if (Math.signum(newX) != Math.signum(original.x) && Math.abs(original.x) > 0.05) {
                     newX = original.x * 0.1;
                 }
                 if (Math.signum(newZ) != Math.signum(original.z) && Math.abs(original.z) > 0.05) {
                     newZ = original.z * 0.1;
                 }
-                
+
                 try {
                     java.lang.reflect.Field field = ClientboundSetEntityMotionPacket.class.getDeclaredField("movement");
                     field.setAccessible(true);
@@ -79,26 +98,66 @@ public class IntaveVelocityMode implements VelocityMode {
                 } catch (Exception e) {
                     packet.movement = new Vec3(newX, newY, newZ);
                 }
-                
+
                 lastReduction = reduction;
                 velocityTicks = 0;
+                hitsSinceReset++;
             }
         }
     }
-    
+
+    private boolean shouldTakeFullKnockback() {
+        long now = System.currentTimeMillis();
+
+        flagTimes.removeIf(time -> now - time > 3000);
+
+        if (consecutiveFlags >= 3 || flagTimes.size() >= 3) {
+            forceLegit = true;
+            legitTicks = 10;
+            consecutiveFlags = 0;
+            flagTimes.clear();
+            return true;
+        }
+
+        if (hitsSinceReset > 6) {
+            hitsSinceReset = 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void onFlag() {
+        long now = System.currentTimeMillis();
+        flagTimes.offer(now);
+        consecutiveFlags++;
+
+        if (now - flagTimes.peek() < 2000) {
+            consecutiveFlags++;
+        }
+    }
+
     @Override
     public void onTick(ClientTickEvent event) {
         if (mc.player == null) return;
-        
+
         velocityTicks++;
-        
+
+        if (forceLegit) {
+            legitTicks--;
+            if (legitTicks <= 0) {
+                forceLegit = false;
+                consecutiveFlags = 0;
+            }
+        }
+
         if (MoveUtils.isMoving()) {
             noMovementTicks = 0;
         } else if (noMovementTicks > 0) {
             noMovementTicks--;
         }
-        
-        if (velocityTicks == 2 && lastReduction < 0.85) {
+
+        if (velocityTicks == 2 && lastReduction < 0.85 && !forceLegit) {
             Vec3 vel = mc.player.getDeltaMovement();
             if (Math.abs(vel.x) < 0.08 && Math.abs(vel.z) < 0.08 && MoveUtils.isMoving()) {
                 float yaw = mc.player.getYRot();
@@ -108,7 +167,7 @@ public class IntaveVelocityMode implements VelocityMode {
                 mc.player.setDeltaMovement(vel.x + addX, vel.y, vel.z + addZ);
             }
         }
-        
+
         if (velocityTicks > 20) {
             velocityTicks = 0;
         }
