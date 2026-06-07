@@ -67,6 +67,25 @@ public class RenderUtils implements IMinecraft {
         );
     }
 
+    public static boolean isEntityInView(Entity entity) {
+        Entity cameraEntity = mc.getCameraEntity();
+        if (cameraEntity == null) return false;
+
+        Vec3 cameraLook = cameraEntity.getViewVector(1.0F).normalize();
+
+        Vec3 toEntity = entity.position()
+                .add(0, entity.getEyeHeight(), 0)
+                .subtract(cameraEntity.getEyePosition(1.0F))
+                .normalize();
+
+        double dot = cameraLook.dot(toEntity);
+
+        double fov = mc.options.fov().get();
+        double threshold = Math.cos(Math.toRadians(fov));
+
+        return dot > threshold;
+    }
+
     public static void renderBlockOutline(BlockPos pos, Render3DEvent event, Color color) {
         double camX = mc.gameRenderer.getMainCamera().position().x;
         double camY = mc.gameRenderer.getMainCamera().position().y;
