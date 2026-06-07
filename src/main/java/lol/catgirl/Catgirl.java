@@ -1,9 +1,12 @@
 package lol.catgirl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lol.catgirl.event.EventBus;
 import lol.catgirl.event.Handler;
 import lol.catgirl.file.impl.ModulesFile;
 import lol.catgirl.manager.*;
+import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.ChatFormatting;
@@ -30,6 +33,9 @@ public class Catgirl implements ModInitializer {
 	public CommandManager commandManager;
 	public SoundManager soundManager;
 	private IssueManager issueManager;
+
+	@Getter
+	private final Gson GSON = new GsonBuilder().create();
 
 	@Override
 	public void onInitialize() {

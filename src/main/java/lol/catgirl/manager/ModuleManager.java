@@ -77,6 +77,7 @@ public final class ModuleManager {
         modules.add(ElytraFlyModule.INSTANCE);
         modules.add(NoRenderModule.INSTANCE);
         modules.add(HotbarModule.INSTANCE);
+        modules.add(AutoTranslateModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
