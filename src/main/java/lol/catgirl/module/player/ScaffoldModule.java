@@ -54,7 +54,7 @@ public final class ScaffoldModule extends Module {
     }
 
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
-    public static BoolProperty intaveTelly = new BoolProperty("Intave Telly", false);
+    public static BoolProperty intaveTelly = new BoolProperty("Intave Telly", false).hide(() -> mode.getValue() != Mode.Telly);
     private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Tower Mode", TowerMode.Matrix);
     private final EnumProperty<BlockCounterMode> blockCounterMode = new EnumProperty<>("Block Counter Mode", BlockCounterMode.Simple);
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
@@ -84,7 +84,7 @@ public final class ScaffoldModule extends Module {
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
-        addSettings(mode, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
+        addSettings(mode, intaveTelly, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
     }
 
     @Override
