@@ -90,6 +90,7 @@ public final class ModuleManager {
         modules.add(FastStopModule.INSTANCE);
         modules.add(HealthAlertModule.INSTANCE);
         modules.add(ChestAuraModule.INSTANCE);
+        modules.add(NotificationsModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

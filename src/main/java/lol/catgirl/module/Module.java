@@ -6,8 +6,11 @@ import lol.catgirl.Catgirl;
 import lol.catgirl.file.Serializable;
 import lol.catgirl.manager.SoundManager;
 import lol.catgirl.module.client.InterfaceModule;
+import lol.catgirl.module.client.NotificationsModule;
 import lol.catgirl.property.Property;
 import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import lol.catgirl.utils.IMinecraft;
 import lol.catgirl.utils.keybind.KeybindRegistry;
 import lol.catgirl.utils.keybind.Keybindable;
@@ -83,6 +86,16 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
 
         if (interfaceMod == null || mc.player == null) {
             return;
+        }
+
+        var notificationModule = NotificationsModule.INSTANCE;
+
+        if (notificationModule.mode.getValue() == NotificationsModule.Mode.Exhibition) {
+            if (enabled) {
+                NotificationManager.post("Module", name + " was enabled.", Notification.Type.OKAY);
+            } else {
+                NotificationManager.post("Module", name + " was disabled.", Notification.Type.WARNING);
+            }
         }
 
         switch (interfaceMod.toggleSoundsMode.getValue()) {
