@@ -7,6 +7,17 @@ import lol.catgirl.event.impl.PlayerAttackPreEvent;
 import lol.catgirl.event.impl.PlayerUseMultiplierEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.combat.velocity.VelocityMode;
+import lol.catgirl.module.combat.velocity.impl.CancelVelocityMode;
+import lol.catgirl.module.combat.velocity.impl.JumpResetVelocityMode;
+import lol.catgirl.module.combat.velocity.impl.MatrixSprintVelocityMode;
+import lol.catgirl.module.combat.velocity.impl.MatrixVelocityMode;
+import lol.catgirl.module.movement.SpeedModule;
+import lol.catgirl.module.movement.speed.SpeedMode;
+import lol.catgirl.module.movement.speed.impl.IntaveSpeedMode;
+import lol.catgirl.module.movement.speed.impl.LegitSpeedMode;
+import lol.catgirl.module.movement.speed.impl.MatrixSpeedMode;
+import lol.catgirl.module.movement.speed.impl.StrafeSpeedMode;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.player.MoveUtils;
@@ -14,19 +25,16 @@ import lol.catgirl.utils.player.PlayerUtils;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class VelocityModule extends Module {
     public static final VelocityModule INSTANCE = new VelocityModule();
 
-    private boolean hitProcessed;
-    private int jumpTicks;
-
-
     public enum Mode {
         Cancel,
         JumpReset,
-        Intave,
         Matrix,
         MatrixSprint
     }
@@ -40,121 +48,36 @@ public final class VelocityModule extends Module {
         addSettings(mode, polar, ignoreOnFire);
     }
 
-    private boolean intaveOnAttack;
-    private boolean intaveIsHitSlow;
+    private final Map<Mode, VelocityMode> velocityModes;
+
+    {
+        velocityModes = new EnumMap<>(Mode.class);
+
+        velocityModes.put(Mode.JumpReset, new JumpResetVelocityMode(this));
+        velocityModes.put(Mode.Cancel, new CancelVelocityMode());
+        velocityModes.put(Mode.MatrixSprint, new MatrixSprintVelocityMode());
+        velocityModes.put(Mode.Matrix, new MatrixVelocityMode());
+    }
 
     @EventHook
     public void onPacket(PacketReceivedEvent event) {
         if(mc.player == null) return;
         if(mc.player.isOnFire() && ignoreOnFire.getValue()) return;
 
-
-        if (event.packet instanceof ClientboundSetEntityMotionPacket packet) {
-
-            if (packet.getId() == mc.player.getId()) {
-                switch (mode.getValue()) {
-                    case Cancel -> {
-                        event.setCancelled(true);
-                    }
-
-                    case JumpReset -> {
-                        // ontick
-                    }
-
-                    case MatrixSprint -> {
-                        if (mc.player != null && mc.player.hurtTime > 0 && !mc.player.onGround()) {
-                            double yawRad = mc.player.getYRot() * 0.017453292F;
-
-                            Vec3 velocity = mc.player.getDeltaMovement();
-                            double horizontalSpeed = Math.sqrt(
-                                    velocity.x * velocity.x +
-                                            velocity.z * velocity.z
-                            );
-
-                            mc.player.setDeltaMovement(
-                                    -Math.sin(yawRad) * horizontalSpeed,
-                                    velocity.y,
-                                    Math.cos(yawRad) * horizontalSpeed
-                            );
-
-                            mc.player.setSprinting(mc.player.tickCount % 2 != 0);
-                        }
-                    }
-
-                    case Intave -> {
-                        if (mc.player.onGround()) {
-                            if (intaveOnAttack && intaveIsHitSlow
-                                    && mc.player.isSprinting()) {
-                                double motionX = packet.movement.x;
-                                double motionZ = packet.movement.z;
-                                motionZ *= 0.06;
-                                motionX *= 0.06;
-                                MoveUtils.setMotionX(motionX);
-                                MoveUtils.setMotionZ(motionZ);
-                                mc.player.setSprinting(false);
-                            }
-
-                            intaveOnAttack = false;
-                            intaveIsHitSlow = false;
-                        }
-                    }
-
-                    case Matrix -> {
-                        // IDK if this works anymore
-                        double motionX = packet.movement.x;
-                        double motionZ = packet.movement.z;
-                        motionZ *= 0.06;
-                        motionX *= 0.06;
-                        MoveUtils.setMotionX(motionX);
-                        MoveUtils.setMotionZ(motionZ);
-                    }
-                }
-            }
+        VelocityMode currentMode = velocityModes.get(mode.getValue());
+        if (currentMode != null) {
+            currentMode.onPacketRecieved(event);
         }
-    }
-
-    @EventHook
-    public void onSlowdown(PlayerUseMultiplierEvent event) {
-        if(!(mode.getValue() == Mode.Intave)) return;
-        intaveIsHitSlow = true;
-    }
-
-    @EventHook
-    public void onAttack(PlayerAttackPreEvent event) {
-        if(!(mode.getValue() == Mode.Intave)) return;
-        intaveOnAttack = true;
     }
 
     @EventHook
     public void onTick(ClientTickEvent event) {
         if (mc.player == null) return;
         if (mc.player.isOnFire() && ignoreOnFire.getValue()) return;
-        if(!(mode.getValue() == Mode.JumpReset)) return;
 
-        if (mc.player.hurtTime > 0) {
-            if (!hitProcessed) {
-                if (polar.getValue()) {
-                    if (ThreadLocalRandom.current().nextDouble() <= 0.75D) {
-                        jumpTicks = ThreadLocalRandom.current().nextInt(0, 5);
-                    }
-                } else {
-                    jumpTicks = 0;
-                }
-                hitProcessed = true;
-            }
-        } else {
-            hitProcessed = false;
-        }
-
-        if (jumpTicks >= 0) {
-            if (jumpTicks == 0) {
-                if (mc.player.onGround()) {
-                    PlayerUtils.jump();
-                }
-                jumpTicks = -1;
-            } else {
-                jumpTicks--;
-            }
+        VelocityMode currentMode = velocityModes.get(mode.getValue());
+        if (currentMode != null) {
+            currentMode.onTick(event);
         }
     }
 
