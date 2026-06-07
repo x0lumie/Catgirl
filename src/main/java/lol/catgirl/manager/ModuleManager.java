@@ -9,10 +9,7 @@ import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.*;
 import lol.catgirl.module.combat.*;
 import lol.catgirl.module.ghost.*;
-import lol.catgirl.module.hud.FunnyDisplayerModule;
-import lol.catgirl.module.hud.ModuleListModule;
-import lol.catgirl.module.hud.TargetHUDModule;
-import lol.catgirl.module.hud.WatermarkModule;
+import lol.catgirl.module.hud.*;
 import lol.catgirl.module.movement.*;
 import lol.catgirl.module.player.*;
 import lol.catgirl.module.render.*;
@@ -78,6 +75,8 @@ public final class ModuleManager {
         modules.add(TriggerBotModule.INSTANCE);
         modules.add(AttributeSwapModule.INSTANCE);
         modules.add(ElytraFlyModule.INSTANCE);
+        modules.add(NoRenderModule.INSTANCE);
+        modules.add(HotbarModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

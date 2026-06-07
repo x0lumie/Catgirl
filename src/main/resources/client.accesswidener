@@ -59,7 +59,7 @@ accessible field com/mojang/blaze3d/opengl/GlDevice directStateAccess Lcom/mojan
 accessible field com/mojang/blaze3d/opengl/GlTexture id I
 accessible field com/mojang/blaze3d/opengl/GlTexture firstFboId I
 accessible field com/mojang/blaze3d/opengl/GlTextureView firstFboId I
-
+accessible class net/minecraft/client/gui/Gui$ContextualInfo
 accessible field com/mojang/blaze3d/pipeline/RenderTarget colorTexture Lcom/mojang/blaze3d/textures/GpuTexture;
 accessible field com/mojang/blaze3d/pipeline/RenderTarget colorTextureView Lcom/mojang/blaze3d/textures/GpuTextureView;
 accessible field com/mojang/blaze3d/pipeline/RenderTarget depthTexture Lcom/mojang/blaze3d/textures/GpuTexture;
