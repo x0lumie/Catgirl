@@ -1,34 +1,36 @@
 package lol.catgirl.module.player;
 
-import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
-import lol.catgirl.event.impl.PlayerRotationEvent;
-import lol.catgirl.event.impl.PreMotionEvent;
-import lol.catgirl.event.impl.PreUpdateEvent;
+import lol.catgirl.event.impl.*;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.utils.client.Animation;
+import lol.catgirl.utils.client.ColorUtils;
+import lol.catgirl.utils.client.Easing;
 import lol.catgirl.utils.client.TickingTimer;
 import lol.catgirl.utils.player.MoveUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
 import lol.catgirl.utils.player.ScaffoldUtils;
+import lol.catgirl.utils.render.nanovg.DrawUtil;
+import lol.catgirl.utils.render.nanovg.ResourceManager;
 import lombok.Getter;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector2f;
+import org.lwjgl.nanovg.NanoVG;
 
+import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class ScaffoldModule extends Module {
@@ -45,8 +47,15 @@ public final class ScaffoldModule extends Module {
         Matrix
     }
 
+    public enum BlockCounterMode {
+        None,
+        Simple,
+        Catgirl
+    }
+
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
     private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Mode", TowerMode.Matrix);
+    private final EnumProperty<BlockCounterMode> blockCounterMode = new EnumProperty<>("Block Counter Mode", BlockCounterMode.Simple);
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
     public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1f, 180, 1f);
     private final SliderProperty placeDelay = new SliderProperty("Place Delay", 0, 0, 10, 1);
@@ -73,7 +82,7 @@ public final class ScaffoldModule extends Module {
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
-        addSettings(mode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
+        addSettings(mode, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
     }
 
     @Override
@@ -407,5 +416,134 @@ public final class ScaffoldModule extends Module {
                 event.onGround = true;
             }
         }
+    }
+    private final Animation popAnimation = new Animation(Easing.DECELERATE, 200L);
+    private boolean shouldRender = false;
+
+    @EventHook
+    public void onRenderTick(RenderTickEvent event) {
+        if (blockCounterMode.getValue() != BlockCounterMode.Catgirl) {
+            return;
+        }
+
+        if (mc.player == null) return;
+
+        ItemStack held = mc.player.getMainHandItem();
+        if (held.isEmpty() || !(held.getItem() instanceof BlockItem)) return;
+
+        int count = 0;
+
+        for (ItemStack stack : mc.player.getInventory().getNonEquipmentItems()) {
+            if (stack.is(held.getItem())) {
+                count += stack.getCount();
+            }
+        }
+
+        String labelText = "Blocks  ";
+        String countText = "" + count;
+        String totalText = labelText + countText;
+
+        int screenW = mc.getWindow().getGuiScaledWidth();
+        int screenH = mc.getWindow().getGuiScaledHeight();
+
+        float x = screenW / 2f;
+        float y = screenH / 1f - 70;
+
+        float iconSize = 16f;
+        float innerSpacing = 5f;
+        float paddingLeft = 6f;
+        float paddingRight = 7f;
+
+        float fontSize = 9f;
+        float textWidth = (float) DrawUtil.getStringWidth(totalText, fontSize);
+        float labelWidth = (float) DrawUtil.getStringWidth(labelText, fontSize);
+
+        float boxW = paddingLeft + iconSize + innerSpacing + textWidth + paddingRight;
+        float boxH = 22f;
+
+        float left = x - boxW / 2f;
+        float top = y - boxH / 2f;
+        float right = x + boxW / 2f;
+        float bottom = y + boxH / 2f;
+
+        DrawUtil.begin();
+
+        Color themeColor = ColorUtils.getClientTheme();
+        Color glowColor = new Color(themeColor.getRed(), themeColor.getGreen(), themeColor.getBlue(), 40);
+        DrawUtil.drawShadow(left, top, boxW, boxH, 5f, 6f, glowColor);
+
+        DrawUtil.roundedRectVarying(
+                left, top, right, bottom,
+                4f, 4f, 4f, 4f,
+                new Color(10, 10, 10, 245)
+        );
+
+        DrawUtil.end();
+
+        var gg = event.context;
+
+        int itemX = (int) (left + paddingLeft);
+        int itemY = (int) (top + (boxH - iconSize) / 2f);
+
+        gg.renderItem(held, itemX, itemY);
+
+        DrawUtil.begin();
+
+        float textX = left + paddingLeft + iconSize + innerSpacing;
+        float textY = bottom - 7f;
+
+        Color labelColor = new Color(themeColor.getRed(),
+                themeColor.getGreen(),
+                themeColor.getBlue(), 220
+        );
+
+        DrawUtil.drawString(
+                labelText,
+                textX,
+                textY,
+                fontSize,
+                labelColor,
+                ResourceManager.FontResources.productSansBold
+        );
+
+        DrawUtil.drawString(
+                countText,
+                textX + labelWidth,
+                textY,
+                fontSize,
+                new Color(255, 255, 255, 255),
+                ResourceManager.FontResources.productSansBold
+        );
+
+        DrawUtil.end();
+    }
+
+    @EventHook
+    public void onRender2D(Render2DEvent event) {
+        if (blockCounterMode.getValue() != BlockCounterMode.Simple) {
+            return;
+        }
+
+        if (mc.player == null) return;
+
+        int blocks = 0;
+        for (ItemStack stack : mc.player.getInventory().getNonEquipmentItems()) {
+            if (stack.getItem() instanceof BlockItem) {
+                blocks += stack.getCount();
+            }
+        }
+
+        String text = "blocks: " + blocks;
+
+        int screenWidth = mc.getWindow().getGuiScaledWidth();
+        int screenHeight = mc.getWindow().getGuiScaledHeight();
+
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        int x = centerX - mc.font.width(text) - 6;
+        int y = centerY + 6;
+
+        event.context.drawString(mc.font, text, x, y, Color.white.getRGB(), true);
     }
 }
