@@ -8,7 +8,9 @@ import lol.catgirl.utils.player.PlayerUtils;
 public final class StrafeSpeedMode implements SpeedMode {
     @Override
     public void onTick(ClientTickEvent event) {
-        MoveUtils.strafe();
+        MoveUtils.setSpeedWithFixedDirection(
+                MoveUtils.getSpeedByBPS
+                (MoveUtils.getSpeed()));
 
         if (MoveUtils.isMoving() && mc.player.onGround()) {
             PlayerUtils.jump();
