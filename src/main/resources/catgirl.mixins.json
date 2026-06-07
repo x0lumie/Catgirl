@@ -16,6 +16,7 @@
     "requireAnnotations": true
   },
   "client": [
+    "AvatarRendererMixin",
     "ClientLevelMixin",
     "ClientPacketListenerMixin",
     "ClientPlayerInteractionManagerMixin",
