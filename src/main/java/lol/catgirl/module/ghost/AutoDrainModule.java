@@ -29,7 +29,7 @@ public final class AutoDrainModule extends Module {
     private boolean pendingSwitchBack = false;
 
     public AutoDrainModule() {
-        super("Auto Drain",
+        super("AutoDrain",
                 "Swap to empty bucket and pick up water when aiming at a source",
                 ModuleCategory.Ghost
         );
