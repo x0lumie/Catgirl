@@ -68,12 +68,11 @@ public class MLGNoFallMode implements NoFallMode {
 
         Vec3 targetPos = hit.getLocation();
 
-        float[] rot = RotationUtils.getRotationsToPoint(
+        rotations = RotationUtils.getRotationsToPoint(
                 new float[]{mc.player.getYRot(), mc.player.getXRot()},
                 eye,
                 targetPos
         );
-        rotations = RotationUtils.getFixedRotation(rot, rot);
 
         double nextY = mc.player.getY() + mc.player.getDeltaMovement().y;
         boolean closeToGround = nextY <= hit.getLocation().y + 1.5;
@@ -88,6 +87,8 @@ public class MLGNoFallMode implements NoFallMode {
     @Override
     public void onRotation(PlayerRotationEvent event) {
         if (mc.player == null) return;
+
+        RotationUtils.setRotationSpeed(180);
 
         event.yaw = rotations[0];
         event.pitch = rotations[1];

@@ -19,7 +19,9 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,8 +53,8 @@ public final class AuraModule extends Module {
     public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
     public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Normal);
     public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
-    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 1f, 10, 0.1f);
-    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 1, 1f, 10, 0.1f);
+    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
+    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1f, 180, 1f);
     public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
     public static BoolProperty oldCombat = new BoolProperty("Old Combat", false);
@@ -152,19 +154,21 @@ public final class AuraModule extends Module {
     public void onPlayerRotation(PlayerRotationEvent event) {
         if (mc.player == null || target == null) return;
 
-        float[] finalRotations;
         float[] currentRotations = new float[]{event.yaw, event.pitch};
-
         float speed = randomRotationSpeed();
 
-        finalRotations = switch (rotations.getValue()) {
-            case Normal -> RotationUtils.regularAuraRotations(currentRotations, target, speed);
-            case Polar   -> RotationUtils.polarAuraRotations(currentRotations, target, speed);
-            case Puhfy   -> RotationUtils.puhfyAuraRotations(currentRotations, target, speed);
-        };
+        RotationUtils.setRotationSpeed(speed);
 
-        event.yaw   = finalRotations[0];
-        event.pitch = finalRotations[1];
+        float[] targetRotations;
+        switch (rotations.getValue()) {
+            case Normal -> targetRotations = RotationUtils.regularAuraRotations(currentRotations, target, speed);
+            case Polar  -> targetRotations = RotationUtils.polarAuraRotations(currentRotations, target, speed);
+            case Puhfy  -> targetRotations = RotationUtils.puhfyAuraRotations(currentRotations, target, speed);
+            default     -> targetRotations = RotationUtils.getRotations(currentRotations, mc.player.getEyePosition(), target);
+        }
+
+        event.yaw = targetRotations[0];
+        event.pitch = targetRotations[1];
 
         if (rayCast.getValue()) {
             HitResult hitResult = PlayerUtils.raycast(event.yaw, event.pitch, killRange.getValue(), false);

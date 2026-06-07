@@ -5,6 +5,7 @@ import lol.catgirl.module.movement.MovementFixModule;
 import lol.catgirl.utils.IMinecraft;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,13 +28,14 @@ public class RotationUtils implements IMinecraft {
     @Setter
     private static HitResult currentHitResult;
 
+    @Getter
+    @Setter
+    private static float rotationSpeed = 30f;
+
     public static float[] regularAuraRotations(float[] currentRotations, Entity targetEntity, float speed) {
         float[] targetRotations = getRotations(currentRotations, mc.player.getEyePosition(), targetEntity);
 
-        float smoothedYaw = getFixedRotation(targetRotations, currentRotations)[0];
-        float smoothedPitch = getFixedRotation(targetRotations, currentRotations)[1];
-
-        return new float[]{smoothRotation(currentRotations[0], smoothedYaw, speed), smoothRotation(currentRotations[1], smoothedPitch, speed)};
+        return new float[]{targetRotations[0], targetRotations[1]};
     }
 
     public static float[] puhfyAuraRotations(float[] currentRotations, final Entity entity, final float speed) {
@@ -68,10 +70,7 @@ public class RotationUtils implements IMinecraft {
 
         final float[] rotations = getRotationsToPoint(currentRotations, mc.player.getEyePosition(), bestPoint);
 
-        float smoothedYaw = getFixedRotation(rotations, currentRotations)[0];
-        float smoothedPitch = getFixedRotation(rotations, currentRotations)[1];
-
-        return new float[]{smoothRotation(currentRotations[0], smoothedYaw, speed), smoothRotation(currentRotations[1], smoothedPitch, speed)};
+        return new float[]{rotations[0], rotations[1]};
     }
 
     public static float[] polarAuraRotations(float[] currentRotations, final Entity entity, float speed) {
@@ -101,62 +100,58 @@ public class RotationUtils implements IMinecraft {
         float yaw   = (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90;
         float pitch = (float) Math.toDegrees(-Math.atan2(diff.y, horizontal));
 
-        return getFixedRotation(new float[]{yaw, clampPitch(pitch)}, currentRotations);
+        return new float[]{yaw, clampPitch(pitch)};
     }
 
-    public static boolean isFacing(Player self, Player target, float maxAngle) {
-        Vec3 eye = self.getEyePosition();
+    public static Vec2 move(final Vec2 last, final Vec2 target, double speed) {
+        if (speed == 0) return new Vec2(0, 0);
 
-        Vec3 dirToTarget = PlayerUtils.getClosestPoint(target).subtract(eye);
+        double deltaYaw = Mth.wrapDegrees(target.x - last.x);
+        double deltaPitch = target.y - last.y;
+        double distance = Math.sqrt(deltaYaw * deltaYaw + deltaPitch * deltaPitch);
 
-        double distXZ = Math.sqrt(dirToTarget.x * dirToTarget.x + dirToTarget.z * dirToTarget.z);
+        if (distance < 1e-6) return new Vec2(0, 0);
 
-        float targetYaw = (float) Math.toDegrees(Math.atan2(dirToTarget.z, dirToTarget.x)) - 90f;
-        float targetPitch = (float) -Math.toDegrees(Math.atan2(dirToTarget.y, distXZ));
+        double distYaw   = Math.abs(deltaYaw   / distance);
+        double distPitch = Math.abs(deltaPitch / distance);
 
-        float yawDiff = Math.abs(Mth.wrapDegrees(RotationUtils.getRotationYaw() - targetYaw));
-        float pitchDiff = Math.abs(RotationUtils.getRotationPitch() - targetPitch);
+        float moveYaw   = (float) Mth.clamp(deltaYaw,   -speed * distYaw,   speed * distYaw);
+        float movePitch = (float) Mth.clamp(deltaPitch, -speed * distPitch, speed * distPitch);
 
-        return yawDiff <= maxAngle && pitchDiff <= maxAngle;
+        return new Vec2(moveYaw, movePitch);
     }
 
-    public static float[] getFixedRotation(float[] rotations, float[] lastRotations) {
-        double gcd = gcd();
+    public static Vec2 smooth(final Vec2 last, final Vec2 target, final double speed) {
+        float yaw   = target.x;
+        float pitch = target.y;
 
-        double deltaYaw = rotations[0] - lastRotations[0];
-        double deltaPitch = rotations[1] - lastRotations[1];
+        if (speed != 0) {
+            Vec2 move = move(last, target, speed);
+            yaw   = last.x + move.x;
+            pitch = last.y + move.y;
 
-        deltaYaw -= deltaYaw % gcd;
-        deltaPitch -= deltaPitch % gcd;
-
-        double fixedYaw = lastRotations[0] + deltaYaw;
-        double fixedPitch = lastRotations[1] + deltaPitch;
-
-        return new float[]{
-                (float) fixedYaw,
-                (float) Mth.clamp(fixedPitch, -90f, 90f)
-        };
-    }
-
-    public static float smoothRotation(float current, float target, float speed) {
-        speed = Mth.clamp(speed, 0.0f, 1.0f);
-
-        float diff = Mth.wrapDegrees(target - current);
-
-        if (Math.abs(diff) < 0.01f) {
-            return target;
+            int iters = (int)(Minecraft.getInstance().getFps() / 20f + Math.random() * 10);
+            for (int i = 1; i <= iters; i++) {
+                if (Math.abs(move.x) + Math.abs(move.y) > 0.0001) {
+                    yaw   += (Math.random() - 0.5) / 1000.0;
+                    pitch -= Math.random() / 200.0;
+                }
+                Vec2 patched = applySensitivityPatch(new Vec2(yaw, pitch), last);
+                yaw   = patched.x;
+                pitch = Mth.clamp(patched.y, -90f, 90f);
+            }
         }
 
-        float smoothSpeed = speed * speed * (3.0f - 2.0f * speed);
-
-        return current + diff * smoothSpeed;
+        return new Vec2(yaw, pitch);
     }
 
-    public static double gcd() {
-        double d = mc.options.sensitivity().get() * (double) 0.6F + (double) 0.2F;
-        return d * d * d * 1.2;
+    public static Vec2 applySensitivityPatch(final Vec2 rotation, final Vec2 prev) {
+        float sens = (float)(mc.options.sensitivity().get() * (1 + Math.random() / 10_000_000) * 0.6F + 0.2F);
+        double mult = sens * sens * sens * 8.0F * 0.15;
+        float yaw   = prev.x + (float)(Math.round((rotation.x - prev.x) / mult) * mult);
+        float pitch = prev.y + (float)(Math.round((rotation.y - prev.y) / mult) * mult);
+        return new Vec2(yaw, Mth.clamp(pitch, -90f, 90f));
     }
-
 
     public static float[] getRotations(float[] last, Vec3 eye, Entity entity) {
         Vec3 to = PlayerUtils.getClosestPoint(entity);

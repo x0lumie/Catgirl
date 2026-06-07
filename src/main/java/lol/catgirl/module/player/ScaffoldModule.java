@@ -46,10 +46,9 @@ public final class ScaffoldModule extends Module {
     }
 
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
-    private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Mode", TowerMode.Matrix.Matrix);
-
-    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 1, 1f, 10, 0.1f);
-    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 1, 1f, 10, 0.1f);
+    private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Mode", TowerMode.Matrix);
+    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
+    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1f, 180, 1f);
     private final SliderProperty placeDelay = new SliderProperty("Place Delay", 0, 0, 10, 1);
     public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static BoolProperty strict = new BoolProperty("Strict Ray Cast", true).hide(() -> !rayCast.getValue());
@@ -309,18 +308,10 @@ public final class ScaffoldModule extends Module {
             }
         }
 
-        float[] currentRotations = new float[]{event.yaw, event.pitch};
+        RotationUtils.setRotationSpeed(randomRotationSpeed());
 
-        float smoothedYaw = RotationUtils.getFixedRotation(targetRotations, currentRotations)[0];
-        float smoothedPitch = RotationUtils.getFixedRotation(targetRotations, currentRotations)[1];
-
-        float[] finalRotations = new float[]{
-                RotationUtils.smoothRotation(currentRotations[0], smoothedYaw, randomRotationSpeed()),
-                RotationUtils.smoothRotation(currentRotations[1], smoothedPitch, randomRotationSpeed())
-        };
-
-        event.yaw = finalRotations[0];
-        event.pitch = finalRotations[1];
+        event.yaw = targetRotations[0];
+        event.pitch = targetRotations[1];
 
         placeYaw = event.yaw;
         placePitch = event.pitch;

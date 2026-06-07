@@ -81,9 +81,7 @@ public final class AntiFireballModule extends Module {
                 target
         );
 
-        rotations = RotationUtils.getFixedRotation(
-                rotations, lastRotations
-        );
+        RotationUtils.setRotationSpeed(180);
 
         event.yaw = rotations[0];
         event.pitch = rotations[1];
