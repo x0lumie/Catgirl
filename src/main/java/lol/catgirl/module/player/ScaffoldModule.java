@@ -18,7 +18,6 @@ import lol.catgirl.utils.player.ScaffoldUtils;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 import lombok.Getter;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +27,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.nanovg.NanoVG;
 
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -54,7 +52,7 @@ public final class ScaffoldModule extends Module {
     }
 
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
-    public static BoolProperty intaveTelly = new BoolProperty("Intave Telly", false).hide(() -> mode.getValue() != Mode.Telly);
+    public static BoolProperty slowTelly = new BoolProperty("Slow Telly", false).hide(() -> mode.getValue() != Mode.Telly);
     private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Tower Mode", TowerMode.Matrix);
     private final EnumProperty<BlockCounterMode> blockCounterMode = new EnumProperty<>("Block Counter Mode", BlockCounterMode.Simple);
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
@@ -84,7 +82,7 @@ public final class ScaffoldModule extends Module {
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
-        addSettings(mode, intaveTelly, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
+        addSettings(mode, slowTelly, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
     }
 
     @Override
@@ -218,7 +216,7 @@ public final class ScaffoldModule extends Module {
         switch (mode.getValue()) {
             case Normal -> getBaseRotations(event);
             case Telly -> {
-                if (intaveTelly.getValue() ? offGroundTicks <= 9 : !mc.player.onGround()) {
+                if (slowTelly.getValue() ? offGroundTicks <= 9 && offGroundTicks > 3 : !mc.player.onGround()) {
                     getBaseRotations(event);
                     canPlace = true;
                 } else {
