@@ -8,10 +8,7 @@ import lol.catgirl.event.impl.PlayerUseMultiplierEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.combat.velocity.VelocityMode;
-import lol.catgirl.module.combat.velocity.impl.CancelVelocityMode;
-import lol.catgirl.module.combat.velocity.impl.JumpResetVelocityMode;
-import lol.catgirl.module.combat.velocity.impl.MatrixSprintVelocityMode;
-import lol.catgirl.module.combat.velocity.impl.MatrixVelocityMode;
+import lol.catgirl.module.combat.velocity.impl.*;
 import lol.catgirl.module.movement.SpeedModule;
 import lol.catgirl.module.movement.speed.SpeedMode;
 import lol.catgirl.module.movement.speed.impl.IntaveSpeedMode;
@@ -36,7 +33,8 @@ public final class VelocityModule extends Module {
         Cancel,
         JumpReset,
         Matrix,
-        MatrixSprint
+        MatrixSprint,
+        Intave
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
@@ -57,6 +55,8 @@ public final class VelocityModule extends Module {
         velocityModes.put(Mode.Cancel, new CancelVelocityMode());
         velocityModes.put(Mode.MatrixSprint, new MatrixSprintVelocityMode());
         velocityModes.put(Mode.Matrix, new MatrixVelocityMode());
+        velocityModes.put(Mode.Intave, new IntaveVelocityMode());
+
     }
 
     @EventHook
