@@ -67,6 +67,8 @@ public class RenderUtils implements IMinecraft {
         );
     }
 
+
+
     public static boolean isEntityInView(Entity entity) {
         Entity cameraEntity = mc.getCameraEntity();
         if (cameraEntity == null) return false;

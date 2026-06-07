@@ -87,6 +87,9 @@ public final class ModuleManager {
         modules.add(MCPModule.INSTANCE);
         modules.add(AutoAuthModule.INSTANCE);
         modules.add(AutoWalkModule.INSTANCE);
+        modules.add(FastStopModule.INSTANCE);
+        modules.add(HealthAlertModule.INSTANCE);
+        modules.add(ChestAuraModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

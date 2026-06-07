@@ -7,7 +7,7 @@ import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 
-public class AutoWalkModule extends Module {
+public final class AutoWalkModule extends Module {
     public static final AutoWalkModule INSTANCE = new AutoWalkModule();
 
     public final BoolProperty autoJump = new BoolProperty("Auto Jump", false);
