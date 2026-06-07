@@ -76,7 +76,7 @@ public class MoveUtils implements IMinecraft {
         }
     }
 
-    public static void strafeSpeed(double speed) {
+    public static void setSpeedWithFixedDirection(double speed) {
         double forward = mc.player.zza;
         double strafe = mc.player.xxa;
         float yaw = mc.player.getYRot();

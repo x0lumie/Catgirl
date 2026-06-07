@@ -1,7 +1,7 @@
 package lol.catgirl.module.movement;
 
 import lol.catgirl.event.EventHook;
-import lol.catgirl.event.impl.ClientTickEvent;
+import lol.catgirl.event.impl.PreUpdateEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.property.impl.EnumProperty;
@@ -24,8 +24,10 @@ public final class NoWebModule extends Module {
         addSettings(mode);
     }
 
+    // IF U REPLACED THIS EVENT IM GONNA DO BAD THINGS OKAY???!!!!
+
     @EventHook
-    public void onTick(ClientTickEvent event) {
+    public void onTick(PreUpdateEvent event) {
         if(mc.player == null) return;
         if(!PlayerUtils.isInWeb()) return;
         if(!MoveUtils.isMoving()) return;
@@ -34,22 +36,24 @@ public final class NoWebModule extends Module {
             case Intave -> {
                 if (mc.player.onGround()) {
                     if (mc.player.tickCount % 3 == 0) {
-                        MoveUtils.strafe(0.734f);
+                        MoveUtils.setSpeedWithFixedDirection(0.734f);
                     } else {
                         mc.player.jumpFromGround();
-                        MoveUtils.strafe(0.346f);
+                        MoveUtils.setSpeedWithFixedDirection(0.346f);
                     }
                 }
             }
 
             case Grim -> {
                 if (MoveUtils.isMoving()) {
-                    MoveUtils.setSpeed(0.644d);
+                    MoveUtils.setSpeedWithFixedDirection(0.644d);
                 }
             }
 
             case Matrix -> {
-                MoveUtils.setSpeed(0.30d);
+                if (MoveUtils.isMoving()) {
+                    MoveUtils.setSpeedWithFixedDirection(0.30d);
+                }
             }
         }
     }

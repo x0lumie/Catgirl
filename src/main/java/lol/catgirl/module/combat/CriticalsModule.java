@@ -66,12 +66,24 @@ public final class CriticalsModule extends Module {
                 }
             }
 
+
             case Packet -> {
                 PacketUtils.sendPacket(new ServerboundMovePlayerPacket.Pos(x, y + 0.0625D, z, false, false));
                 PacketUtils.sendPacket(new ServerboundMovePlayerPacket.Pos(x, y, z, false, false));
                 PacketUtils.sendPacket(new ServerboundMovePlayerPacket.Pos(x, y + 0.001D, z, false, false));
                 PacketUtils.sendPacket(new ServerboundMovePlayerPacket.Pos(x, y, z, false, false));
             }
+        }
+    }
+
+    private void critPacket(double yDelta, boolean posOnly) {
+        double x = mc.player.getX();
+        double y = mc.player.getY();
+        double z = mc.player.getZ();
+        if (posOnly) {
+            PacketUtils.sendPacket(new ServerboundMovePlayerPacket.Pos(x, y + yDelta, z, false, mc.player.horizontalCollision));
+        } else {
+            PacketUtils.sendPacket(new ServerboundMovePlayerPacket.PosRot(x, y + yDelta, z, mc.player.getYRot(), mc.player.getXRot(), false, mc.player.horizontalCollision));
         }
     }
 
