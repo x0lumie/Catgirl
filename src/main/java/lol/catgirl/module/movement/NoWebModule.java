@@ -45,15 +45,11 @@ public final class NoWebModule extends Module {
             }
 
             case Grim -> {
-                if (MoveUtils.isMoving()) {
-                    MoveUtils.setSpeedWithFixedDirection(0.644d);
-                }
+                MoveUtils.setSpeedWithFixedDirection(0.644d);
             }
 
             case Matrix -> {
-                if (MoveUtils.isMoving()) {
-                    MoveUtils.setSpeedWithFixedDirection(0.30d);
-                }
+                MoveUtils.setSpeedWithFixedDirection(0.30d);
             }
         }
     }
