@@ -77,6 +77,7 @@ public final class ModuleManager {
         modules.add(WallClimbModule.INSTANCE);
         modules.add(TriggerBotModule.INSTANCE);
         modules.add(AttributeSwapModule.INSTANCE);
+//        modules.add(FlyModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

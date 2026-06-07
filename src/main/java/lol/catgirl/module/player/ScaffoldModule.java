@@ -405,7 +405,7 @@ public final class ScaffoldModule extends Module {
     }
 
     // TODO: matrix tower flags but doesnt setback so..
-    
+
     public static class Towers {
         public static void matrix(PreMotionEvent event) {
             if (mc.options.keyJump.isDown()

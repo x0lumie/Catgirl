@@ -31,7 +31,8 @@ public final class WatermarkModule extends Module {
     public enum Mode {
         Catgirl,
         Catsense,
-        Simple
+        Simple,
+        Test
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);

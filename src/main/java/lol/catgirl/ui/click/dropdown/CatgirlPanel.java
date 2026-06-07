@@ -66,6 +66,14 @@ public class CatgirlPanel {
         throw new IllegalArgumentException("Unsupported property type: " + property.getClass().getName());
     }
 
+    public static void setCollapsed(ModuleCategory category, boolean collapsed) {
+        if (collapsed) {
+            collapsedPanels.add(category);
+        } else {
+            collapsedPanels.remove(category);
+        }
+    }
+
     public static void draw(ModuleCategory category, float defaultX, float defaultY, float mouseX, float mouseY, float partialTick) {
         float width = 100;
         float headerHeight = 18;

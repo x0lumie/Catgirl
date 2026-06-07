@@ -59,16 +59,22 @@ public class CatgirlDropdown extends Screen implements IMinecraft {
                 DrawUtil.roundedRect(x + 6f + textWidth + 2f, y + 4f, x + 6f + textWidth + 3.5f, y + boxHeight - 4f, 0.5f, Color.WHITE);
             }
         }
-
         float defaultOffsetX = 15;
         float defaultOffsetY = 50;
         int index = 0;
 
         for (ModuleCategory category : ModuleCategory.values()) {
-//            if (category == ModuleCategory.Ghost) continue;
+            if (category == ModuleCategory.Ghost) continue;
 
-            float startX = defaultOffsetX + (index * 110);
-            CatgirlPanel.draw(category, startX, defaultOffsetY, mouseX, mouseY, partialTick);
+            float x = defaultOffsetX + (index * 110);
+            float y = defaultOffsetY;
+
+//            // FORCE Ghost under Combat row
+//            if (category == ModuleCategory.Ghost) {
+//                y += 120; // push it down
+//            }
+
+            CatgirlPanel.draw(category, x, y, mouseX, mouseY, partialTick);
 
             index++;
         }
