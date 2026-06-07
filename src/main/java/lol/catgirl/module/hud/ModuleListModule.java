@@ -6,7 +6,9 @@ import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.InterfaceModule;
+import lol.catgirl.module.combat.AuraModule;
 import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
@@ -17,6 +19,13 @@ import java.util.HashMap;
 public final class ModuleListModule extends Module {
     public static final ModuleListModule INSTANCE = new ModuleListModule();
 
+    public enum Mode {
+        Catgirl,
+        Virtue,
+        Classic
+    }
+
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
     public final BoolProperty background = new BoolProperty("Background", true);
     public final BoolProperty bar = new BoolProperty("Bar", true);
     public final BoolProperty isLeft = new BoolProperty("Position Left", false);
