@@ -53,8 +53,8 @@ public class ChestAuraModule extends Module {
     public final BoolProperty visuals = new BoolProperty("Visuals", true);
     public final SliderProperty visualRange = new SliderProperty("Visual Range", 6.0f, 0f, 12f, 0.05f).hide(() -> !visuals.getValue());
     public final EnumProperty<RenderMode> renderMode = new EnumProperty<>("Mode", RenderMode.Outline).hide(() -> !visuals.getValue());
-    public final SliderProperty alphaValue = new SliderProperty("Fill Alpha", 150, 0, 255, 1).hide(() -> !visuals.getValue() || !renderMode.getValue().equals(RenderMode.Filled));
-    public final SliderProperty outlineWidth = new SliderProperty("Outline Width", 1.5f, 1.0f, 5.0f, 0.1f).hide(() -> !visuals.getValue() || !renderMode.getValue().equals(RenderMode.Outline));
+//    public final SliderProperty alphaValue = new SliderProperty("Fill Alpha", 150, 0, 255, 1).hide(() -> !visuals.getValue() || !renderMode.getValue().equals(RenderMode.Filled));
+//    public final SliderProperty outlineWidth = new SliderProperty("Outline Width", 1.5f, 1.0f, 5.0f, 0.1f).hide(() -> !visuals.getValue() || !renderMode.getValue().equals(RenderMode.Outline));
     public final BoolProperty pauseScaffold = new BoolProperty("Pause Scaffold", true);
     public final BoolProperty waitForAura = new BoolProperty("Wait For Aura", true);
     public final Set<BlockPos> openedChests = new HashSet<>();
@@ -62,6 +62,7 @@ public class ChestAuraModule extends Module {
 
     public ChestAuraModule() {
         super("ChestAura", "Automatically opens chests around you.", ModuleCategory.Player);
+        addSettings(range, rotate, rotationSpeed, visuals, visualRange, renderMode, pauseScaffold, waitForAura);
     }
 
     @RequiredArgsConstructor
