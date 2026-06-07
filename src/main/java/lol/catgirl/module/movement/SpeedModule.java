@@ -6,6 +6,7 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.movement.speed.SpeedMode;
 import lol.catgirl.module.movement.speed.impl.*;
+import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 
 import java.util.EnumMap;
@@ -19,10 +20,12 @@ public final class SpeedModule extends Module {
         LegitExploit,
         Intave,
         Matrix,
-        Strafe
+        Strafe,
+        CubeCraft
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Intave);
+    public final BoolProperty cubeCraftLowHop = new BoolProperty("Low Hop", false).hide(()-> !(mode.getValue() == Mode.CubeCraft));
 
     private final Map<Mode, SpeedMode> speedModes;
 
@@ -33,12 +36,13 @@ public final class SpeedModule extends Module {
         speedModes.put(Mode.Strafe, new StrafeSpeedMode());
         speedModes.put(Mode.Intave, new IntaveSpeedMode());
         speedModes.put(Mode.Matrix, new MatrixSpeedMode());
+        speedModes.put(Mode.CubeCraft, new CubeCraftSpeedMode(this));
 
     }
 
     public SpeedModule() {
         super("Speed", "Allows you to go faster!!!", ModuleCategory.Movement);
-        addSettings(mode);
+        addSettings(mode, cubeCraftLowHop);
     }
 
     @EventHook
