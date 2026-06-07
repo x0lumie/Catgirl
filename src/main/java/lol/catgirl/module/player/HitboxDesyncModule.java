@@ -15,14 +15,11 @@ import net.minecraft.world.phys.Vec3;
 public class HitboxDesyncModule extends Module {
     public static final HitboxDesyncModule INSTANCE = new HitboxDesyncModule();
 
-    public final BoolProperty autoDesync = new BoolProperty("Auto Desync", true);
-
     public HitboxDesyncModule() {
         super("HitboxDesync",
                 "Desyncs your hitbox.",
                 ModuleCategory.Player
                 );
-        addSetting(autoDesync);
     }
 
     private static final double MAGICNUMBER = .200009968835369999878673424677777777777761;
@@ -53,17 +50,9 @@ public class HitboxDesyncModule extends Module {
                 fin.z == 0 ? mc.player.getZ() : fin.z
         );
 
-        if (!autoDesync.getValue()) {
-            toggle();
-            Catgirl.sendChatMessage("Your hitbox has been desynced.");
-        }
-    }
 
-    @EventHook
-    public void onJoin(WorldJoinEvent event) {
-        if(!autoDesync.getValue()) return;
-
-        desync();
+        toggle();
+        Catgirl.sendChatMessage("Your hitbox has been desynced.");
     }
 
     private Vec3 merge(Vec3 vec, Direction facing) {

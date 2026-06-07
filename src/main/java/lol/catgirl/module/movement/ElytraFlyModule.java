@@ -1,19 +1,19 @@
 package lol.catgirl.module.movement;
 
-import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
+import lol.catgirl.module.Module;
+import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.event.EventHook;
 import lol.catgirl.property.impl.SliderProperty;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
-import lol.catgirl.module.Module;
-import lol.catgirl.module.ModuleCategory;
-
 public class ElytraFlyModule extends Module {
     public static final ElytraFlyModule INSTANCE = new ElytraFlyModule();
 
     public final SliderProperty horizontal = new SliderProperty("Horizontal", 2.0f, 0.1f, 10.0f, 0.1f);
+
     public final SliderProperty vertical = new SliderProperty("Vertical", 1.0f, 0.1f, 10.0f, 0.1f);
 
     public ElytraFlyModule() {
