@@ -54,7 +54,8 @@ public final class ScaffoldModule extends Module {
     }
 
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
-    private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Mode", TowerMode.Matrix);
+    public static BoolProperty intaveTelly = new BoolProperty("Intave Telly", false);
+    private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Tower Mode", TowerMode.Matrix);
     private final EnumProperty<BlockCounterMode> blockCounterMode = new EnumProperty<>("Block Counter Mode", BlockCounterMode.Simple);
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
     public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1f, 180, 1f);
@@ -74,6 +75,7 @@ public final class ScaffoldModule extends Module {
     private final TickingTimer timer = new TickingTimer();
     private int placedBlocks;
     private int sneakTicks;
+    private int offGroundTicks;
     private boolean shouldSneak;
     private BlockData blockData;
     private float placeYaw;
@@ -100,6 +102,7 @@ public final class ScaffoldModule extends Module {
     @Override
     public void onDisable() {
         placedBlocks = 0;
+        offGroundTicks = 0;
         if (mc.player != null && sneak.getValue() && shouldSneak) {
             mc.options.keyShift.setDown(false);
             shouldSneak = false;
@@ -116,6 +119,12 @@ public final class ScaffoldModule extends Module {
             maxRotationSpeed.setValue(minRotationSpeed.getValue());
         if (minRotationSpeed.getValue() > maxRotationSpeed.getValue())
             minRotationSpeed.setValue(maxRotationSpeed.getValue());
+
+        if (mc.player.onGround()) {
+            offGroundTicks = 0;
+        } else {
+            offGroundTicks++;
+        }
 
         updateScaffoldYCoord();
         updateBlockPos();
@@ -209,7 +218,7 @@ public final class ScaffoldModule extends Module {
         switch (mode.getValue()) {
             case Normal -> getBaseRotations(event);
             case Telly -> {
-                if (!mc.player.onGround()) {
+                if (intaveTelly.getValue() ? offGroundTicks <= 9 : !mc.player.onGround()) {
                     getBaseRotations(event);
                     canPlace = true;
                 } else {
