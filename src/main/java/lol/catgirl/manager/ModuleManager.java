@@ -81,6 +81,11 @@ public final class ModuleManager {
         modules.add(NametagsModule.INSTANCE);
         modules.add(MCFModule.INSTANCE);
         modules.add(ResourcePackSpoofModule.INSTANCE);
+        modules.add(ClickTPModule.INSTANCE);
+        modules.add(BlockOverlayModule.INSTANCE);
+        modules.add(SpammerModule.INSTANCE);
+        modules.add(MCPModule.INSTANCE);
+        modules.add(AutoAuthModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
