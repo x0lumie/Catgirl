@@ -226,17 +226,33 @@ public final class AuraModule extends Module {
             }
             case Fake -> ItemAnimationUtils.setBlocking(true);
             case Polar -> {
+                if (mc.player == null || mc.level == null) return;
+
                 ItemAnimationUtils.setBlocking(true);
+
                 int slot = mc.player.getInventory().getSelectedSlot();
+
+                // Always force release first (prevents stuck-use desync)
                 mc.player.connection.send(new ServerboundPlayerActionPacket(
                         ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
-                        mc.player.blockPosition(), Direction.DOWN));
-                realBlocking = false;
-                mc.player.connection.send(new ServerboundSetCarriedItemPacket((slot + 1) % 9));
+                        mc.player.blockPosition(),
+                        Direction.DOWN
+                ));
+
+                // Fast slot flick (key to Polar behavior stability)
+                int swap = (slot + 1) % 9;
+
+                mc.player.connection.send(new ServerboundSetCarriedItemPacket(swap));
                 mc.player.connection.send(new ServerboundSetCarriedItemPacket(slot));
+
+                // Immediate re-use packet
                 mc.player.connection.send(new ServerboundUseItemPacket(
-                        InteractionHand.MAIN_HAND, 0,
-                        mc.player.getYRot(), mc.player.getXRot()));
+                        InteractionHand.MAIN_HAND,
+                        0,
+                        mc.player.getYRot(),
+                        mc.player.getXRot()
+                ));
+
                 realBlocking = true;
             }
             case Legit -> {
@@ -254,14 +270,22 @@ public final class AuraModule extends Module {
 
     private void unblock() {
         if (mc.player == null || !realBlocking) return;
+
+        if (autoBlock.getValue() == AutoBlock.Polar) {
+            realBlocking = false;
+            return;
+        }
+
         if (autoBlock.getValue() == AutoBlock.Legit && mc.options.keyUse.isDown()) {
             mc.options.keyUse.setDown(false);
         }
-        if (autoBlock.getValue() != AutoBlock.Legit) {
-            mc.player.connection.send(new ServerboundPlayerActionPacket(
-                    ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
-                    mc.player.blockPosition(), Direction.DOWN));
-        }
+
+        mc.player.connection.send(new ServerboundPlayerActionPacket(
+                ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
+                mc.player.blockPosition(),
+                Direction.DOWN
+        ));
+
         realBlocking = false;
     }
 

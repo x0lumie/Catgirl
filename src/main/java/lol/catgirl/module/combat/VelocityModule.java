@@ -37,7 +37,7 @@ public final class VelocityModule extends Module {
 
     public VelocityModule() {
         super("Velocity", "Uses heavy dick and balls to drag across the floor to reduce velocity.", ModuleCategory.Combat);
-        addSettings(mode, ignoreOnFire);
+        addSettings(mode, polar, ignoreOnFire);
     }
 
     private boolean intaveOnAttack;
