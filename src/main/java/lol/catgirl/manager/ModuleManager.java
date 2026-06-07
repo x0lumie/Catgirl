@@ -95,6 +95,8 @@ public final class ModuleManager {
         modules.add(RefillModule.INSTANCE);
         modules.add(PingSpoofModule.INSTANCE);
         modules.add(AutoCrafterModule.INSTANCE);
+        modules.add(AutoHeadHitterModule.INSTANCE);
+        modules.add(AutoDrainModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
