@@ -28,7 +28,7 @@ public final class FunnyDisplayerModule extends Module {
     private float x = -1, y = -1;
 
     public FunnyDisplayerModule() {
-        super("Funny Displayer", "Shows the funnies.", ModuleCategory.Hud);
+        super("FunnyDisplayer", "Shows the funnies.", ModuleCategory.Hud);
         addSettings(funny, size);
     }
 

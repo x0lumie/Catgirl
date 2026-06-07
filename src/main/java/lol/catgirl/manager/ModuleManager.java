@@ -91,6 +91,8 @@ public final class ModuleManager {
         modules.add(HealthAlertModule.INSTANCE);
         modules.add(ChestAuraModule.INSTANCE);
         modules.add(NotificationsModule.INSTANCE);
+        modules.add(AutoPotModule.INSTANCE);
+        modules.add(RefillModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
