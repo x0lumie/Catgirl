@@ -79,6 +79,7 @@ public final class ModuleManager {
         modules.add(HotbarModule.INSTANCE);
         modules.add(AutoTranslateModule.INSTANCE);
         modules.add(NametagsModule.INSTANCE);
+        modules.add(MCFModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
