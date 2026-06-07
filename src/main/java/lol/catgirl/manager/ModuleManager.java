@@ -80,6 +80,7 @@ public final class ModuleManager {
         modules.add(AutoTranslateModule.INSTANCE);
         modules.add(NametagsModule.INSTANCE);
         modules.add(MCFModule.INSTANCE);
+        modules.add(ResourcePackSpoofModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
