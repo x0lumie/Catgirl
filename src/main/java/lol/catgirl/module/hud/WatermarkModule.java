@@ -9,6 +9,8 @@ import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 import java.awt.*;
 import java.util.Objects;
@@ -32,7 +34,7 @@ public final class WatermarkModule extends Module {
         Catgirl,
         Catsense,
         Simple,
-        Test
+        Wurst
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
@@ -231,6 +233,26 @@ public final class WatermarkModule extends Module {
                 DrawUtil.drawString(
                         name, x, y, 10, PURPLE,
                         ResourceManager.FontResources.roboto
+                );
+            }
+            case Wurst -> {
+                event.context.fill(0, 10, 185, 22, 0x64FFFFFF);
+
+                // logo
+                event.context.blit(RenderPipelines.GUI_TEXTURED,
+                        Identifier.fromNamespaceAndPath("catgirl",
+                                "images/wurst.png"),
+                        2, 5, 0, 0,
+                        89, 22, 89, 22
+                );
+
+                // version
+                event.context.drawString(
+                        mc.font,
+                        "v7.52 MC1.21.11",
+                        95, 12,
+                        Color.BLACK.getRGB(),
+                        false
                 );
             }
         }
