@@ -66,4 +66,9 @@ public final class SpeedModule extends Module {
             currentMode.onEnable();
         }
     }
+
+    @Override
+    public String getFinalSuffix() {
+        return mode.getValue().toString();
+    }
 }
