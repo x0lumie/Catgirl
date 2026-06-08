@@ -27,7 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class AuraModule extends Module {
 
-    public enum Rotations {Normal, Polar, Puhfy}
+    public enum Rotations {Normal, Polar, Puhfy, Perfect}
 
     public enum AutoBlock {None, Fake, Vanilla, Polar, Legit}
 
@@ -136,6 +136,7 @@ public final class AuraModule extends Module {
             case Normal -> RotationUtils.regularAuraRotations(current, target, speed);
             case Polar -> RotationUtils.polarAuraRotations(current, target, speed);
             case Puhfy -> RotationUtils.puhfyAuraRotations(current, target, speed);
+            case Perfect -> RotationUtils.perfectAuraRotations(current, target, speed);
         };
 
         event.yaw = rotated[0];

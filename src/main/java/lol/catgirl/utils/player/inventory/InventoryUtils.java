@@ -414,4 +414,50 @@ public class InventoryUtils implements IMinecraft {
             );
         }
     }
+
+    public static int getItemCount(Item item) {
+        int count = 0;
+        for (int i = 0; i < mc.player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = mc.player.getInventory().getItem(i);
+            if (!stack.isEmpty() && stack.getItem() == item) {
+                count += stack.getCount();
+            }
+        }
+        return count;
+    }
+
+    public static boolean hasItemInInventory(Item item) {
+        return getItemCount(item) > 0;
+    }
+
+    public static int findLargestStack(Item item) {
+        int bestSlot = -1;
+        int largestStack = 0;
+
+        for (int i = 1; i < mc.player.containerMenu.slots.size(); i++) {
+            ItemStack stack = mc.player.containerMenu.getSlot(i).getItem();
+            if (!stack.isEmpty() && stack.getItem() == item && stack.getCount() > largestStack) {
+                largestStack = stack.getCount();
+                bestSlot = i;
+            }
+        }
+        return bestSlot;
+    }
+
+    public static void clearCraftingGrid() {
+        for (int i = 1; i <= 9; i++) {
+            ItemStack stack = mc.player.containerMenu.getSlot(i).getItem();
+            if (!stack.isEmpty()) {
+                mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, i, 0, ClickType.QUICK_MOVE, mc.player);
+            }
+        }
+    }
+
+    public static void placeItemInSlot(Item item, int craftingSlot) {
+        int sourceSlot = findLargestStack(item);
+        if (sourceSlot != -1) {
+            mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, sourceSlot, 1, ClickType.PICKUP, mc.player);
+            mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, craftingSlot, 1, ClickType.PICKUP, mc.player);
+        }
+    }
 }
