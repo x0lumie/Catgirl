@@ -34,6 +34,7 @@ public class Catgirl implements ModInitializer {
 	public CommandManager commandManager;
 	public SoundManager soundManager;
 	private IssueManager issueManager;
+	public LagManager lagManager;
 
 	@Getter
 	private final Gson GSON = new GsonBuilder().create();
@@ -48,6 +49,7 @@ public class Catgirl implements ModInitializer {
 		commandManager = new CommandManager();
 		issueManager = new IssueManager();
 		soundManager = new SoundManager();
+		lagManager = new LagManager();
 
 		Handler.initialize();
 		ModuleManager.getInstance().init();
@@ -58,6 +60,7 @@ public class Catgirl implements ModInitializer {
 		eventBus.subscribe(commandManager);
 		eventBus.subscribe(issueManager);
 		eventBus.subscribe(theHandler);
+		eventBus.subscribe(lagManager);
 
 		if (doesFileExist("default")) {
 			new ModulesFile("default").loadFromFile();

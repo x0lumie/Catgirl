@@ -121,7 +121,8 @@ public final class InsultsModule extends Module {
                         "Charlie Kirk gives Catgirl Client 5 stars all around!",
                         "Cool man the sex man cannot take the powa of Catgirl Client's Aura.",
                         "Jpx3 are you are you a fed collecting telemetry to patch my bypasses?",
-                        "where is my up button lol"
+                        "where is my up button lol",
+                        "u wanna talk shit to my sister? i dont think so, i fk my sister buddy boy.."
                 );
             }
 

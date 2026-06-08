@@ -43,7 +43,7 @@ public class RenderUtils implements IMinecraft {
                     .build()
     );
 
-    private static final RenderType LAYER_QUADS = RenderType.create(
+    public static final RenderType LAYER_QUADS = RenderType.create(
             "bytes_quads",
             RenderSetup.builder(PIPELINE_QUADS).createRenderSetup()
     );
@@ -305,7 +305,7 @@ public class RenderUtils implements IMinecraft {
         vb.addVertex(mat, maxX, maxY, minZ).setColor(r, g, b, a);
     }
 
-    private static BufferBuilder beginQuads() {
+    public static BufferBuilder beginQuads() {
         return new BufferBuilder(ALLOC_QUADS,
                 PIPELINE_QUADS.getVertexFormatMode(),
                 PIPELINE_QUADS.getVertexFormat());

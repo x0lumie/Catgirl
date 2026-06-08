@@ -3,6 +3,7 @@ package lol.catgirl.manager;
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ChatEvent;
+import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PacketSendEvent;
 import lol.catgirl.event.impl.PreUpdateEvent;
 import lol.catgirl.file.impl.ModulesFile;
@@ -17,7 +18,7 @@ public class IssueManager {
     private TickingTimer saveTimer = new TickingTimer();
 
     @EventHook
-    public void onPreUpdate(PreUpdateEvent event) {
+    public void onClientTick(ClientTickEvent event) {
         // Putting this here because I don't give a flying fuck.
         if (saveTimer.hasTimeElapsed(30000)) {
             new ModulesFile("default").saveToFile();
