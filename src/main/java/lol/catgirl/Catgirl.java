@@ -11,6 +11,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,8 @@ public class Catgirl implements ModInitializer {
 
 	@Getter
 	private final Gson GSON = new GsonBuilder().create();
+
+	public static final Identifier PANORAMA_SKYBOX = Identifier.fromNamespaceAndPath("catgirl", "images/funny/gamer.png");
 
 	@Override
 	public void onInitialize() {
