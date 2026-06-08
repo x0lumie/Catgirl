@@ -101,6 +101,16 @@ public final class ModuleManager {
         modules.add(AutoToolModule.INSTANCE);
         modules.add(BacktrackModule.INSTANCE);
         modules.add(LagRangeModule.INSTANCE);
+        modules.add(StaffDetectorModule.INSTANCE);
+        modules.add(FastLadderModule.INSTANCE);
+        modules.add(TimeChangerModule.INSTANCE);
+        modules.add(AntiAFKModule.INSTANCE);
+        modules.add(NoScreenClosingModule.INSTANCE);
+        modules.add(AutoRespawnModule.INSTANCE);
+        modules.add(AntiHungerModule.INSTANCE);
+        modules.add(GhostHandModule.INSTANCE);
+        modules.add(HitSelectModule.INSTANCE);
+        modules.add(MaceKillModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

@@ -2,8 +2,11 @@ package lol.catgirl.mixin;
 
 import com.mojang.blaze3d.platform.Window;
 import lol.catgirl.Catgirl;
+import lol.catgirl.event.impl.OpenScreenEvent;
+import lol.catgirl.event.impl.StartUseItemEvent;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,6 +36,7 @@ public class MinecraftMixin {
     @Final
     private Window window;
 
+
     @Inject(method = "<init>", at = @At("RETURN"))
     public void initImGui(GameConfig args, CallbackInfo ci) {
         lol.catgirl.ui.click.imgui.ImGuiImpl.initialize(window.handle());
@@ -49,4 +53,22 @@ public class MinecraftMixin {
         return Catgirl.windowTitle;
     }
 
+    @Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
+    private void onSetScreen(Screen screen, CallbackInfo ci) {
+
+        OpenScreenEvent event = new OpenScreenEvent(screen);
+        Catgirl.INSTANCE.eventBus.post(event);
+
+        if (event.isCancelled()) ci.cancel();
+    }
+
+    @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/InteractionHand;values()[Lnet/minecraft/world/InteractionHand;"), cancellable = true)
+    private void onStartUseItemBeforeHands(CallbackInfo ci) {
+        StartUseItemEvent event = new StartUseItemEvent();
+        Catgirl.INSTANCE.eventBus.post(event);
+
+        if (event.isCancelled()) {
+            ci.cancel();
+        }
+    }
 }

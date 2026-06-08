@@ -1,4 +1,4 @@
-package lol.catgirl.module.client;
+package lol.catgirl.module.player;
 
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PacketReceivedEvent;
@@ -17,7 +17,8 @@ public final class NoRotateModule extends Module {
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Cancel);
 
     public NoRotateModule() {
-        super("NoRotate", "Prevents the server from rotating you.", ModuleCategory.Client);
+        super("NoRotate", "Prevents the server from rotating you.",
+                ModuleCategory.Player);
         addSetting(mode);
     }
 

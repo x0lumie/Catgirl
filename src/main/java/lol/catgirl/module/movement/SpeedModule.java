@@ -34,6 +34,7 @@ public final class SpeedModule extends Module {
         speedModes.put(Mode.Strafe, new StrafeSpeedMode());
         speedModes.put(Mode.Intave, new IntaveSpeedMode());
         speedModes.put(Mode.Matrix, new MatrixSpeedMode());
+        speedModes.put(Mode.LegitExploit, new LegitExploitSpeedMode());
 
     }
 
