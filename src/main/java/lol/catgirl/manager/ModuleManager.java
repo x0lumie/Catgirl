@@ -111,6 +111,8 @@ public final class ModuleManager {
         modules.add(GhostHandModule.INSTANCE);
         modules.add(HitSelectModule.INSTANCE);
         modules.add(MaceKillModule.INSTANCE);
+        modules.add(ReachModule.INSTANCE);
+        modules.add(AntiVoidModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
