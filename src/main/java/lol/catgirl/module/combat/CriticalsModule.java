@@ -21,7 +21,7 @@ public final class CriticalsModule extends Module {
         IntaveSemi
     }
 
-    public static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Jump);
+    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Jump);
     public final BoolProperty ignoreOnFire = new BoolProperty("Ignore On Fire", false);
     public final BoolProperty onlyWhileSprinting = new BoolProperty("Only While Sprinting", true);
 
