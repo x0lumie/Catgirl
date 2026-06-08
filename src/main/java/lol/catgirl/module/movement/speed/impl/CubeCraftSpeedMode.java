@@ -53,6 +53,6 @@ public class CubeCraftSpeedMode implements SpeedMode {
 
         double finalSpeed = Math.max(speedFromJump, speedFromMove);
 
-        MoveUtils.setSpeed(finalSpeed);
+        MoveUtils.setSpeedWithFixedDirection(finalSpeed);
     }
 }
