@@ -73,6 +73,26 @@ public class RotationUtils implements IMinecraft {
         return new float[]{rotations[0], rotations[1]};
     }
 
+    //i think this is like the most optimal hvh winning rotations possible?
+    public static float[] perfectAuraRotations(float[] currentRotations, final Entity entity, final float speed) {
+        Vec3 eyePos = new Vec3(mc.player.getX(), mc.player.getY() + mc.player.getEyeHeight(), mc.player.getZ());
+        AABB box = entity.getBoundingBox();
+
+        double closestX = Math.max(box.minX, Math.min(eyePos.x, box.maxX));
+        double closestY = Math.max(box.minY, Math.min(eyePos.y, box.maxY));
+        double closestZ = Math.max(box.minZ, Math.min(eyePos.z, box.maxZ));
+
+        Vec3 bestPoint = new Vec3(closestX, closestY, closestZ);
+
+        if (box.contains(eyePos)) {
+            bestPoint = box.getCenter();
+        }
+
+        final float[] rotations = getRotationsToPoint(currentRotations, eyePos, bestPoint);
+
+        return new float[]{rotations[0], rotations[1]};
+    }
+
     public static float[] polarAuraRotations(float[] currentRotations, final Entity entity, float speed) {
 
         float[] targetRotations = puhfyAuraRotations(currentRotations, entity, speed);
