@@ -113,6 +113,7 @@ public final class ModuleManager {
         modules.add(MaceKillModule.INSTANCE);
         modules.add(ReachModule.INSTANCE);
         modules.add(AntiVoidModule.INSTANCE);
+        modules.add(ClientSpooferModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

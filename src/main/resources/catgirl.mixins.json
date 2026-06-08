@@ -18,6 +18,7 @@
   },
   "client": [
     "AvatarRendererMixin",
+    "ClientBrandRetrieverMixin",
     "ClientLevelMixin",
     "ClientPacketListenerMixin",
     "ClientPlayerInteractionManagerMixin",
