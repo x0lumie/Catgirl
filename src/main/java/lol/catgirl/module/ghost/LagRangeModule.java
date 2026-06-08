@@ -41,7 +41,7 @@ public class LagRangeModule extends Module {
     public static final LagRangeModule INSTANCE = new LagRangeModule();
 
     public LagRangeModule() {
-        super("LagRange", "Uses lag in a range to the target to delay your movement on their end.", ModuleCategory.Combat);
+        super("LagRange", "Uses lag in a range to the target to delay your movement on their end.", ModuleCategory.Ghost);
         addSettings(rangeProperty, minDelayProperty, maxDelayProperty, teleports, velocity, entities, displayProperty, onlyWithKillaura, renderLagPos);
     }
 
