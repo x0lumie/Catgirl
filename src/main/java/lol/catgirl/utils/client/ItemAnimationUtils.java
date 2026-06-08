@@ -33,14 +33,14 @@ public class ItemAnimationUtils {
         switch (animationsModule.mode.getValue()) {
 
             case Exhibition -> {
-                if (!mc.player.isUsingItem() || !ItemAnimationUtils.isBlocking()) return;
+                if (!ItemAnimationUtils.isBlocking()) return;
                 matrices.translate(0.1, 0, -0.1);
                 matrices.mulPose(Axis.XP.rotationDegrees(-sine * 50));
                 matrices.mulPose(Axis.YP.rotationDegrees(-sine * 30));
             }
 
             case Vanilla -> {
-                if (!mc.player.isUsingItem() || !ItemAnimationUtils.isBlocking()) return;
+                if (!ItemAnimationUtils.isBlocking()) return;
                 matrices.translate(0.1, 0, -0.1);
                 matrices.mulPose(Axis.YP.rotationDegrees(45.0f + f * -20.0f));
                 matrices.mulPose(Axis.ZP.rotationDegrees(sine * -20.0f));
@@ -49,7 +49,7 @@ public class ItemAnimationUtils {
             }
 
             case Stab -> {
-                if (!mc.player.isUsingItem() || !ItemAnimationUtils.isBlocking()) return;
+                if (!ItemAnimationUtils.isBlocking()) return;
                 float stab = (float) Math.sin(Mth.sqrt(swingProgress) * Math.PI);
 
                 matrices.translate(0.1, 0.05, -0.8f * stab);
@@ -58,26 +58,24 @@ public class ItemAnimationUtils {
             }
 
             case Spin -> {
-                if (!mc.player.isUsingItem() || !ItemAnimationUtils.isBlocking()) return;
+                if (!ItemAnimationUtils.isBlocking()) return;
                 float spin = -(System.currentTimeMillis() / 2 % 360);
                 matrices.translate(-0.1, 0, -0.2);
                 matrices.mulPose(Axis.ZP.rotationDegrees(spin));
             }
             case Lumie -> {
                 float g = Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI);
-                int i = mc.player.getUsedItemHand() == InteractionHand.MAIN_HAND ? 1 : -1;
 
-                matrices.mulPose(Axis.XP.rotationDegrees(50f));
-                matrices.translate((float) i * 0.56F, -0.57F + 0 * -0.6F, -0.52F);
-                matrices.mulPose(Axis.YP.rotationDegrees(-60f));
-                matrices.mulPose(Axis.ZP.rotationDegrees(110f + 20f * g));
-            }
-            case Lumie2 -> {
-                float g = Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI);
-
-                matrices.mulPose(Axis.XP.rotationDegrees(50f));
-                matrices.mulPose(Axis.YP.rotationDegrees(-30f * (1f - g) - 30f));
-                matrices.mulPose(Axis.ZP.rotationDegrees(110f));
+                if (!ItemAnimationUtils.isBlocking()) {
+                    matrices.mulPose(Axis.XP.rotationDegrees(50f));
+                    matrices.mulPose(Axis.YP.rotationDegrees(-60f));
+                    matrices.mulPose(Axis.ZP.rotationDegrees(110f + 20f * g));
+                } else {
+                    matrices.translate(0.1, 0, -0.1);
+                    matrices.mulPose(Axis.XP.rotationDegrees(-sine * 50));
+                    matrices.mulPose(Axis.YP.rotationDegrees(-sine * 30));
+                    matrices.mulPose(Axis.ZP.rotationDegrees(-sine * 10));
+                }
             }
         }
     }

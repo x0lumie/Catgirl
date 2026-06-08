@@ -4,7 +4,6 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PlayerRotationEvent;
 import lol.catgirl.event.impl.PreMotionEvent;
 import lol.catgirl.event.impl.PreUpdateEvent;
-import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.TargetsModule;
@@ -20,9 +19,7 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.Comparator;
 import java.util.List;
@@ -30,56 +27,55 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class AuraModule extends Module {
 
-    public enum Rotations {
-        Normal,
-        Polar,
-        Puhfy
-    }
+    public enum Rotations {Normal, Polar, Puhfy}
 
-    public enum AutoBlock {
-        None,
-        Fake,
-        Vanilla,
-        Polar,
-        Legit
-    }
+    public enum AutoBlock {None, Fake, Vanilla, Polar, Legit}
 
-    public enum TargetPriority {
-        Distance,
-        Health,
-        Angle,
-        HurtTime
-    }
+    public enum TargetPriority {Distance, Health, Angle, HurtTime}
 
-    public static SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
+    public static final SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
     public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Normal);
     public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
-    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
-    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1f, 180, 1f);
-    public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
-    public static BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
-    public static BoolProperty oldCombat = new BoolProperty("Old Combat", false);
-    public static SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1)
+    public static final SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1, 180, 1f);
+    public static final SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1, 180, 1f);
+    public static final BoolProperty rayCast = new BoolProperty("Ray Cast", true);
+    public static final BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
+    public static final BoolProperty rotateOnAttack = new BoolProperty("Rotate On Attack", false);
+    public static final BoolProperty oldCombat = new BoolProperty("Old Combat", false);
+    public static final SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1)
             .hide(() -> !oldCombat.getValue());
-    public static SliderProperty maxCps = new SliderProperty("Max CPS", 13, 1, 20, 1)
+    public static final SliderProperty maxCps = new SliderProperty("Max CPS", 13, 1, 20, 1)
+            .hide(() -> !oldCombat.getValue());
+    public static final SliderProperty attackDelayOffset = new SliderProperty("Delay Jitter (ms)", 0, 0, 80, 1)
             .hide(() -> !oldCombat.getValue());
     public final EnumProperty<AutoBlock> autoBlock = new EnumProperty<>("Auto Block", AutoBlock.None)
             .hide(() -> !oldCombat.getValue());
-    public static BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true).hide(() -> oldCombat.getValue());
+    public static final BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true)
+            .hide(() -> oldCombat.getValue());
+    public static final SliderProperty failRate = new SliderProperty("Miss Chance (%)", 0, 0, 40, 1);
 
     public static final AuraModule INSTANCE = new AuraModule();
 
-    private long lastAttackTime = 0L;
-    private long nextAttackDelay = 0L;
+    public static LivingEntity target;
     public static boolean canAttack = true;
     public int hitTicks;
+
+    private long lastAttackTime = 0L;
+    private long nextAttackDelay = 0L;
     private boolean realBlocking;
-    int blockTicks = 0;
+    private int blockTicks;
+    private boolean attackedThisTick;
 
     public AuraModule() {
         super("Aura", "Automatically kills enemies in a specified vicinity.", ModuleCategory.Combat);
-        addSettings(killRange, rotations, targetPriority, minRotationSpeed, maxRotationSpeed, rayCast, useMouseClick,
-                oldCombat, minCps, maxCps, autoBlock, smartAttacking);
+        addSettings(
+                killRange, rotations, targetPriority,
+                minRotationSpeed, maxRotationSpeed,
+                rayCast, useMouseClick, rotateOnAttack,
+                oldCombat, minCps, maxCps, attackDelayOffset, autoBlock,
+                smartAttacking,
+                failRate
+        );
     }
 
     @Override
@@ -89,6 +85,7 @@ public final class AuraModule extends Module {
         canAttack = true;
         blockTicks = -1;
         hitTicks = 0;
+        attackedThisTick = false;
         super.onEnable();
     }
 
@@ -99,23 +96,25 @@ public final class AuraModule extends Module {
         super.onDisable();
     }
 
-    public static LivingEntity target;
-
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
         if (mc.player == null) return;
 
-        if (maxCps.getValue() < minCps.getValue()) maxCps.setValue(minCps.getValue());
-        if (minCps.getValue() > maxCps.getValue()) minCps.setValue(maxCps.getValue());
+        clampSliderPair(minCps, maxCps);
+        clampSliderPair(minRotationSpeed, maxRotationSpeed);
 
-        if (maxRotationSpeed.getValue() < minRotationSpeed.getValue())
-            maxRotationSpeed.setValue(minRotationSpeed.getValue());
-        if (minRotationSpeed.getValue() > maxRotationSpeed.getValue())
-            minRotationSpeed.setValue(maxRotationSpeed.getValue());
-
+        attackedThisTick = false;
         target = getBestTarget();
 
-        if (target == null) return;
+        if (target == null) {
+            if (realBlocking) {
+                unblock();
+            }
+            if (ItemAnimationUtils.isBlocking()) {
+                ItemAnimationUtils.setBlocking(false);
+            }
+            return;
+        }
 
         if (mc.player.distanceTo(target) > killRange.getValue() && realBlocking) {
             unblock();
@@ -125,56 +124,27 @@ public final class AuraModule extends Module {
         autoblock();
     }
 
-    private LivingEntity getBestTarget() {
-        List<LivingEntity> candidates = TargetsModule.getTargetList();
-        if (candidates == null || candidates.isEmpty()) return null;
-
-        Comparator<LivingEntity> comparator = switch (targetPriority.getValue()) {
-            case Distance -> Comparator.comparingDouble(e -> mc.player.distanceTo(e));
-            case Health   -> Comparator.comparingDouble(LivingEntity::getHealth);
-            case Angle    -> Comparator.comparingDouble(e -> getAngleTo(e));
-            case HurtTime -> Comparator.comparingInt(e -> -e.hurtTime);
-        };
-
-        return candidates.stream()
-                .filter(e -> mc.player.distanceTo(e) <= killRange.getValue())
-                .min(comparator)
-                .orElse(null);
-    }
-
-    private double getAngleTo(LivingEntity entity) {
-        if (mc.player == null) return Double.MAX_VALUE;
-        double dx = entity.getX() - mc.player.getX();
-        double dz = entity.getZ() - mc.player.getZ();
-        double targetYaw = Math.toDegrees(Math.atan2(dz, dx)) - 90.0;
-        double delta = Math.abs(mc.player.getYRot() - targetYaw) % 360.0;
-        if (delta > 180.0) delta = 360.0 - delta;
-        return delta;
-    }
-
     @EventHook
     public void onPlayerRotation(PlayerRotationEvent event) {
         if (mc.player == null || target == null) return;
+        if (rotateOnAttack.getValue() && !attackedThisTick) return;
 
-        float[] currentRotations = new float[]{event.yaw, event.pitch};
+        float[] current = {event.yaw, event.pitch};
         float speed = randomRotationSpeed();
-
         RotationUtils.setRotationSpeed(speed);
 
-        float[] targetRotations;
-        switch (rotations.getValue()) {
-            case Normal -> targetRotations = RotationUtils.regularAuraRotations(currentRotations, target, speed);
-            case Polar  -> targetRotations = RotationUtils.polarAuraRotations(currentRotations, target, speed);
-            case Puhfy  -> targetRotations = RotationUtils.puhfyAuraRotations(currentRotations, target, speed);
-            default     -> targetRotations = RotationUtils.getRotations(currentRotations, mc.player.getEyePosition(), target);
-        }
+        float[] rotated = switch (rotations.getValue()) {
+            case Normal -> RotationUtils.regularAuraRotations(current, target, speed);
+            case Polar -> RotationUtils.polarAuraRotations(current, target, speed);
+            case Puhfy -> RotationUtils.puhfyAuraRotations(current, target, speed);
+        };
 
-        event.yaw = targetRotations[0];
-        event.pitch = targetRotations[1];
+        event.yaw = rotated[0];
+        event.pitch = rotated[1];
 
         if (rayCast.getValue()) {
-            HitResult hitResult = PlayerUtils.raycast(event.yaw, event.pitch, killRange.getValue(), false);
-            canAttack = hitResult != null && hitResult.getType() == HitResult.Type.ENTITY;
+            HitResult hit = PlayerUtils.raycast(event.yaw, event.pitch, killRange.getValue(), false);
+            canAttack = hit != null && hit.getType() == HitResult.Type.ENTITY;
         }
     }
 
@@ -183,24 +153,43 @@ public final class AuraModule extends Module {
         hitTicks++;
     }
 
-    private float randomRotationSpeed() {
-        float min = minRotationSpeed.getValue();
-        float max = maxRotationSpeed.getValue();
-        if (min >= max) return min;
-        return (float) ThreadLocalRandom.current().nextDouble(min, max);
+    private LivingEntity getBestTarget() {
+        List<LivingEntity> candidates = TargetsModule.getTargetList();
+        if (candidates == null || candidates.isEmpty()) return null;
+
+        double range = killRange.getValue();
+
+        Comparator<LivingEntity> comparator = switch (targetPriority.getValue()) {
+            case Distance -> Comparator.comparingDouble(mc.player::distanceTo);
+            case Health -> Comparator.comparingDouble(LivingEntity::getHealth);
+            case Angle -> Comparator.comparingDouble(this::getAngleTo);
+            case HurtTime -> Comparator.comparingInt(e -> -e.hurtTime);
+        };
+
+        return candidates.stream()
+                .filter(e -> mc.player.distanceTo(e) <= range)
+                .min(comparator)
+                .orElse(null);
+    }
+
+    private double getAngleTo(LivingEntity entity) {
+        double dx = entity.getX() - mc.player.getX();
+        double dz = entity.getZ() - mc.player.getZ();
+        double targetYaw = Math.toDegrees(Math.atan2(dz, dx)) - 90.0;
+        double delta = Math.abs(mc.player.getYRot() - targetYaw) % 360.0;
+        return delta > 180.0 ? 360.0 - delta : delta;
     }
 
     private void attack() {
-        if (mc.player == null || mc.gameMode == null || target == null || !canAttack) return;
-        if (mc.player.distanceTo(target) > killRange.getValue()) return;
-        if (smartAttacking.getValue() && !PlayerUtils.canCrit()) return;
+        if (!isReadyToAttack()) return;
+        if (shouldMiss()) return;
 
         if (oldCombat.getValue()) {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastAttackTime >= nextAttackDelay) {
+            long now = System.currentTimeMillis();
+            if (now - lastAttackTime >= nextAttackDelay) {
                 handleAttack();
                 hitTicks = 0;
-                lastAttackTime = currentTime;
+                lastAttackTime = now;
                 nextAttackDelay = calculateCpsDelay(minCps.getValue(), maxCps.getValue());
             }
         } else {
@@ -210,7 +199,22 @@ public final class AuraModule extends Module {
         }
     }
 
+    private boolean isReadyToAttack() {
+        return mc.player != null
+                && mc.gameMode != null
+                && target != null
+                && canAttack
+                && mc.player.distanceTo(target) <= killRange.getValue()
+                && (!smartAttacking.getValue() || PlayerUtils.canCrit());
+    }
+
+    private boolean shouldMiss() {
+        float chance = failRate.getValue();
+        return chance > 0 && ThreadLocalRandom.current().nextFloat() * 100f < chance;
+    }
+
     private void handleAttack() {
+        attackedThisTick = true;
         if (useMouseClick.getValue()) {
             mc.startAttack();
         } else {
@@ -233,32 +237,20 @@ public final class AuraModule extends Module {
             }
             case Fake -> ItemAnimationUtils.setBlocking(true);
             case Polar -> {
-                if (mc.player == null || mc.level == null) return;
+                if (mc.level == null) return;
 
                 ItemAnimationUtils.setBlocking(true);
-
                 int slot = mc.player.getInventory().getSelectedSlot();
-
-                // Always force release first (prevents stuck-use desync)
-                mc.player.connection.send(new ServerboundPlayerActionPacket(
-                        ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
-                        mc.player.blockPosition(),
-                        Direction.DOWN
-                ));
-
-                // Fast slot flick (key to Polar behavior stability)
                 int swap = (slot + 1) % 9;
 
+                mc.player.connection.send(new ServerboundPlayerActionPacket(
+                        ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
+                        mc.player.blockPosition(), Direction.DOWN));
                 mc.player.connection.send(new ServerboundSetCarriedItemPacket(swap));
                 mc.player.connection.send(new ServerboundSetCarriedItemPacket(slot));
-
-                // Immediate re-use packet
                 mc.player.connection.send(new ServerboundUseItemPacket(
-                        InteractionHand.MAIN_HAND,
-                        0,
-                        mc.player.getYRot(),
-                        mc.player.getXRot()
-                ));
+                        InteractionHand.MAIN_HAND, 0,
+                        mc.player.getYRot(), mc.player.getXRot()));
 
                 realBlocking = true;
             }
@@ -289,17 +281,27 @@ public final class AuraModule extends Module {
 
         mc.player.connection.send(new ServerboundPlayerActionPacket(
                 ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM,
-                mc.player.blockPosition(),
-                Direction.DOWN
-        ));
+                mc.player.blockPosition(), Direction.DOWN));
 
         realBlocking = false;
     }
 
+    private float randomRotationSpeed() {
+        float min = minRotationSpeed.getValue();
+        float max = maxRotationSpeed.getValue();
+        return min >= max ? min : (float) ThreadLocalRandom.current().nextDouble(min, max);
+    }
+
     private long calculateCpsDelay(double min, double max) {
         if (min >= max) return (long) (1000.0 / min);
-        double randomCps = ThreadLocalRandom.current().nextDouble(min, max);
-        return (long) (1000.0 / randomCps);
+        long base = (long) (1000.0 / ThreadLocalRandom.current().nextDouble(min, max));
+        long jitter = attackDelayOffset.getValue().intValue();
+        return base + ThreadLocalRandom.current().nextLong(-jitter, jitter + 1);
+    }
+
+    private static void clampSliderPair(SliderProperty lo, SliderProperty hi) {
+        if (hi.getValue() < lo.getValue()) hi.setValue(lo.getValue());
+        if (lo.getValue() > hi.getValue()) lo.setValue(hi.getValue());
     }
 
     @Override

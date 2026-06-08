@@ -21,8 +21,7 @@ public class AnimationsModule extends Module {
         Exhibition,
         Spin,
         Stab,
-        Lumie,
-        Lumie2
+        Lumie
     }
 
     public final EnumProperty<AnimationsMode> mode =
