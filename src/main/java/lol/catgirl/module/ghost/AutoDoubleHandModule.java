@@ -15,11 +15,11 @@ import lol.catgirl.property.impl.*;
 public final class AutoDoubleHandModule extends Module {
     public static final AutoDoubleHandModule INSTANCE = new AutoDoubleHandModule();
 
-    private static final BoolProperty inventorySwitch = new BoolProperty("Inventory Switch", true);
-    private static final BoolProperty heightSwitch = new BoolProperty("Height Switch", true);
-    private static final SliderProperty heightThreshold = new SliderProperty("Height Threshold", 1.0f, 10.0f, 3.0f, 0.1f);
-    private static final BoolProperty healthSwitch = new BoolProperty("Health Switch", true);
-    private static final SliderProperty healthThreshold = new SliderProperty("Health Threshold", 1.0f, 20.0f, 6.0f, 0.5F);
+    private final BoolProperty inventorySwitch = new BoolProperty("Inventory Switch", true);
+    private final BoolProperty heightSwitch = new BoolProperty("Height Switch", true);
+    private final SliderProperty heightThreshold = new SliderProperty("Height Threshold", 1.0f, 10.0f, 3.0f, 0.1f);
+    private final BoolProperty healthSwitch = new BoolProperty("Health Switch", true);
+    private final SliderProperty healthThreshold = new SliderProperty("Health Threshold", 1.0f, 20.0f, 6.0f, 0.5F);
 
     private int originalSlot = -1;
 

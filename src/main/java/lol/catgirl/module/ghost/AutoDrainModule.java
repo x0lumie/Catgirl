@@ -19,8 +19,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public final class AutoDrainModule extends Module {
     public static final AutoDrainModule INSTANCE = new AutoDrainModule();
 
-    private static final SliderProperty actionCooldownMs = new SliderProperty("Cooldown MS", 50, 2000, 250, 1);
-    private static final SliderProperty switchBackDelayMs = new SliderProperty("SwitchBack MS", 0, 500, 75, 1);
+    private final SliderProperty actionCooldownMs = new SliderProperty("Cooldown MS", 50, 2000, 250, 1);
+    private final SliderProperty switchBackDelayMs = new SliderProperty("SwitchBack MS", 0, 500, 75, 1);
 
     private final TickingTimer cooldownTimer = new TickingTimer();
     private final TickingTimer switchBackTimer = new TickingTimer();

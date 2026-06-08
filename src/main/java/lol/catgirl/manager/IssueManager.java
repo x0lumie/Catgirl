@@ -22,7 +22,7 @@ public class IssueManager {
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
         // Putting this here because I don't give a flying fuck.
-        if (saveTimer.hasTimeElapsed(30000) && mc.screen == null) {
+        if (saveTimer.hasTimeElapsed(30000)) {
             new ModulesFile("default").saveToFile();
             saveTimer.reset();
         }
