@@ -12,15 +12,17 @@ import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.util.profiling.jfr.event.PacketEvent;
 
+import static lol.catgirl.utils.IMinecraft.mc;
+
 public class IssueManager {
     private static int lastSlot = -1;
     private static float lastYaw, lastPitch;
-    private TickingTimer saveTimer = new TickingTimer();
+    private final TickingTimer saveTimer = new TickingTimer();
 
     @EventHook
-    public void onClientTick(ClientTickEvent event) {
+    public void onPreUpdate(PreUpdateEvent event) {
         // Putting this here because I don't give a flying fuck.
-        if (saveTimer.hasTimeElapsed(30000)) {
+        if (saveTimer.hasTimeElapsed(30000) && mc.screen == null) {
             new ModulesFile("default").saveToFile();
             saveTimer.reset();
         }
