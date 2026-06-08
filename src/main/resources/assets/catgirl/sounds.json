@@ -52,5 +52,17 @@
     "sounds": [
       "catgirl:smoothdisable"
     ]
+  },
+  "eviscerate-enable": {
+    "category": "master",
+    "sounds": [
+      "catgirl:eviscerate-enable"
+    ]
+  },
+  "eviscerate-disable": {
+    "category": "master",
+    "sounds": [
+      "catgirl:eviscerate-disable"
+    ]
   }
 }
