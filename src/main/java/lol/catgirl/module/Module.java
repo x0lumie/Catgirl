@@ -147,6 +147,14 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
                 }
             }
 
+            case Eviscerate -> {
+                if (enabled) {
+                    SoundManager.Sounds.EVISCERATE_ON.play();
+                } else {
+                    SoundManager.Sounds.EVISCERATE_OFF.play();
+                }
+            }
+
             case None -> {
                 // no sound
             }

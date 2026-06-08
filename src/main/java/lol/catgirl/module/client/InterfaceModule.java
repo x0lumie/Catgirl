@@ -34,7 +34,8 @@ public class InterfaceModule extends Module {
         Augustus,
         Note,
         Simp,
-        Smooth
+        Smooth,
+        Eviscerate
     }
 
     public final EnumProperty<FontMode> fontMode = new EnumProperty<>("Font Mode", FontMode.ProductSans);

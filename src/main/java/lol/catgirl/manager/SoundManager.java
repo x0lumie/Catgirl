@@ -18,6 +18,8 @@ public final class SoundManager {
         NOTE_OFF("note-disable"),
         SIMP_ON("simp-enable"),
         SIMP_OFF("simp-disable"),
+        EVISCERATE_ON("eviscerate-enable"),
+        EVISCERATE_OFF("eviscerate-disable"),
         SMOOTH_ON("smoothenable"),
         SMOOTH_OFF("smoothdisable")
 
