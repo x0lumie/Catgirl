@@ -38,6 +38,16 @@ public class PlayerUtils implements IMinecraft {
     public static int hurtAge;
     public static long lastModTime;
 
+    public static boolean canCrit() {
+        return mc.player.fallDistance > 0
+                && !mc.player.onGround()
+                && !mc.player.isInWater()
+                && !mc.player.isInLava()
+                && !mc.player.isPassenger()
+
+                ;
+    }
+
     public static boolean isBlockUnder(double height) {
         return isBlockUnder(height, true);
     }

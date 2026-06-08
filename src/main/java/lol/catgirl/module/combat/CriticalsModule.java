@@ -21,7 +21,7 @@ public final class CriticalsModule extends Module {
         IntaveSemi
     }
 
-    public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Jump);
+    public static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Jump);
     public final BoolProperty ignoreOnFire = new BoolProperty("Ignore On Fire", false);
     public final BoolProperty onlyWhileSprinting = new BoolProperty("Only While Sprinting", true);
 
@@ -48,7 +48,7 @@ public final class CriticalsModule extends Module {
 
         switch (mode.getValue()) {
             case Jump -> {
-                if (TargetsModule.getTarget() != null && mc.player.onGround()) {
+                if (AuraModule.target != null && mc.player.onGround()) {
                     PlayerUtils.jump();
                 }
             }

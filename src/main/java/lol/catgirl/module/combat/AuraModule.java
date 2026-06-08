@@ -4,6 +4,7 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PlayerRotationEvent;
 import lol.catgirl.event.impl.PreMotionEvent;
 import lol.catgirl.event.impl.PreUpdateEvent;
+import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.TargetsModule;
@@ -64,12 +65,13 @@ public final class AuraModule extends Module {
             .hide(() -> !oldCombat.getValue());
     public final EnumProperty<AutoBlock> autoBlock = new EnumProperty<>("Auto Block", AutoBlock.None)
             .hide(() -> !oldCombat.getValue());
+    public static BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true).hide(() -> oldCombat.getValue());
 
     public static final AuraModule INSTANCE = new AuraModule();
 
     private long lastAttackTime = 0L;
     private long nextAttackDelay = 0L;
-    private boolean canAttack = true;
+    public static boolean canAttack = true;
     public int hitTicks;
     private boolean realBlocking;
     int blockTicks = 0;
@@ -191,6 +193,7 @@ public final class AuraModule extends Module {
     private void attack() {
         if (mc.player == null || mc.gameMode == null || target == null || !canAttack) return;
         if (mc.player.distanceTo(target) > killRange.getValue()) return;
+        if (smartAttacking.getValue() && !PlayerUtils.canCrit()) return;
 
         if (oldCombat.getValue()) {
             long currentTime = System.currentTimeMillis();
