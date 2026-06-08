@@ -162,8 +162,6 @@ public class ItemInHandRendererMixin {
         float intensity = sin1 * 0.6F + sin2 * 0.4F;
 
         ItemAnimationUtils.animate(poseStack, swing, intensity);
-
-//        poseStack.translate(0.0, ItemAnimationUtil.height, 0.0);
     }
 
     @Inject(

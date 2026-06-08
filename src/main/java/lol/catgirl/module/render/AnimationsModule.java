@@ -20,7 +20,9 @@ public class AnimationsModule extends Module {
         Vanilla,
         Exhibition,
         Spin,
-        Stab
+        Stab,
+        Lumie,
+        Lumie2
     }
 
     public final EnumProperty<AnimationsMode> mode =
