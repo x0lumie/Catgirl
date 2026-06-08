@@ -18,7 +18,7 @@ public class ModuleCommand extends Command {
     @Override
     public void execute(String[] args) {
         if (args.length < 3) {
-            Catgirl.sendChatMessage("Usage: .<module> <setting> <value>");
+            Catgirl.sendChatMessage("Usage: .module <module> <setting> <value>");
             return;
         }
 
