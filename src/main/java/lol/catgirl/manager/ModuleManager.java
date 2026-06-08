@@ -98,6 +98,7 @@ public final class ModuleManager {
         modules.add(AutoHeadHitterModule.INSTANCE);
         modules.add(AutoDrainModule.INSTANCE);
         modules.add(AutoDoubleHandModule.INSTANCE);
+        modules.add(AutoToolModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
