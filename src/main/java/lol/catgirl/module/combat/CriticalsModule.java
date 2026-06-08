@@ -48,7 +48,7 @@ public final class CriticalsModule extends Module {
 
         switch (mode.getValue()) {
             case Jump -> {
-                if (AuraModule.target != null && mc.player.onGround()) {
+                if (TargetsModule.getTarget() != null && mc.player.onGround()) {
                     PlayerUtils.jump();
                 }
             }
