@@ -49,7 +49,7 @@ public final class ModuleListModule extends Module {
                 isLeft, suffix, textSize, suffixTextSize, paddingX,
                 paddingY, spacing, cornerRadius, sidebarWidth,
                 excludeCombat, excludeMovement, excludePlayer, excludeHud,
-                excludeRender, excludeCombat, excludeGhost, excludeClient
+                excludeRender, excludeGhost, excludeClient
         );
     }
 
