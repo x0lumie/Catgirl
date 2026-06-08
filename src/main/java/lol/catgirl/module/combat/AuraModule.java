@@ -50,8 +50,7 @@ public final class AuraModule extends Module {
             .hide(() -> !oldCombat.getValue());
     public final EnumProperty<AutoBlock> autoBlock = new EnumProperty<>("Auto Block", AutoBlock.None)
             .hide(() -> !oldCombat.getValue());
-    public static final BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true)
-            .hide(() -> oldCombat.getValue());
+    public static final BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true);
     public static final SliderProperty failRate = new SliderProperty("Miss Chance (%)", 0, 0, 40, 1);
 
     public static final AuraModule INSTANCE = new AuraModule();
