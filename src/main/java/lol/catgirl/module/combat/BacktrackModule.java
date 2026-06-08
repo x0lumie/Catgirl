@@ -44,7 +44,7 @@ public class BacktrackModule extends Module {
 
     public Player target;
     private Player lastTarget;
-    public Vec3 realPosition = null; // null = uninitialized
+    public Vec3 realPosition = null;
     private int ping;
 
     public BacktrackModule() {
@@ -63,6 +63,7 @@ public class BacktrackModule extends Module {
 
     @EventHook
     public void onPostMotion(PostMotionEvent event) {
+        setSuffix(ping + " ms");
         if (mc.player.isDeadOrDying()) {
             LagManager.dispatch();
             LagManager.disable();
