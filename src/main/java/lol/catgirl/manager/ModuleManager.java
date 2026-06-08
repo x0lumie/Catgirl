@@ -100,6 +100,7 @@ public final class ModuleManager {
         modules.add(AutoDoubleHandModule.INSTANCE);
         modules.add(AutoToolModule.INSTANCE);
         modules.add(BacktrackModule.INSTANCE);
+        modules.add(LagRangeModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
