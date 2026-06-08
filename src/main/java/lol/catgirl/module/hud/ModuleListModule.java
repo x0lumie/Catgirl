@@ -1,45 +1,39 @@
 package lol.catgirl.module.hud;
 
 import lol.catgirl.event.EventHook;
+import lol.catgirl.event.impl.Render2DEvent;
 import lol.catgirl.event.impl.RenderTickEvent;
-import lol.catgirl.manager.ModuleManager;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
-import lol.catgirl.module.client.InterfaceModule;
-import lol.catgirl.module.combat.AuraModule;
+import lol.catgirl.module.hud.modulelist.CatgirlModuleList;
+import lol.catgirl.module.hud.modulelist.ClassicModuleList;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
-import lol.catgirl.utils.render.nanovg.DrawUtil;
-import lol.catgirl.utils.render.nanovg.ResourceManager;
-
-import java.awt.*;
-import java.util.HashMap;
 
 public final class ModuleListModule extends Module {
     public static final ModuleListModule INSTANCE = new ModuleListModule();
 
     public enum Mode {
         Catgirl,
-        Virtue,
         Classic
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
     public final BoolProperty background = new BoolProperty("Background", true);
     public final BoolProperty bar = new BoolProperty("Bar", true);
-    public final BoolProperty isLeft = new BoolProperty("Position Left", false);
+    public final BoolProperty isLeft = new BoolProperty("Position Left", false).hide(() -> mode.getValue() == Mode.Classic);
     public final BoolProperty suffix = new BoolProperty("Suffix", true);
-    public final BoolProperty shadow = new BoolProperty("Shadow", false);
-    public final SliderProperty textSize = new SliderProperty("Text Size", 9, 6, 20, 1);
-    public final SliderProperty suffixTextSize = new SliderProperty("Suffix Text Size", 9, 6, 20, 1).hide(() ->  !suffix.getValue());
-    public final SliderProperty paddingX = new SliderProperty("Padding X", 2, 0, 10, 1);
-    public final SliderProperty paddingY = new SliderProperty("Padding Y", 1, 0, 10, 1);
-    public final SliderProperty spacing = new SliderProperty("Spacing", 11, 5, 25, 1);
-    public final SliderProperty cornerRadius = new SliderProperty("Corner Radius", 2, 0, 15, 1);
-    public final SliderProperty sidebarWidth = new SliderProperty("Sidebar Width", 1.2f, 0.5f, 6.0f, 0.1f).hide(() -> !bar.getValue());
-    public final SliderProperty animSpeed = new SliderProperty("Animation Speed", 0.2f, 0.05f, 1.0f, 0.01f);
-    public final SliderProperty xPositioningOffset = new SliderProperty("X Offset", 3, 0, 50, 1);
+    public final BoolProperty shadow = new BoolProperty("Shadow", false).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty textSize = new SliderProperty("Text Size", 9, 6, 20, 1).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty suffixTextSize = new SliderProperty("Suffix Text Size", 9, 6, 20, 1).hide(() -> !suffix.getValue() || mode.getValue() == Mode.Classic);
+    public final SliderProperty paddingX = new SliderProperty("Padding X", 2, 0, 10, 1).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty paddingY = new SliderProperty("Padding Y", 1, 0, 10, 1).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty spacing = new SliderProperty("Spacing", 11, 5, 25, 1).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty cornerRadius = new SliderProperty("Corner Radius", 2, 0, 15, 1).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty sidebarWidth = new SliderProperty("Sidebar Width", 1.2f, 0.5f, 6.0f, 0.1f).hide(() -> !bar.getValue() || mode.getValue() == Mode.Classic);
+    public final SliderProperty animSpeed = new SliderProperty("Animation Speed", 0.2f, 0.05f, 1.0f, 0.01f).hide(() -> mode.getValue() == Mode.Classic);
+    public final SliderProperty xPositioningOffset = new SliderProperty("X Offset", 3, 0, 50, 1).hide(() -> mode.getValue() == Mode.Classic);
     public final BoolProperty excludeCombat = new BoolProperty("Exclude Combat", false);
     public final BoolProperty excludeMovement = new BoolProperty("Exclude Movement", false);
     public final BoolProperty excludePlayer = new BoolProperty("Exclude Player", false);
@@ -50,7 +44,7 @@ public final class ModuleListModule extends Module {
 
     public ModuleListModule() {
         super("ModuleList", "Shows a hud with currently enabled modules.", ModuleCategory.Hud);
-        addSettings(
+        addSettings(mode,
                 background, animSpeed, xPositioningOffset, shadow, bar,
                 isLeft, suffix, textSize, suffixTextSize, paddingX,
                 paddingY, spacing, cornerRadius, sidebarWidth,
@@ -59,287 +53,21 @@ public final class ModuleListModule extends Module {
         );
     }
 
-    private static final HashMap<String, Double> xOffsets = new HashMap<>();
-
     @EventHook
     public void onRender(RenderTickEvent event) {
-        DrawUtil.begin();
+        if (mc.player == null) return;
 
-        int screenWidth = mc.getWindow().getGuiScaledWidth();
-
-        int TEXT_SIZE = textSize.getValue().intValue();
-        int SUFFIX_TEXT_SIZE = suffixTextSize.getValue().intValue();
-        boolean background = this.background.getValue();
-        boolean bar = this.bar.getValue();
-        float animationSpeed = this.animSpeed.getValue();
-        boolean isLeft = this.isLeft.getValue();
-        int PADDING_X = this.paddingX.getValue().intValue();
-        int PADDING_Y = this.paddingY.getValue().intValue();
-        int SPACING = this.spacing.getValue().intValue();
-        int CORNER_RADIUS = this.cornerRadius.getValue().intValue();
-        float SIDEBAR_WIDTH = this.sidebarWidth.getValue().intValue();
-
-        java.util.List<Module> modules = ModuleManager.modules.stream()
-                .filter(mod -> {
-                    boolean visible = mod.isEnabled()
-                            || (isLeft ? xOffsets.getOrDefault(mod.getDisplayName(),
-                            100.0) > (-getWidth(mod, TEXT_SIZE, SUFFIX_TEXT_SIZE) - 19)
-                            : xOffsets.getOrDefault(mod.getDisplayName(), 100.0)
-                              < (getWidth(mod, TEXT_SIZE, SUFFIX_TEXT_SIZE) + 19));
-
-                    if (!visible) {
-                        return false;
-                    }
-
-                    if (excludeCombat.getValue()
-                            && mod.getCategory() == ModuleCategory.Combat) {
-                        return false;
-                    }
-
-                    if (excludeMovement.getValue()
-                            && mod.getCategory() == ModuleCategory.Movement) {
-                        return false;
-                    }
-
-                    if (excludePlayer.getValue()
-                            && mod.getCategory() == ModuleCategory.Player) {
-                        return false;
-                    }
-
-                    if (excludeRender.getValue()
-                            && mod.getCategory() == ModuleCategory.Render) {
-                        return false;
-                    }
-
-                    if (excludeHud.getValue()
-                            && mod.getCategory() == ModuleCategory.Hud) {
-                        return false;
-                    }
-
-                    if (excludeClient.getValue()
-                            && mod.getCategory() == ModuleCategory.Client) {
-                        return false;
-                    }
-
-                    if (excludeGhost.getValue()
-                            && mod.getCategory() == ModuleCategory.Ghost) {
-                        return false;
-                    }
-
-
-                    return true;
-                })
-                .sorted((m1, m2) -> Double.compare(
-                        getWidth(m2, TEXT_SIZE, SUFFIX_TEXT_SIZE),
-                        getWidth(m1, TEXT_SIZE, SUFFIX_TEXT_SIZE)))
-                .toList();
-
-
-        int y = 10;
-
-        // i want to make it a switch case but it looked bad with it :plead:
-        WatermarkModule watermarkModule = WatermarkModule.INSTANCE;
-        if (watermarkModule.isEnabled() && isLeft) {
-            if (watermarkModule.mode.getValue() == WatermarkModule.Mode.Catgirl) {
-                y += 27;
-            }
-            if (watermarkModule.mode.getValue() == WatermarkModule.Mode.Catsense) {
-                y += 17;
-            }
-            if (watermarkModule.mode.getValue() == WatermarkModule.Mode.Simple) {
-                y += 16;
-            }
-        } else {
-            y = 10;
+        if (mode.getValue() == Mode.Catgirl) {
+            CatgirlModuleList.onRender(event, this);
         }
-
-        for (int i = 0; i < modules.size(); i++) {
-            Module mod = modules.get(i);
-            String name = mod.getDisplayName();
-            String suffix = mod.getSuffix();
-            if (!mod.isVisible.getValue()) continue;
-
-            double totalWidth = getWidth(mod, TEXT_SIZE, SUFFIX_TEXT_SIZE);
-            double targetX = mod.isEnabled() ? 0 : (isLeft ? -totalWidth - 20 : totalWidth + 20);
-
-            double currentX = xOffsets.getOrDefault(name, targetX);
-            currentX += (targetX - currentX) * animationSpeed;
-            xOffsets.put(name, currentX);
-
-            float alpha = isLeft ? (float) Math.clamp(1.0 - (Math.abs(currentX) / (totalWidth + 20)), 0, 1)
-                    : (float) Math.clamp(1.0 - (currentX / (totalWidth + 20)), 0, 1);
-
-            if (alpha <= 0.01f) continue;
-
-            double xPositioningOffset =
-                    this.xPositioningOffset.getValue().intValue();
-
-            double x = isLeft
-                    ? (xPositioningOffset + currentX) :
-                    (screenWidth - totalWidth
-                     - PADDING_X - xPositioningOffset + currentX);
-
-            float bgTop = (float) (y - TEXT_SIZE * 0.8 - PADDING_Y);
-            float bgBottom = bgTop + SPACING + 0.1f;
-
-            float bgLeft = (float) (x - PADDING_X);
-            float bgRight = (float) (x + totalWidth + PADDING_X);
-
-            boolean isFirst = (i == 0);
-            boolean isLast = (i == modules.size() - 1);
-
-            float tl = CORNER_RADIUS;
-            float tr = CORNER_RADIUS;
-            float bl = CORNER_RADIUS;
-            float br = CORNER_RADIUS;
-
-            if (isLeft) {
-                tl = isFirst ? CORNER_RADIUS : 0;
-                bl = isLast ? CORNER_RADIUS : 0;
-
-                if (!isFirst) {
-                    double prevModuleWidth = getWidth(modules.get(i - 1), TEXT_SIZE, SUFFIX_TEXT_SIZE);
-                    if (prevModuleWidth >= totalWidth) {
-                        tr = 0;
-                    }
-                }
-            } else {
-                tr = isFirst ? CORNER_RADIUS : 0;
-                br = isLast ? CORNER_RADIUS : 0;
-
-                if (!isFirst) {
-                    double prevModuleWidth = getWidth(modules.get(i - 1), TEXT_SIZE, SUFFIX_TEXT_SIZE);
-                    if (prevModuleWidth >= totalWidth) {
-                        tl = 0;
-                    }
-                }
-            }
-
-            Color bgColor = new Color(20, 20, 20, (int) (150 * alpha));
-            if (background) {
-                if (shadow.getValue()) {
-                    DrawUtil.drawShadow(
-                            bgLeft,
-                            bgTop,
-                            bgRight - bgLeft,
-                            bgBottom - bgTop,
-                            CORNER_RADIUS,
-                            14f,
-                            new Color(0, 0, 0, (int) (100 * alpha))
-                    );
-                }
-
-                DrawUtil.roundedRectVarying(bgLeft, bgTop, bgRight, bgBottom, tl, tr, br, bl, bgColor);
-            }
-
-            Color accentColor;
-
-            long time = System.currentTimeMillis();
-
-            Color PINK = new Color(255, 105, 180);
-            Color PURPLE = new Color(155, 89, 255);
-
-            switch (InterfaceModule.INSTANCE.colorMode.getValue()) {
-
-                case Static -> {
-                    accentColor = applyAlpha(PINK, alpha);
-                }
-
-                case Wave -> {
-                    float wave = (float) (
-                            (Math.sin((time / 350.0) + (i * 0.30)) + 1.0) / 2.0
-                    );
-
-                    Color blended = DrawUtil.interpolate(PINK, PURPLE, wave);
-
-                    accentColor = applyAlpha(blended, alpha);
-                }
-
-                case Pulse -> {
-                    float pulse = (float) (
-                            (Math.sin(time / 350.0) + 1.0) / 2.0
-                    );
-
-                    Color blended = DrawUtil.interpolate(PINK, PURPLE, pulse);
-
-                    accentColor = applyAlpha(blended, alpha);
-                }
-
-                default -> {
-                    accentColor = applyAlpha(PINK, alpha);
-                }
-            }
-            if (bar) {
-                if (isLeft) {
-                    DrawUtil.roundedRectVarying(
-                            bgLeft, bgTop,
-                            bgLeft + SIDEBAR_WIDTH, bgBottom,
-                            tl, 0, 0, bl,
-                            accentColor
-                    );
-                } else {
-                    DrawUtil.roundedRectVarying(
-                            bgRight - SIDEBAR_WIDTH,
-                            bgTop, bgRight, bgBottom,
-                            0, tr, br, 0,
-                            accentColor
-                    );
-                }
-            }
-
-            Color mainColor = accentColor;
-            Color suffixColor = applyAlpha(new Color(170, 170, 170), alpha);
-
-            if (!suffix.isEmpty() && this.suffix.getValue()) {
-                double suffixWidth = DrawUtil.getStringWidth(" " + suffix,
-                        SUFFIX_TEXT_SIZE, ResourceManager.getSelectedFont()
-                );
-                DrawUtil.drawString(name, x, y,
-                        TEXT_SIZE, mainColor,
-                        ResourceManager.getSelectedFont());
-                DrawUtil.drawString(" " +
-                                suffix, x + (totalWidth - suffixWidth), y,
-                        SUFFIX_TEXT_SIZE, suffixColor,
-                        ResourceManager.getSelectedFont());
-            } else {
-                DrawUtil.drawString(name, x, y, TEXT_SIZE,
-                        mainColor, ResourceManager.getSelectedFont());
-            }
-
-            y += SPACING * alpha;
-        }
-        DrawUtil.end();
     }
 
-    private double getWidth(Module mod, int TEXT_SIZE, int SUFFIX_TEXT_SIZE)
-    {
-        String name = mod.getDisplayName();
+    @EventHook
+    public void onRender(Render2DEvent event) {
+        if (mc.player == null) return;
 
-        double nameWidth = DrawUtil.getStringWidth(
-                name,
-                TEXT_SIZE,
-                ResourceManager.getSelectedFont()
-        );
-
-        if (!this.suffix.getValue()) {
-            return nameWidth;
+        if (mode.getValue() == Mode.Classic) {
+            ClassicModuleList.onRender(event, this);
         }
-
-        String suffix = mod.getSuffix();
-        double suffixWidth = DrawUtil.getStringWidth(
-                " " + suffix,
-                SUFFIX_TEXT_SIZE,
-                ResourceManager.getSelectedFont()
-        );
-        return nameWidth + suffixWidth;
-    }
-
-    private static Color applyAlpha(Color color, float alpha) {
-        return new Color(
-                color.getRed(),
-                color.getGreen(),
-                color.getBlue(),
-                (int) (255 * alpha)
-        );
     }
 }

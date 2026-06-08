@@ -7,12 +7,15 @@ import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
+import lol.catgirl.utils.client.ColorUtils;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import static lol.catgirl.utils.render.nanovg.ResourceManager.getSelectedFont;
@@ -22,7 +25,7 @@ import static lol.catgirl.utils.render.nanovg.ResourceManager.getSelectedFont;
 public final class WatermarkModule extends Module {
     public static final WatermarkModule INSTANCE = new WatermarkModule();
 
-    private final Color PINK = new Color(255, 105, 180);
+    public final Color PINK = new Color(255, 105, 180);
     public final Color PURPLE = new Color(155, 89, 255);
 
     public WatermarkModule() {
@@ -34,7 +37,8 @@ public final class WatermarkModule extends Module {
         Catgirl,
         Catsense,
         Simple,
-        Wurst
+        Wurst,
+        Classic
     }
 
     public final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Catgirl);
@@ -50,8 +54,6 @@ public final class WatermarkModule extends Module {
             case Catgirl -> {
                 float x = 5F;
                 float y = 5F;
-
-                long time = System.currentTimeMillis();
 
                 String watermark;
 
@@ -75,32 +77,37 @@ public final class WatermarkModule extends Module {
                     char c = watermark.charAt(i);
                     String s = String.valueOf(c);
 
-                    float wave = (float) ((Math.sin((time / 350.0) + (i * 0.25)) + 1.0) / 2.0);
-                    Color color = DrawUtil.interpolate(PINK, PURPLE, wave);
+                    Color color = ColorUtils.getAnimatedColor(i, 1.0f);
 
-                    float charWidth = (float) DrawUtil.getStringWidth(s, size, getSelectedFont());
+                    float charWidth = (float) DrawUtil.getStringWidth(
+                            s,
+                            size,
+                            getSelectedFont()
+                    );
 
-                    if(shadow.getValue()){
-                        DrawUtil.drawShadow(
-                                offsetX - 1.5F,
-                                y + 1F,
-                                charWidth + 3.0F,
-                                height - 2F,
-                                4F,
-                                10F,
-                                new Color(color.getRed(), color.getGreen(), color.getBlue(), 90)
-                        );
+                    if (shadow.getValue()) {
+                        DrawUtil.drawShadow(offsetX - 1.5F,
+                                y + 1F, charWidth + 3.0F, height - 2F,
+                                4F, 10F,
+                                new Color(
+                                        color.getRed(),
+                                        color.getGreen(),
+                                        color.getBlue(),
+                                        90));
                     }
 
                     DrawUtil.drawString(
-                            s, offsetX + 0.8F,
+                            s,
+                            offsetX + 0.8F,
                             y + height - 3.2F,
                             size,
                             new Color(0, 0, 0, 120),
                             getSelectedFont()
                     );
 
-                    DrawUtil.drawString(s, offsetX,
+                    DrawUtil.drawString(
+                            s,
+                            offsetX,
                             y + height - 4F,
                             size,
                             color,
@@ -222,7 +229,13 @@ public final class WatermarkModule extends Module {
                 float x = 2f;
                 float y = 10f;
 
-                String name = Catgirl.NAME;
+                String name;
+
+                if (lowercase.getValue()) {
+                    name = Catgirl.NAME.toLowerCase();
+                } else {
+                    name = Catgirl.NAME;
+                }
 
                 DrawUtil.drawString(
                         "v"+Catgirl.VERSION, x + x + 2 + x + 25, y,
@@ -253,6 +266,57 @@ public final class WatermarkModule extends Module {
                         95, 12,
                         Color.BLACK.getRGB(),
                         false
+                );
+            }
+            case Classic -> {
+                String time = new SimpleDateFormat("hh:mm a")
+                        .format(new Date())
+                        .toUpperCase();
+
+                if (time.startsWith("0")) {
+                    time = time.replaceFirst("0", "");
+                }
+
+                int x = 5;
+                int y = 5;
+
+                String mainClientName = Catgirl.NAME;
+
+                String firstLetter = "§l" + mainClientName.charAt(0);
+                String remainder = mainClientName.substring(1) + " ";
+
+                String timeText = "[" + time + "]";
+
+                event.context.drawString(
+                        mc.font,
+                        firstLetter,
+                        x,
+                        y,
+                        ColorUtils.getClientTheme().getRGB(),
+                        true
+
+                );
+
+                float firstWidth = mc.font.width(firstLetter);
+
+                event.context.drawString(
+                        mc.font,
+                        remainder,
+                        (int) (x + firstWidth),
+                        y,
+                        Color.WHITE.getRGB(),
+                        true
+                );
+
+                float remainderWidth = mc.font.width(remainder);
+
+                event.context.drawString(
+                        mc.font,
+                        timeText,
+                        (int) (x + firstWidth + remainderWidth),
+                        y,
+                        Color.GRAY.getRGB(),
+                        true
                 );
             }
         }

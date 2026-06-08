@@ -64,7 +64,7 @@ public class CatgirlDropdown extends Screen implements IMinecraft {
         int index = 0;
 
         for (ModuleCategory category : ModuleCategory.values()) {
-            if (category == ModuleCategory.Ghost) continue;
+//            if (category == ModuleCategory.Ghost) continue;
 
             float x = defaultOffsetX + (index * 110);
             float y = defaultOffsetY;
