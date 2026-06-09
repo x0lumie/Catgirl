@@ -5,6 +5,7 @@
   "mixins": [
     "ConnectionMixin",
     "EntityMixin",
+    "GameProfileAccessor",
     "GuiMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin",
@@ -36,6 +37,10 @@
     "LivingEntityRendererMixin",
     "MinecraftAccessor",
     "MinecraftMixin",
+    "MixinFont",
+    "MixinPlayerInfo",
+    "MixinPlayerInfoProfile",
+    "MixinPlayerInfoSkin",
     "MouseMixin",
     "PacketSendMixin",
     "RenderMixin",
