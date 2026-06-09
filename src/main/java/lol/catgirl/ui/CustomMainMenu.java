@@ -19,6 +19,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: when first opening the game and you resize the window, the context in the main menu does not update the scale
+// TODO: theme manager please :3
+
 public class CustomMainMenu extends Screen {
 
     private static final Color PINK        = new Color(255, 105, 180);
