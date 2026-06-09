@@ -39,6 +39,7 @@
     "MouseMixin",
     "PacketSendMixin",
     "RenderMixin",
+    "TitleScreenMixin",
     "blur.BlurRendererMixin",
     "blur.GameRendererAccessor",
     "blur.PostEffectPassAccessor",
