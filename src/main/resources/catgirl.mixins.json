@@ -8,7 +8,9 @@
     "GuiMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "PowderSnowBlockMixin",
+    "StringDecomposerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

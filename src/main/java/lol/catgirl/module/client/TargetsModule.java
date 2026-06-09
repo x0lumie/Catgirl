@@ -64,7 +64,9 @@ public class TargetsModule extends Module {
 
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
-        if (mc.player == null) return;
+        if(mc.player == null || mc.level == null) {
+            return;
+        }
 
         targetList = getTargets();
 

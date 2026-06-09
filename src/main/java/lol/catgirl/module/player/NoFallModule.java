@@ -50,7 +50,9 @@ public final class NoFallModule extends Module {
     @EventHook
     public void onPreMotion(PreMotionEvent event) {
         if (!isEnabled()) return;
-        if (mc.player == null || mc.level == null) return;
+        if(mc.player == null || mc.level == null) {
+            return;
+        }
 
         NoFallMode currentMode = nofallModes.get(mode.getValue());
         if (currentMode != null) {

@@ -29,6 +29,7 @@ public class SilentScreen extends Screen implements IMinecraft {
         }
     }
 
+
     @Override
     public void added() {
         wrapped.added();
@@ -87,9 +88,16 @@ public class SilentScreen extends Screen implements IMinecraft {
         wrapped.onClose();
     }
 
+    private boolean grabbed;
+
     @Override
     public void tick() {
         wrapped.tick();
+
+        if (!grabbed && minecraft != null && minecraft.screen == this) {
+            grabbed = true;
+            minecraft.mouseHandler.grabMouse();
+        }
     }
 
     @Override

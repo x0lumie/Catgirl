@@ -97,7 +97,9 @@ public final class AuraModule extends Module {
 
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
-        if (mc.player == null) return;
+        if(mc.player == null || mc.level == null) {
+            return;
+        }
 
         clampSliderPair(minCps, maxCps);
         clampSliderPair(minRotationSpeed, maxRotationSpeed);
