@@ -52,7 +52,6 @@ public final class ScaffoldModule extends Module {
     }
 
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
-    public static BoolProperty slowTelly = new BoolProperty("Slow Telly", false).hide(() -> mode.getValue() != Mode.Telly);
     private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Tower Mode", TowerMode.Matrix);
     private final EnumProperty<BlockCounterMode> blockCounterMode = new EnumProperty<>("Block Counter Mode", BlockCounterMode.Simple);
     public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
@@ -82,7 +81,7 @@ public final class ScaffoldModule extends Module {
 
     public ScaffoldModule() {
         super("Scaffold", "Places blocks under you creating a bridge.", ModuleCategory.Player);
-        addSettings(mode, slowTelly, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
+        addSettings(mode, blockCounterMode, towerMode, minRotationSpeed, maxRotationSpeed, placeDelay, rayCast, strict, useMouseClick, sprint, jump, keepY, sneak, sneakEvery);
     }
 
     @Override
@@ -216,7 +215,7 @@ public final class ScaffoldModule extends Module {
         switch (mode.getValue()) {
             case Normal -> getBaseRotations(event);
             case Telly -> {
-                if (slowTelly.getValue() ? offGroundTicks <= 9 && offGroundTicks > 3 : !mc.player.onGround()) {
+                if (!mc.player.onGround()) {
                     getBaseRotations(event);
                     canPlace = true;
                 } else {
@@ -289,38 +288,37 @@ public final class ScaffoldModule extends Module {
 
     private void getBaseRotations(PlayerRotationEvent event) {
         float[] targetRotations = new float[]{mc.player.getYRot() - 180f, 82.5f};
-        boolean foundValidRotation = false;
 
-        double difference = mc.player.getY() + mc.player.getEyeHeight() - blockData.position.getY() -
-                0.5 - (Math.random() - 0.5) * 0.1;
+        Vec3 faceCenter = Vec3.atCenterOf(blockData.getPosition()).add(
+                blockData.getFacing().getStepX() * 0.5,
+                blockData.getFacing().getStepY() * 0.5,
+                blockData.getFacing().getStepZ() * 0.5
+        );
 
-        HitResult hitResult = null;
+        float[] angles = new float[]{-180f, -135f, -90f, -45f, 0f, 45f, 90f, 135f, 180f};
 
-        for (int offset = -180; offset <= 180; offset += 45) {
-            mc.player.setPos(mc.player.getX(), mc.player.getY() - difference, mc.player.getZ());
-            hitResult = PlayerUtils.raycastBlocks(mc.player.getYRot() + (offset * 3), 0f, 4.5f, false);
-            mc.player.setPos(mc.player.getX(), mc.player.getY() + difference, mc.player.getZ());
+        for (float offset : angles) {
+            float testYaw = mc.player.getYRot() + offset;
+            float testPitch = RotationUtils.calculate(faceCenter).y;
 
-            if (hitResult != null && hitResult.getLocation() != null) {
-                Vec2 rotations = RotationUtils.calculate(hitResult.getLocation());
+            BlockHitResult hit = PlayerUtils.raycastBlocks(testYaw, testPitch, 4.5f, false);
+            if (hit == null) continue;
 
+            if (hit.getBlockPos().equals(blockData.getPosition())) {
+                Vec2 rotations = RotationUtils.calculate(hit.getLocation());
                 if (PlayerUtils.isLookingAtBlock(blockData.facing, blockData.position, true, 4.5f, rotations.x, rotations.y)) {
                     targetRotations[0] = rotations.x;
                     targetRotations[1] = rotations.y;
-                    foundValidRotation = true;
                     break;
                 }
             }
         }
 
-        if (!foundValidRotation) {
-            final Vec2 rotations = RotationUtils.calculate(
-                    new Vec3(blockData.getPosition().getX(), blockData.getPosition().getY(), blockData.getPosition().getZ()), blockData.getFacing());
-
+        if (targetRotations[0] == mc.player.getYRot() - 180f) {
+            Vec2 rotations = RotationUtils.calculate(faceCenter, blockData.getFacing());
             if (PlayerUtils.isLookingAtBlock(blockData.facing, blockData.position, true, 4.5f, rotations.x, rotations.y)) {
                 targetRotations[0] = rotations.x;
                 targetRotations[1] = rotations.y;
-                foundValidRotation = true;
             }
         }
 
