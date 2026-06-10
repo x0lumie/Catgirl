@@ -1,6 +1,7 @@
 package lol.catgirl.utils.render.nanovg;
 
 import lol.catgirl.module.client.InterfaceModule;
+import net.minecraft.client.gui.Font;
 
 import java.io.IOException;
 
@@ -12,10 +13,18 @@ public class ResourceManager {
 
     public static class FontResources {
         public static FontResource regular;
-        public static FontResource productSansBold, minecraft,
-        comfortaa, comfortaaBold, sfprobold, roboto,
-        segoeUiLightItalic
-                ;
+        public static FontResource productSansBold;
+        public static FontResource minecraft;
+        public static FontResource comfortaa;
+        public static FontResource comfortaaBold;
+        public static FontResource sfprobold;
+        public static FontResource roboto;
+        public static FontResource segoeUiLightItalic;
+        public static FontResource iconOne;
+        public static FontResource iconTwo;
+        public static FontResource iconThree;
+        public static FontResource icons;
+        public static FontResource moreIconsFont;
 
         public static void init() throws IOException {
             regular = new FontResource("regular");
@@ -26,6 +35,11 @@ public class ResourceManager {
             sfprobold = new FontResource("SF-Pro-Display-Bold");
             roboto = new FontResource("roboto");
             segoeUiLightItalic = new FontResource("segoe-ui-light-italic");
+            iconOne = new FontResource("icon-one");
+            iconTwo = new FontResource("icon-two");
+            iconThree = new FontResource("icon-three");
+            icons = new FontResource("icons");
+            moreIconsFont = new FontResource("moreIcons");
         }
     }
 

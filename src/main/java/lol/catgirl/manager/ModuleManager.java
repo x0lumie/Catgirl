@@ -137,6 +137,18 @@ public final class ModuleManager {
         return result;
     }
 
+    public List<Module> getModulesByCategory(String categoryName) {
+        List<Module> result = new ArrayList<>();
+
+        for (Module module : modules) {
+            if (module.getCategory().name().equalsIgnoreCase(categoryName)) {
+                result.add(module);
+            }
+        }
+
+        return result;
+    }
+
     @SuppressWarnings("unchecked")
     public static <M extends Module> M getModule(String module) {
         return (M) modules.stream()
