@@ -22,7 +22,7 @@ public final class ClickGuiModule extends Module {
     public ClickGuiModule() {
         super("ClickGUI",
                 "Renders the interface to customize and toggle modules.",
-                ModuleCategory.Movement
+                ModuleCategory.Client
         );
         setKey(GLFW.GLFW_KEY_RIGHT_SHIFT);
         addSetting(mode);
