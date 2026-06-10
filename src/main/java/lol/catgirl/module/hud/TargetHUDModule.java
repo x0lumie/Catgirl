@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -114,5 +115,13 @@ public final class TargetHUDModule extends Module {
     @Override
     protected String getFinalSuffix() {
         return mode.getValue().toString();
+    }
+
+    public static Color interpolateColor(Color color1, Color color2, float fraction) {
+        fraction = Math.max(0f, Math.min(1f, fraction));
+        int r = (int) (color1.getRed() + (color2.getRed() - color1.getRed()) * fraction);
+        int g = (int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * fraction);
+        int b = (int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * fraction);
+        return new Color(r, g, b);
     }
 }
