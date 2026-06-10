@@ -227,6 +227,8 @@ public class MenuClickGui extends Screen {
                     totalContentHeight += moduleHeight + moduleSpacing;
                     if (module.isExpanded()) {
                         for (var setting : module.getProperties()) {
+                            if (setting.isHidden()) continue;
+
                             totalContentHeight += ((setting instanceof SliderProperty)
                                     ? 24f : 14f) + 4f;
                         }
@@ -250,6 +252,8 @@ public class MenuClickGui extends Screen {
                     float dynamicCardHeight = moduleHeight;
                     if (module.isExpanded()) {
                         for (var setting : module.getProperties()) {
+                            if (setting.isHidden()) continue;
+
                             dynamicCardHeight += ((setting instanceof SliderProperty) ? 24f : 14f) + 4f;
                         }
                         dynamicCardHeight += 2f;
@@ -290,6 +294,8 @@ public class MenuClickGui extends Screen {
                         float settingSpacing = 4f;
 
                         for (var setting : module.getProperties()) {
+                            if (setting.isHidden()) continue;
+
                             float rowX1 = modX1 + 6f;
                             float rowX2 = modX2 - 6f;
                             float settingHeight = (setting instanceof SliderProperty) ? 24f : 14f;
@@ -421,6 +427,8 @@ public class MenuClickGui extends Screen {
             float dynamicCardHeight = moduleHeight;
             if (module.isExpanded()) {
                 for (var setting : module.getProperties()) {
+                    if (setting.isHidden()) continue;
+
                     dynamicCardHeight += ((setting instanceof SliderProperty) ? 24f : 14f) + 4f;
                 }
                 dynamicCardHeight += 2f;
@@ -445,6 +453,9 @@ public class MenuClickGui extends Screen {
                 float settingSpacing = 4f;
 
                 for (var setting : module.getProperties()) {
+                    if (setting.isHidden()) continue;
+
+
                     float settingHeight = (setting instanceof SliderProperty) ? 24f : 14f;
                     if (mouseY >= settingY && mouseY <= settingY + settingHeight) {
                         float rowX1 = modX1 + 6f;
