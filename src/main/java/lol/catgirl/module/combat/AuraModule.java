@@ -1,15 +1,20 @@
 package lol.catgirl.module.combat;
 
+import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.PlayerRotationEvent;
 import lol.catgirl.event.impl.PreMotionEvent;
 import lol.catgirl.event.impl.PreUpdateEvent;
+import lol.catgirl.event.impl.WorldJoinEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.client.NotificationsModule;
 import lol.catgirl.module.client.TargetsModule;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import lol.catgirl.utils.client.ItemAnimationUtils;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.RotationUtils;
@@ -52,6 +57,7 @@ public final class AuraModule extends Module {
             .hide(() -> !oldCombat.getValue());
     public static final BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true);
     public static final SliderProperty failRate = new SliderProperty("Miss Chance (%)", 0, 0, 40, 1);
+    public static final BoolProperty autoDisable = new BoolProperty("Auto Disable", true);
 
     public static final AuraModule INSTANCE = new AuraModule();
 
@@ -72,8 +78,7 @@ public final class AuraModule extends Module {
                 minRotationSpeed, maxRotationSpeed,
                 rayCast, useMouseClick, rotateOnAttack,
                 oldCombat, minCps, maxCps, attackDelayOffset, autoBlock,
-                smartAttacking,
-                failRate
+                smartAttacking, failRate, autoDisable
         );
     }
 
@@ -309,5 +314,25 @@ public final class AuraModule extends Module {
     @Override
     protected String getFinalSuffix() {
         return rotations.getValue().toString();
+    }
+
+    @EventHook
+    public void onWorldChange(WorldJoinEvent event) {
+        if(!this.isEnabled()) return;
+
+        if (autoDisable.getValue()) {
+
+            switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                case Chat -> {
+                    Catgirl.sendChatMessage(this.getDisplayName() + " has been disabled due to world change.");
+                }
+                case Exhibition -> {
+                    NotificationManager.post(this.getDisplayName(), "Disabled on world change.", Notification.Type.NOTIFY);
+                }
+                case None -> {}
+            }
+
+            toggle();
+        }
     }
 }

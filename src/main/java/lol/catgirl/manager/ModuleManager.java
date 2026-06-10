@@ -117,6 +117,11 @@ public final class ModuleManager {
         modules.add(PortalsModule.INSTANCE);
         modules.add(AntiPowderSnowModule.INSTANCE);
         modules.add(LungeModule.INSTANCE);
+        modules.add(PortalGodModeModule.INSTANCE);
+        modules.add(SafeWalkModule.INSTANCE);
+        modules.add(EntityControlModule.INSTANCE);
+        modules.add(XCarryModule.INSTANCE);
+        modules.add(AntiCactusModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }

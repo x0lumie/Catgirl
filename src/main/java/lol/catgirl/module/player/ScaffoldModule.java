@@ -1,12 +1,16 @@
 package lol.catgirl.module.player;
 
+import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.*;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.client.NotificationsModule;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import lol.catgirl.utils.client.Animation;
 import lol.catgirl.utils.client.ColorUtils;
 import lol.catgirl.utils.client.Easing;
@@ -65,6 +69,7 @@ public final class ScaffoldModule extends Module {
     public static BoolProperty keepY = new BoolProperty("Keep Y", false).hide(() -> !jump.getValue());
     private static final BoolProperty sneak = new BoolProperty("Sneak", false);
     private final SliderProperty sneakEvery = new SliderProperty("Sneak Every", 1, 0, 10, 1).hide(() -> !sneak.getValue());
+    public final BoolProperty autoDisable = new BoolProperty("Auto Disable", false);
 
     public static final ScaffoldModule INSTANCE = new ScaffoldModule();
 
@@ -550,5 +555,25 @@ public final class ScaffoldModule extends Module {
         int y = centerY + 6;
 
         event.context.drawString(mc.font, text, x, y, Color.white.getRGB(), true);
+    }
+
+    @EventHook
+    public void onWorldChange(WorldJoinEvent event) {
+        if(!this.isEnabled()) return;
+
+        if (autoDisable.getValue()) {
+
+            switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                case Chat -> {
+                    Catgirl.sendChatMessage(this.getDisplayName() + " has been disabled due to world change.");
+                }
+                case Exhibition -> {
+                    NotificationManager.post(this.getDisplayName(), "Disabled on world change.", Notification.Type.NOTIFY);
+                }
+                case None -> {}
+            }
+
+            toggle();
+        }
     }
 }

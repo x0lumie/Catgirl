@@ -34,7 +34,11 @@ public final class ClickTPModule extends Module {
 
     @EventHook
     public void onTick(ClientTickEvent event) {
-        if(delay > 0) delay--;
+        if(delay > 0) {
+            delay--;
+            return;
+        }
+
         if (mc.options.keyPickItem.isDown() && delay < 0) {
             HitResult raycast = mc.player.pick(256.0d,
                     mc.getDeltaTracker().getGameTimeDeltaPartialTick(false),

@@ -3,6 +3,8 @@
   "package": "lol.catgirl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractHorseMixin",
+    "CactusBlockMixin",
     "ConnectionMixin",
     "EntityMixin",
     "GuiMixin",
