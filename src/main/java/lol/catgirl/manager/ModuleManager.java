@@ -116,6 +116,7 @@ public final class ModuleManager {
         modules.add(ClientSpooferModule.INSTANCE);
         modules.add(PortalsModule.INSTANCE);
         modules.add(AntiPowderSnowModule.INSTANCE);
+        modules.add(LungeModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
