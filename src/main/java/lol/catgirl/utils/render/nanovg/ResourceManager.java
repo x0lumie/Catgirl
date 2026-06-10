@@ -13,7 +13,8 @@ public class ResourceManager {
     public static class FontResources {
         public static FontResource regular;
         public static FontResource productSansBold, minecraft,
-        comfortaa, comfortaaBold, sfprobold, roboto
+        comfortaa, comfortaaBold, sfprobold, roboto,
+        segoeUiLightItalic
                 ;
 
         public static void init() throws IOException {
@@ -24,6 +25,7 @@ public class ResourceManager {
             comfortaaBold = new FontResource("Comfortaa-Bold");
             sfprobold = new FontResource("SF-Pro-Display-Bold");
             roboto = new FontResource("roboto");
+            segoeUiLightItalic = new FontResource("segoe-ui-light-italic");
         }
     }
 
@@ -37,6 +39,9 @@ public class ResourceManager {
             case Comfortaa -> FontResources.comfortaa;
             case ComfortaaBold -> FontResources.comfortaaBold;
             case SFProDisplayBold -> FontResources.sfprobold;
+            case Roboto -> FontResources.roboto;
+            case ProductSansRegular -> FontResources.regular;
+            case SegoeLight -> FontResources.segoeUiLightItalic;
         };
     }
 
@@ -50,6 +55,9 @@ public class ResourceManager {
             case Comfortaa -> "Comfortaa";
             case ComfortaaBold -> "Comfortaa-Bold";
             case SFProDisplayBold -> "SF-Pro-Display-Bold";
+            case Roboto -> "roboto";
+            case ProductSansRegular -> "regular";
+            case SegoeLight -> "segoe-ui-light-italic";
         };
     }
 }
