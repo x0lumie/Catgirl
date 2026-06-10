@@ -1,6 +1,5 @@
 package lol.catgirl.module.player.noslow.impl;
 
-import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.PlayerUseMultiplierEvent;
 import lol.catgirl.module.movement.SpeedModule;
@@ -56,7 +55,7 @@ public final class MatrixNoSlowMode implements NoSlowMode {
 
         if (itemUseTime > 1) {
             float strafeValue = module.matrixStrafeSpeed.getValue().floatValue();
-            MoveUtils.setMotion(strafeValue);
+            MoveUtils.setMotionWithoutY(strafeValue);
         } else {
             boolean speedEnabled = SpeedModule.INSTANCE.isEnabled();
 
