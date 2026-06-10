@@ -44,7 +44,7 @@ public final class VelocityModule extends Module {
     public final BoolProperty ignoreOnFire = new BoolProperty("Ignore on fire", true);
 
     // mmc
-        public final SliderProperty mineMenClubValue = new SliderProperty("Amount", 0.8f, 0.0f, 1f, 0.01f).hide(()-> !(mode.getValue() == Mode.MineMenClub));
+    public final SliderProperty mineMenClubValue = new SliderProperty("Amount", 0.8f, 0.0f, 1f, 0.01f).hide(()-> !(mode.getValue() == Mode.MineMenClub));
 
     public VelocityModule() {
         super("Velocity", "Uses heavy dick and balls to drag across the floor to reduce velocity.", ModuleCategory.Combat);

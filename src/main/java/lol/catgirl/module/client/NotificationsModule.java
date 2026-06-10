@@ -12,6 +12,7 @@ public class NotificationsModule extends Module {
 
     public enum Mode {
         None,
+        Chat,
         Exhibition
     }
 

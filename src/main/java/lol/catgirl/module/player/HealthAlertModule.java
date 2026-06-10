@@ -5,7 +5,10 @@ import lol.catgirl.event.EventHook;
 import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
+import lol.catgirl.module.client.NotificationsModule;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import lol.catgirl.utils.Utils;
 
 public class HealthAlertModule extends Module {
@@ -40,14 +43,27 @@ public class HealthAlertModule extends Module {
         alerted = true;
 
         if (lowHealth) {
-            Catgirl.sendChatMessage("Your health is low!");
-//            NotificationRenderer.INSTANCE.push("Health Alert", "Your health is low!");
+            switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                case Chat -> {
+                    Catgirl.sendChatMessage("Your health is low!");
+                }
+                case Exhibition -> {
+                    NotificationManager.post(this.getDisplayName(), "Your health is low!", Notification.Type.WARNING);
+                }
+                case None -> {}
+            }
         }
 
         if (lowSoup) {
-            Catgirl.sendChatMessage("You're low on soup! (" + soups + " left)");
-//            NotificationRenderer.INSTANCE.push("Health Alert", "You're low on soup! (" + soups + " left)");
-
+            switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                case Chat -> {
+                    Catgirl.sendChatMessage("Your soup count is low! (" + soups + ") left.");
+                }
+                case Exhibition -> {
+                    NotificationManager.post(this.getDisplayName(), "Your soup count is low! (" + soups + ") left.", Notification.Type.WARNING);
+                }
+                case None -> {}
+            }
         }
 
         Utils.warningSound();
