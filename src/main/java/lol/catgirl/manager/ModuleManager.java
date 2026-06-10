@@ -122,6 +122,7 @@ public final class ModuleManager {
         modules.add(EntityControlModule.INSTANCE);
         modules.add(XCarryModule.INSTANCE);
         modules.add(AntiCactusModule.INSTANCE);
+        modules.add(MurderMysteryModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
