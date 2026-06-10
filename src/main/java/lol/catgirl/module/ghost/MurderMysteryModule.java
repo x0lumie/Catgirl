@@ -2,7 +2,7 @@ package lol.catgirl.module.ghost;
 
 import lol.catgirl.Catgirl;
 import lol.catgirl.event.EventHook;
-import lol.catgirl.event.impl.ClientTickEvent;
+import lol.catgirl.event.impl.*;
 import lol.catgirl.module.Module;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.client.NotificationsModule;
@@ -11,10 +11,12 @@ import lol.catgirl.property.impl.SliderProperty;
 import lol.catgirl.ui.notification.Notification;
 import lol.catgirl.ui.notification.NotificationManager;
 import lol.catgirl.utils.client.TickingTimer;
+import lol.catgirl.utils.render.RenderUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -26,16 +28,18 @@ public final class MurderMysteryModule extends Module {
             .hide(()->!announceMurderer.getValue());
     ;
     public final BoolProperty alertOnBow = new BoolProperty("Alert Bows", false);
+    public final BoolProperty murdererESP = new BoolProperty("Murderer ESP", true);
 
     private final TickingTimer announceTimer = new TickingTimer();
 
     public MurderMysteryModule() {
         super("MurderMystery", "Tools for the Murder Mystery gamemode.",
                 ModuleCategory.Ghost);
-        addSettings(announceMurderer, announceDelay, alertOnBow);
+        addSettings(announceMurderer, announceDelay, alertOnBow, murdererESP);
     }
 
     public static ArrayList<Player> murderers = new ArrayList<>();
+    private final ArrayList<Player> bowUsers = new ArrayList<>();
 
     private final ArrayList<Item> items = new ArrayList<>(Arrays.asList(
             Items.IRON_SWORD, Items.ENDER_CHEST, Items.STONE_SWORD,
@@ -60,6 +64,10 @@ public final class MurderMysteryModule extends Module {
         if (mc.player == null || mc.level == null) return;
 
         for (Player player : mc.level.players()) {
+            if (player == mc.player) {
+                continue;
+            }
+
             if (player.getName().getString().isBlank()) continue;
 
             Item heldItem = player.getMainHandItem().getItem();
@@ -80,7 +88,9 @@ public final class MurderMysteryModule extends Module {
                 }
             }
 
-            if (alertOnBow.getValue() && bowItems.contains(heldItem)) {
+            if (alertOnBow.getValue() && bowItems.contains(heldItem) && !bowUsers.contains(player)) {
+                bowUsers.add(player);
+
                 switch (NotificationsModule.INSTANCE.mode.getValue()) {
                     case Chat -> Catgirl.sendChatMessage("The player " + player.getName().getString() + " is holding a bow");
                     case Exhibition -> NotificationManager.post(this.getDisplayName(), "The player " + player.getName().getString() + " is holding a bow", Notification.Type.INFO);
@@ -88,5 +98,23 @@ public final class MurderMysteryModule extends Module {
                 }
             }
         }
+    }
+
+    @EventHook
+    public void onRender(Render3DEvent event) {
+        Color murdererColor = Color.RED;
+
+        for (Player player : mc.level.players()) {
+            if (player == mc.player || !murderers.contains(player)) continue;
+
+            RenderUtils.renderBoxC(player, event, event.partialTicks, murdererColor);
+        }
+    }
+
+    @EventHook
+    public void onWorldJoin(WorldJoinEvent event) {
+        murderers.clear();
+        bowUsers.clear();
+        announceTimer.reset();
     }
 }
