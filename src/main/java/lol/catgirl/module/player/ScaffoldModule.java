@@ -59,8 +59,8 @@ public final class ScaffoldModule extends Module {
     private static final EnumProperty<Mode> mode = new EnumProperty<>("Mode", Mode.Normal);
     private final EnumProperty<TowerMode> towerMode = new EnumProperty<>("Tower Mode", TowerMode.Matrix);
     private final EnumProperty<BlockCounterMode> blockCounterMode = new EnumProperty<>("Block Counter Mode", BlockCounterMode.Simple);
-    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1f, 180, 1f);
-    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1f, 180, 1f);
+    public static SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 6, 1f, 10, 0.5f);
+    public static SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 7, 1f, 10, 0.5f);
     private final SliderProperty placeDelay = new SliderProperty("Place Delay", 0, 0, 10, 1);
     public static BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static BoolProperty strict = new BoolProperty("Strict Ray Cast", true).hide(() -> !rayCast.getValue());

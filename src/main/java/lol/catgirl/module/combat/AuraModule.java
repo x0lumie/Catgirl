@@ -41,8 +41,8 @@ public final class AuraModule extends Module {
     public static final SliderProperty killRange = new SliderProperty("Kill Range", 3, 3, 6, 0.1f);
     public final EnumProperty<Rotations> rotations = new EnumProperty<>("Rotations", Rotations.Normal);
     public final EnumProperty<TargetPriority> targetPriority = new EnumProperty<>("Target Priority", TargetPriority.Distance);
-    public static final SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 30, 1, 180, 1f);
-    public static final SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 30, 1, 180, 1f);
+    public static final SliderProperty minRotationSpeed = new SliderProperty("Min Rot Speed", 6, 1, 10, 0.5f);
+    public static final SliderProperty maxRotationSpeed = new SliderProperty("Max Rot Speed", 7, 1, 10, 0.5f);
     public static final BoolProperty rayCast = new BoolProperty("Ray Cast", true);
     public static final BoolProperty useMouseClick = new BoolProperty("Use Mouse Click", true);
     public static final BoolProperty rotateOnAttack = new BoolProperty("Rotate On Attack", false);

@@ -20,7 +20,7 @@ public final class AutoPotModule extends Module {
 
     public final SliderProperty delay = new SliderProperty("Delay", 200, 0, 1000, 25);
     public final SliderProperty healthThreshold = new SliderProperty("Health Threshold", 14, 1, 20, 0.5f);
-    public final SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 180, 1, 180, 1);
+    public final SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 10, 1, 10, 0.5f);
 
     public AutoPotModule() {
         super("AutoPot", "Automatically throws buff splash potions when low.", ModuleCategory.Combat);

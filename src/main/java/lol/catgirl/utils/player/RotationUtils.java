@@ -29,8 +29,11 @@ public class RotationUtils implements IMinecraft {
     private static HitResult currentHitResult;
 
     @Getter
-    @Setter
-    private static float rotationSpeed = 30f;
+    private static float rotationSpeed = 5 * 32f;
+
+    public static void setRotationSpeed(float sped) {
+        rotationSpeed = sped * 32;
+    }
 
     public static float[] regularAuraRotations(float[] currentRotations, Entity targetEntity, float speed) {
         float[] targetRotations = getRotations(currentRotations, mc.player.getEyePosition(), targetEntity);

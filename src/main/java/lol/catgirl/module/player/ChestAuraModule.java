@@ -49,7 +49,7 @@ public class ChestAuraModule extends Module {
 
     public final SliderProperty range = new SliderProperty("Range", 3.0f, 0f, 6f, 0.05f);
     public final BoolProperty rotate = new BoolProperty("Rotate", true);
-    public final SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 69f, 1f, 180f, 1f);
+    public final SliderProperty rotationSpeed = new SliderProperty("Rotation Speed", 10f, 1f, 10f, 0.5f);
     public final BoolProperty visuals = new BoolProperty("Visuals", true);
     public final SliderProperty visualRange = new SliderProperty("Visual Range", 6.0f, 0f, 12f, 0.05f).hide(() -> !visuals.getValue());
     public final EnumProperty<RenderMode> renderMode = new EnumProperty<>("Mode", RenderMode.Outline).hide(() -> !visuals.getValue());

@@ -89,7 +89,7 @@ public class MLGNoFallMode implements NoFallMode {
         if (mc.player == null || mc.level == null) return;
         if (rotations == null) return;
 
-        RotationUtils.setRotationSpeed(180);
+        RotationUtils.setRotationSpeed(10);
 
         event.yaw = rotations[0];
         event.pitch = rotations[1];
