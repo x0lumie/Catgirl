@@ -7,6 +7,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -16,10 +17,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.MaceItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -27,6 +24,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,6 +37,44 @@ public class PlayerUtils implements IMinecraft {
     public static int jumpAge;
     public static int hurtAge;
     public static long lastModTime;
+    public static final List<Block> blacklist = Arrays.asList(
+            // Pasted Simp Blocks hehe
+            Blocks.ENCHANTING_TABLE, Blocks.CHEST, Blocks.ENDER_CHEST,
+            Blocks.TRAPPED_CHEST, Blocks.ANVIL, Blocks.SAND, Blocks.COBWEB, Blocks.TORCH,
+            Blocks.CRAFTING_TABLE, Blocks.FURNACE, Blocks.LILY_PAD, Blocks.DISPENSER,
+            Blocks.STONE_PRESSURE_PLATE,
+
+            // Redstone components
+            Blocks.REPEATER, Blocks.COMPARATOR, Blocks.REDSTONE_WIRE, Blocks.LEVER,
+            Blocks.OBSERVER, Blocks.PISTON, Blocks.STICKY_PISTON,
+
+            // Rails
+            Blocks.RAIL, Blocks.POWERED_RAIL, Blocks.DETECTOR_RAIL, Blocks.ACTIVATOR_RAIL,
+
+            // Plants & natural blocks
+            Blocks.SHORT_GRASS, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN,
+            Blocks.DEAD_BUSH, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.KELP,
+            Blocks.KELP_PLANT, Blocks.VINE, Blocks.WEEPING_VINES, Blocks.TWISTING_VINES,
+            Blocks.SWEET_BERRY_BUSH,
+
+            // Carpets & layers
+            Blocks.WHITE_CARPET, Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
+            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET,
+            Blocks.PINK_CARPET, Blocks.GRAY_CARPET, Blocks.LIGHT_GRAY_CARPET,
+            Blocks.CYAN_CARPET, Blocks.PURPLE_CARPET, Blocks.BLUE_CARPET,
+            Blocks.BROWN_CARPET, Blocks.GREEN_CARPET, Blocks.RED_CARPET, Blocks.BLACK_CARPET,
+            Blocks.SNOW,
+
+            // Other non-solid blocks
+            Blocks.CAKE, Blocks.SCAFFOLDING, Blocks.BELL, Blocks.BREWING_STAND,
+            Blocks.CAULDRON, Blocks.WATER_CAULDRON, Blocks.LAVA_CAULDRON,
+            Blocks.POWDER_SNOW_CAULDRON, Blocks.FLOWER_POT,
+
+            // Signs (non-full blocks)
+            Blocks.OAK_SIGN, Blocks.SPRUCE_SIGN, Blocks.BIRCH_SIGN, Blocks.JUNGLE_SIGN,
+            Blocks.ACACIA_SIGN, Blocks.DARK_OAK_SIGN, Blocks.MANGROVE_SIGN,
+            Blocks.CHERRY_SIGN, Blocks.BAMBOO_SIGN, Blocks.CRIMSON_SIGN, Blocks.WARPED_SIGN
+    );
 
     public static boolean canCrit() {
         return mc.player.fallDistance > 0
