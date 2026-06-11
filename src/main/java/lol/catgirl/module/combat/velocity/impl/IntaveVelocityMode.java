@@ -4,5 +4,4 @@ import lol.catgirl.module.combat.velocity.VelocityMode;
 
 public class IntaveVelocityMode implements VelocityMode {
 
-    // todo this
 }

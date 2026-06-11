@@ -24,7 +24,12 @@ public final class NoFallModule extends Module {
                 "Negates or prevents taking fall damage.",
                 ModuleCategory.Player
         );
-        addSettings(mode, distance, useCobwebs, collectWater);
+        addSettings(
+                mode,
+                distance,
+                useCobwebs,
+                collectWater
+        );
     }
 
     public enum Mode {

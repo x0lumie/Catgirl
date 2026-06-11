@@ -37,8 +37,7 @@ public final class AutoToolModule extends Module {
             return;
         }
 
-        boolean auraActive =
-                auraSword.getValue()
+        boolean auraActive = auraSword.getValue()
                         && AuraModule.INSTANCE.isEnabled()
                         && AuraModule.target != null;
 
