@@ -41,6 +41,10 @@ public class DrawUtil implements IMinecraft {
         }
     }
 
+    public static void restoreScissor() {
+        nvgRestore(context);
+    }
+
     public static float getFontHeight(Number size, FontResource font) {
         nvgFontFace(context, font.identifier);
         nvgFontSize(context, size.floatValue());

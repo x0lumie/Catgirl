@@ -164,16 +164,11 @@ public class MenuClickGui extends Screen {
             anim.run(isSelected ? 1f : (isHovered ? 0.5f : 0f));
             float animProgress = anim.getValue();
 
-            if (animProgress > 0.01f) {
-                int alphaVal = (int) (35f * animProgress);
-                Color pillColor = new Color(accentPink.getRed(), accentPink.getGreen(), accentPink.getBlue(), alphaVal);
-                DrawUtil.roundedRect(catX1, catY1, catX2, catY2, 5f, pillColor);
-            }
-
-            Color unselectedColor = isHovered ? new Color(200, 200, 200, 255) : new Color(130, 130, 135, 255);
-            Color textColor = DrawUtil.interpolate(unselectedColor, Color.WHITE, isSelected ? animProgress : animProgress * 2f);
-
+            float startX = catX1 + 8f;
+            float iconFontSize = categoryFontSize + 2f;
+            float iconY = catY1 + (categoryHeight / 2f) + (iconFontSize / 2f) - 1f;
             String iconText = "";
+
             switch (name) {
                 case "Combat" -> iconText = "a";
                 case "Movement" -> iconText = "b";
@@ -184,9 +179,45 @@ public class MenuClickGui extends Screen {
                 case "Hud" -> iconText = "g";
             }
 
-            float startX = catX1 + 8f;
-            float iconFontSize = categoryFontSize + 2f;
-            float iconY = catY1 + (categoryHeight / 2f) + (iconFontSize / 2f) - 1f;
+
+            float iconToTextPadding = 6f;
+
+            if (animProgress > 0.01f) {
+                int alphaVal = (int) (35f * animProgress);
+                Color pillColor = new Color(
+                        accentPink.getRed(),
+                        accentPink.getGreen(),
+                        accentPink.getBlue(),
+                        alphaVal
+                );
+
+                float iconWidth = ("Search".equals(name)
+                        ? (float) DrawUtil.getStringWidth("c", iconFontSize, ResourceManager.FontResources.moreIconsFont)
+                        : (float) DrawUtil.getStringWidth(iconText, iconFontSize, ResourceManager.FontResources.icons)
+                );
+
+                float textWidth = (float) DrawUtil.getStringWidth(
+                        name, categoryFontSize,
+                        ResourceManager.FontResources.productSansBold
+                );
+                float pillPaddingX = 2f;
+                float pillPaddingY = 2f;
+
+                float pillX1 = startX - pillPaddingX;
+                float pillX2 = startX + iconWidth + iconToTextPadding + textWidth + pillPaddingX;
+
+                DrawUtil.roundedRect(
+                        pillX1,
+                        catY1 + pillPaddingY,
+                        pillX2,
+                        catY2 - pillPaddingY,
+                        5f,
+                        pillColor
+                );
+            }
+
+            Color unselectedColor = isHovered ? new Color(200, 200, 200, 255) : new Color(130, 130, 135, 255);
+            Color textColor = DrawUtil.interpolate(unselectedColor, Color.WHITE, isSelected ? animProgress : animProgress * 2f);
 
             if ("Search".equals(name)) {
                 DrawUtil.drawString("c", startX, iconY, iconFontSize, textColor, ResourceManager.FontResources.moreIconsFont);
@@ -198,7 +229,6 @@ public class MenuClickGui extends Screen {
                     ? (float) DrawUtil.getStringWidth("c", iconFontSize, ResourceManager.FontResources.moreIconsFont)
                     : (float) DrawUtil.getStringWidth(iconText, iconFontSize, ResourceManager.FontResources.icons)
             );
-            float iconToTextPadding = 6f;
 
             float textX = startX + iconWidth + iconToTextPadding;
             float textY = catY1 + (categoryHeight / 2f) + (categoryFontSize / 2f) - 1f;
