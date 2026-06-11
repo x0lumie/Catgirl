@@ -56,6 +56,7 @@ public final class AuraModule extends Module {
     public static final BoolProperty smartAttacking = new BoolProperty("Smart Attacking", true);
     public static final SliderProperty failRate = new SliderProperty("Miss Chance (%)", 0, 0, 40, 1);
     public static final BoolProperty autoDisable = new BoolProperty("Auto Disable", true);
+//    public final BoolProperty silent = new BoolProperty("Silent Rotations", true);
 
     public static final AuraModule INSTANCE = new AuraModule();
 

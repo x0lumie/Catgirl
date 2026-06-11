@@ -56,12 +56,8 @@ public class HitboxDesyncModule extends Module {
 
         toggle();
         switch (NotificationsModule.INSTANCE.mode.getValue()) {
-            case Chat -> {
-                Catgirl.sendChatMessage(this.getDisplayName() + " Your hitbox has been desynced.");
-            }
-            case Exhibition -> {
-                NotificationManager.post(this.getDisplayName(), "Your hitbox has been desynced.", Notification.Type.NOTIFY);
-            }
+            case Chat -> Catgirl.sendChatMessage(this.getDisplayName() + " Your hitbox has been desynced.");
+            case Exhibition -> NotificationManager.post(this.getDisplayName(), "Your hitbox has been desynced.", Notification.Type.NOTIFY);
             case None -> {}
         }
     }

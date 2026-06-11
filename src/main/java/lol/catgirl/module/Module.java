@@ -90,11 +90,25 @@ public class Module implements Toggleable, IMinecraft, Keybindable, Serializable
 
         var notificationModule = NotificationsModule.INSTANCE;
 
-        if (notificationModule.mode.getValue() == NotificationsModule.Mode.Exhibition) {
-            if (enabled) {
-                NotificationManager.post("Module", name + " was enabled.", Notification.Type.OKAY);
-            } else {
-                NotificationManager.post("Module", name + " was disabled.", Notification.Type.WARNING);
+        switch(notificationModule.mode.getValue()) {
+            case Exhibition -> {
+                if (enabled) {
+                    NotificationManager.post("Module", name + " was enabled.", Notification.Type.OKAY);
+                } else {
+                    NotificationManager.post("Module", name + " was disabled.", Notification.Type.WARNING);
+                }
+            }
+
+            case Chat -> {
+                if (enabled) {
+                    Catgirl.sendChatMessage(name + " was enabled.");
+                } else {
+                    Catgirl.sendChatMessage(name + " was disabled.");
+                }
+            }
+
+            case None -> {
+
             }
         }
 

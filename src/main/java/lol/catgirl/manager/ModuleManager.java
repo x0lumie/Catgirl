@@ -119,7 +119,6 @@ public final class ModuleManager {
         modules.add(LungeModule.INSTANCE);
         modules.add(PortalGodModeModule.INSTANCE);
         modules.add(SafeWalkModule.INSTANCE);
-        modules.add(EntityControlModule.INSTANCE);
         modules.add(XCarryModule.INSTANCE);
         modules.add(AntiCactusModule.INSTANCE);
         modules.add(MurderMysteryModule.INSTANCE);
