@@ -15,16 +15,17 @@ import lol.catgirl.utils.client.Animation;
 import lol.catgirl.utils.client.ColorUtils;
 import lol.catgirl.utils.client.Easing;
 import lol.catgirl.utils.client.TickingTimer;
-import lol.catgirl.utils.player.MoveUtils;
-import lol.catgirl.utils.player.PlayerUtils;
-import lol.catgirl.utils.player.RotationUtils;
-import lol.catgirl.utils.player.ScaffoldUtils;
+import lol.catgirl.utils.player.*;
 import lol.catgirl.utils.render.nanovg.DrawUtil;
 import lol.catgirl.utils.render.nanovg.ResourceManager;
 import lombok.Getter;
+import net.minecraft.client.Options;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
@@ -272,7 +273,30 @@ public final class ScaffoldModule extends Module {
                 }
             }
             case God -> {
-                getBaseRotations(event);
+                Options options = mc.options;
+                boolean up = options.keyUp.isDown(), down = options.keyDown.isDown(), left = options.keyLeft.isDown(), right = options.keyRight.isDown();
+                float yRot = Mth.wrapDegrees(mc.player.getYRot() - 180 + (up == down ? left == right ? 0 : left ? -90 : 90 : up ? left == right ? 0 : left ? -45 : 45 : left == right ? 180 : left ? -135 : 135));
+                if (yRot >= -22.5F && yRot < 22.5F) {
+                    yRot = 45;
+                }
+                if (yRot < -22.5F && yRot >= -67.5F) yRot = -45;
+                if (yRot < -67.5F && yRot >= -112.5F) {
+                    yRot = -45;
+                }
+                if (yRot < -112.5F && yRot >= -157.5F) yRot = -135;
+                if (yRot < -157.5F && yRot >= -180 || yRot >= 157.5F && yRot < 180) {
+                    yRot = -135;
+                }
+                if (yRot >= 112.5F && yRot < 157.5F) yRot = 135;
+                if (yRot >= 67.5F && yRot < 112.5F) {
+                    yRot = 135;
+                }
+                if (yRot >= 22.5F && yRot < 67.5F) yRot = 45;
+
+
+                event.yaw = yRot;
+                event.pitch = 75.7f;
+
                 if (placedBlocks >= 7) {
                     mc.options.keyJump.setDown(true);
                     placedBlocks = 0;
@@ -292,38 +316,16 @@ public final class ScaffoldModule extends Module {
     }
 
     private void getBaseRotations(PlayerRotationEvent event) {
-        float[] targetRotations = new float[]{mc.player.getYRot() - 180f, 82.5f};
+        float[] targetRotations = new float[]{mc.player.getYRot() - 180, 82.5f};
 
-        Vec3 faceCenter = Vec3.atCenterOf(blockData.getPosition()).add(
-                blockData.getFacing().getStepX() * 0.5,
-                blockData.getFacing().getStepY() * 0.5,
-                blockData.getFacing().getStepZ() * 0.5
-        );
+        boolean found = false;
 
-        float[] angles = new float[]{-180f, -135f, -90f, -45f, 0f, 45f, 90f, 135f, 180f};
-
-        for (float offset : angles) {
-            float testYaw = mc.player.getYRot() + offset;
-            float testPitch = RotationUtils.calculate(faceCenter).y;
-
-            BlockHitResult hit = PlayerUtils.raycastBlocks(testYaw, testPitch, 4.5f, false);
-            if (hit == null) continue;
-
-            if (hit.getBlockPos().equals(blockData.getPosition())) {
-                Vec2 rotations = RotationUtils.calculate(hit.getLocation());
-                if (PlayerUtils.isLookingAtBlock(blockData.facing, blockData.position, true, 4.5f, rotations.x, rotations.y)) {
-                    targetRotations[0] = rotations.x;
-                    targetRotations[1] = rotations.y;
-                    break;
+        for (float possibleYaw = mc.player.getYRot() - 180; possibleYaw <= mc.player.getYRot() + 360 - 180 && !found; possibleYaw += 45) {
+            for (float possiblePitch = 90; possiblePitch > 30 && !found; possiblePitch -= possiblePitch > (mc.player.hasEffect(MobEffects.SPEED) ? 60 : 80) ? 1 : 10) {
+                if (PlayerUtils.isLookingAtBlock(blockData.getFacing(), blockData.getPosition(), true, 5, possibleYaw, possiblePitch)) {
+                    targetRotations[0] = possibleYaw;
+                    targetRotations[1] = possiblePitch;
                 }
-            }
-        }
-
-        if (targetRotations[0] == mc.player.getYRot() - 180f) {
-            Vec2 rotations = RotationUtils.calculate(faceCenter, blockData.getFacing());
-            if (PlayerUtils.isLookingAtBlock(blockData.facing, blockData.position, true, 4.5f, rotations.x, rotations.y)) {
-                targetRotations[0] = rotations.x;
-                targetRotations[1] = rotations.y;
             }
         }
 
@@ -352,13 +354,14 @@ public final class ScaffoldModule extends Module {
             BlockHitResult blockHitResult = PlayerUtils.raycastBlocks(placeYaw, placePitch, 4.5f, false);
             if (blockHitResult == null) {
                 STOP = true;
-            }
-            if (!(blockHitResult.getBlockPos().getX() == blockData.getPosition().getX() && blockHitResult.getBlockPos().getY() == blockData.getPosition().getY() && blockHitResult.getBlockPos().getZ() == blockData.getPosition().getZ())) {
-                STOP = true;
-            }
-            if (strict.getValue()) {
-                if (blockHitResult.getDirection() != blockData.getFacing()) {
+            } else {
+                if (!(blockHitResult.getBlockPos().getX() == blockData.getPosition().getX() && blockHitResult.getBlockPos().getY() == blockData.getPosition().getY() && blockHitResult.getBlockPos().getZ() == blockData.getPosition().getZ())) {
                     STOP = true;
+                }
+                if (strict.getValue() || keepY.getValue()) {
+                    if (blockHitResult.getDirection() != blockData.getFacing()) {
+                        STOP = true;
+                    }
                 }
             }
         }
@@ -427,6 +430,7 @@ public final class ScaffoldModule extends Module {
             }
         }
     }
+
     private final Animation popAnimation = new Animation(Easing.DECELERATE, 200L);
     private boolean shouldRender = false;
 

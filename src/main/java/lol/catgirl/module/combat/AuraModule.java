@@ -32,7 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class AuraModule extends Module {
 
-    public enum Rotations {Normal, Polar, Puhfy, Perfect}
+    public enum Rotations {Normal, Polar, Legit, Perfect}
 
     public enum AutoBlock {None, Fake, Vanilla, Polar, Legit}
 
@@ -50,8 +50,6 @@ public final class AuraModule extends Module {
     public static final SliderProperty minCps = new SliderProperty("Min CPS", 9, 1, 20, 1)
             .hide(() -> !oldCombat.getValue());
     public static final SliderProperty maxCps = new SliderProperty("Max CPS", 13, 1, 20, 1)
-            .hide(() -> !oldCombat.getValue());
-    public static final SliderProperty attackDelayOffset = new SliderProperty("Delay Jitter (ms)", 0, 0, 80, 1)
             .hide(() -> !oldCombat.getValue());
     public final EnumProperty<AutoBlock> autoBlock = new EnumProperty<>("Auto Block", AutoBlock.None)
             .hide(() -> !oldCombat.getValue());
@@ -77,8 +75,9 @@ public final class AuraModule extends Module {
                 killRange, rotations, targetPriority,
                 minRotationSpeed, maxRotationSpeed,
                 rayCast, useMouseClick, rotateOnAttack,
-                oldCombat, minCps, maxCps, attackDelayOffset, autoBlock,
-                smartAttacking, failRate, autoDisable
+                oldCombat, minCps, maxCps, autoBlock,
+                smartAttacking,
+                failRate, autoDisable
         );
     }
 
@@ -102,7 +101,7 @@ public final class AuraModule extends Module {
 
     @EventHook
     public void onPreUpdate(PreUpdateEvent event) {
-        if(mc.player == null || mc.level == null) {
+        if (mc.player == null || mc.level == null) {
             return;
         }
 
@@ -140,10 +139,10 @@ public final class AuraModule extends Module {
         RotationUtils.setRotationSpeed(speed);
 
         float[] rotated = switch (rotations.getValue()) {
-            case Normal -> RotationUtils.regularAuraRotations(current, target, speed);
             case Polar -> RotationUtils.polarAuraRotations(current, target, speed);
-            case Puhfy -> RotationUtils.puhfyAuraRotations(current, target, speed);
+            case Normal -> RotationUtils.puhfyAuraRotations(current, target, speed);
             case Perfect -> RotationUtils.perfectAuraRotations(current, target, speed);
+            case Legit -> RotationUtils.legitAuraRotations(current, target, speed);
         };
 
         event.yaw = rotated[0];
@@ -302,8 +301,7 @@ public final class AuraModule extends Module {
     private long calculateCpsDelay(double min, double max) {
         if (min >= max) return (long) (1000.0 / min);
         long base = (long) (1000.0 / ThreadLocalRandom.current().nextDouble(min, max));
-        long jitter = attackDelayOffset.getValue().intValue();
-        return base + ThreadLocalRandom.current().nextLong(-jitter, jitter + 1);
+        return base;
     }
 
     private static void clampSliderPair(SliderProperty lo, SliderProperty hi) {
@@ -318,7 +316,7 @@ public final class AuraModule extends Module {
 
     @EventHook
     public void onWorldChange(WorldJoinEvent event) {
-        if(!this.isEnabled()) return;
+        if (!this.isEnabled()) return;
 
         if (autoDisable.getValue()) {
 
@@ -329,7 +327,8 @@ public final class AuraModule extends Module {
                 case Exhibition -> {
                     NotificationManager.post(this.getDisplayName(), "Disabled on world change.", Notification.Type.NOTIFY);
                 }
-                case None -> {}
+                case None -> {
+                }
             }
 
             toggle();

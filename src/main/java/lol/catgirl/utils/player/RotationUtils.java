@@ -123,6 +123,49 @@ public class RotationUtils implements IMinecraft {
         return new float[]{yaw, clampPitch(pitch)};
     }
 
+    public static float[] legitAuraRotations(float[] currentRotations, final Entity entity, float speed) {
+        Vec3 eyePos = mc.player.getEyePosition();
+        AABB box = entity.getBoundingBox();
+
+        // 1. Establish a base height that looks natural (upper chest / neck area)
+        // Avoids looking straight at the feet or locking perfectly to the skull
+        double preferredHeight = entity.getY() + (entity.getEyeHeight() * 0.85);
+
+        // 2. Humanized Aim Drift (Simulation of hand instability)
+        // We use a slow-moving time factor so the aim point gently floats within the hitbox
+        // rather than changing completely randomized positions every single frame (which causes jitter).
+        long timeFactor = mc.player.tickCount;
+
+        // Low frequency sine/cosine waves simulate natural hand swaying
+        double driftX = Math.sin(timeFactor * 0.15) * ((box.maxX - box.minX) * 0.2);
+        double driftY = Math.cos(timeFactor * 0.10) * ((box.maxY - box.minY) * 0.1);
+        double driftZ = Math.cos(timeFactor * 0.15) * ((box.maxZ - box.minZ) * 0.2);
+
+        // 3. Construct the dynamic target point
+        Vec3 targetPoint = new Vec3(
+                entity.getX() + driftX,
+                preferredHeight + driftY,
+                entity.getZ() + driftZ
+        );
+
+        // 4. Fallback: If for some reason the drifted point ends up outside the box,
+        // clamp it to the center so we never completely miss the target.
+        if (!box.contains(targetPoint)) {
+            targetPoint = box.getCenter();
+        }
+
+        // 5. Basic Vector to Angle conversion
+        Vec3 diff = targetPoint.subtract(eyePos);
+        double horizontal = Math.sqrt(diff.x * diff.x + diff.z * diff.z);
+
+        float yaw = (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90.0f;
+        float pitch = (float) -Math.toDegrees(Math.atan2(diff.y, horizontal));
+
+        // Clamp pitch to valid MC limits and pass it back to your rotation handler
+        // to do the smoothing/GCD work.
+        return new float[]{yaw, Math.max(-90.0f, Math.min(90.0f, pitch))};
+    }
+
     public static Vec2 move(final Vec2 last, final Vec2 target, double speed) {
         if (speed == 0) return new Vec2(0, 0);
 
