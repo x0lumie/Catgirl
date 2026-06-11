@@ -387,7 +387,7 @@ public final class ScaffoldModule extends Module {
     private int getBlockSlot() {
         for (int i = 0; i < 9; i++) {
             ItemStack stack = mc.player.getInventory().getItem(i);
-            if (stack.getItem() instanceof BlockItem) {
+            if (stack.getItem() instanceof BlockItem && !PlayerUtils.blacklist.contains(stack.getItem())) {
                 return i;
             }
         }
