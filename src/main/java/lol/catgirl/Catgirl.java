@@ -29,6 +29,7 @@ public class Catgirl implements ModInitializer {
 	public static final String windowTitle = NAME + " v" + VERSION;
 
 	public static Catgirl INSTANCE;
+
 	public EventBus eventBus;
 	public Handler theHandler;
 	public CommandManager commandManager;
@@ -39,8 +40,6 @@ public class Catgirl implements ModInitializer {
 
 	@Getter
 	private final Gson GSON = new GsonBuilder().create();
-
-	public static final Identifier PANORAMA_SKYBOX = Identifier.fromNamespaceAndPath("catgirl", "images/funny/gamer.png");
 
 	@Override
 	public void onInitialize() {

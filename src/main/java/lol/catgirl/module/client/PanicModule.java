@@ -16,7 +16,9 @@ public final class PanicModule extends Module {
 
     @Override
     public void onEnable() {
-
+        if(mc.player == null || mc.level == null) {
+            return;
+        }
         for (Module module : ModuleManager.modules) {
             if (module.isEnabled() && module != this) {
                 module.toggle();

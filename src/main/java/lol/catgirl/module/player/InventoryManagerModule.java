@@ -2,11 +2,14 @@ package lol.catgirl.module.player;
 
 
 import lol.catgirl.Catgirl;
+import lol.catgirl.module.client.NotificationsModule;
 import lol.catgirl.module.combat.AuraModule;
 import lol.catgirl.module.combat.AutoTotemModule;
 import lol.catgirl.property.impl.BoolProperty;
 import lol.catgirl.property.impl.EnumProperty;
 import lol.catgirl.property.impl.SliderProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import lol.catgirl.utils.client.TickingTimer;
 import lol.catgirl.utils.player.PlayerUtils;
 import lol.catgirl.utils.player.inventory.InventoryUtils;
@@ -111,7 +114,17 @@ public class InventoryManagerModule extends Module {
         if(!this.isEnabled()) return;
 
         if (autoDisable.getValue()) {
-            Catgirl.sendChatMessage("InventoryManager has been disabled due to world change.");
+//            Catgirl.sendChatMessage("InventoryManager has been disabled due to world change.");
+
+            switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                case Chat -> {
+                    Catgirl.sendChatMessage(this.getDisplayName() + " has been disabled due to world change.");
+                }
+                case Exhibition -> {
+                    NotificationManager.post(this.getDisplayName(), "Disabled on world change.", Notification.Type.NOTIFY);
+                }
+                case None -> {}
+            }
 
             toggle();
         }

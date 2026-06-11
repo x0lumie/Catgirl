@@ -48,6 +48,7 @@ public final class AutoTranslateModule extends Module {
 
     @EventHook
     public void onPacketReceive(PacketReceivedEvent event) {
+        if (mc.player == null || mc.level == null) return;
 
         String text = extractChat(event.packet);
         if (text == null || text.isEmpty()) return;

@@ -14,7 +14,9 @@ public class InterfaceModule extends Module {
         Minecraft,
         Comfortaa,
         ComfortaaBold,
-        SFProDisplayBold
+        SFProDisplayBold,
+        Roboto,
+        SegoeLight, ProductSansRegular
     }
 
     public enum NamingStyle {

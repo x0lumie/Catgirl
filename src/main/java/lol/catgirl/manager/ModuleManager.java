@@ -115,6 +115,14 @@ public final class ModuleManager {
         modules.add(AntiVoidModule.INSTANCE);
         modules.add(ClientSpooferModule.INSTANCE);
         modules.add(PortalsModule.INSTANCE);
+        modules.add(AntiPowderSnowModule.INSTANCE);
+        modules.add(LungeModule.INSTANCE);
+        modules.add(PortalGodModeModule.INSTANCE);
+        modules.add(SafeWalkModule.INSTANCE);
+        modules.add(EntityControlModule.INSTANCE);
+        modules.add(XCarryModule.INSTANCE);
+        modules.add(AntiCactusModule.INSTANCE);
+        modules.add(MurderMysteryModule.INSTANCE);
 
         Catgirl.LOGGER.info("Initializing " + modules.size() +  " Modules...");
     }
@@ -126,6 +134,18 @@ public final class ModuleManager {
                 result.add(module);
             }
         }
+        return result;
+    }
+
+    public List<Module> getModulesByCategory(String categoryName) {
+        List<Module> result = new ArrayList<>();
+
+        for (Module module : modules) {
+            if (module.getCategory().name().equalsIgnoreCase(categoryName)) {
+                result.add(module);
+            }
+        }
+
         return result;
     }
 

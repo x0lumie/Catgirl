@@ -3,12 +3,16 @@
   "package": "lol.catgirl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractHorseMixin",
+    "CactusBlockMixin",
     "ConnectionMixin",
     "EntityMixin",
     "GuiMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "PowderSnowBlockMixin",
+    "StringDecomposerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -38,6 +42,7 @@
     "MinecraftMixin",
     "MouseMixin",
     "PacketSendMixin",
+    "PlayerSkinMixin",
     "RenderMixin",
     "TitleScreenMixin",
     "blur.BlurRendererMixin",

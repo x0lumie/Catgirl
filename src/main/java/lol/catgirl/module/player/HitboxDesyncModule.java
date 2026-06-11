@@ -6,7 +6,10 @@ import lol.catgirl.event.impl.ClientTickEvent;
 import lol.catgirl.event.impl.WorldJoinEvent;
 import lol.catgirl.module.ModuleCategory;
 import lol.catgirl.module.Module;
+import lol.catgirl.module.client.NotificationsModule;
 import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
@@ -52,7 +55,15 @@ public class HitboxDesyncModule extends Module {
 
 
         toggle();
-        Catgirl.sendChatMessage("Your hitbox has been desynced.");
+        switch (NotificationsModule.INSTANCE.mode.getValue()) {
+            case Chat -> {
+                Catgirl.sendChatMessage(this.getDisplayName() + " Your hitbox has been desynced.");
+            }
+            case Exhibition -> {
+                NotificationManager.post(this.getDisplayName(), "Your hitbox has been desynced.", Notification.Type.NOTIFY);
+            }
+            case None -> {}
+        }
     }
 
     private Vec3 merge(Vec3 vec, Direction facing) {

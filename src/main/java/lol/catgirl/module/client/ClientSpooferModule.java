@@ -9,6 +9,7 @@ import lol.catgirl.property.impl.EnumProperty;
 public final class ClientSpooferModule extends Module {
     public static final ClientSpooferModule INSTANCE = new ClientSpooferModule();
 
+    // add more pwease
     public enum Mode {
         LunarClient
     }
@@ -17,6 +18,7 @@ public final class ClientSpooferModule extends Module {
 
     public ClientSpooferModule() {
         super("ClientSpoofer", "Spoofs your client.", ModuleCategory.Client);
+        addSetting(mode);
     }
 
     @EventHook

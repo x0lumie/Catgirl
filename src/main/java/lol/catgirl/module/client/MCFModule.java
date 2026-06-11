@@ -6,6 +6,8 @@ import lol.catgirl.event.impl.PreUpdateEvent;
 import lol.catgirl.event.impl.WorldJoinEvent;
 import lol.catgirl.manager.FriendManager;
 import lol.catgirl.property.impl.BoolProperty;
+import lol.catgirl.ui.notification.Notification;
+import lol.catgirl.ui.notification.NotificationManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
@@ -49,10 +51,29 @@ public final class MCFModule extends Module {
 
                     if (FriendManager.isFriend(name)) {
                         FriendManager.remove(name);
-                        Catgirl.sendChatMessage("Removed " + name + " as a friend.");
+//                        Catgirl.sendChatMessage("Removed " + name + " as a friend.");
+
+                        switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                            case Chat -> {
+                                Catgirl.sendChatMessage(this.getDisplayName() + " Removed " + name + " as a friend.");
+                            }
+                            case Exhibition -> {
+                                NotificationManager.post(this.getDisplayName(), "Removed " + name + " as a friend.", Notification.Type.OKAY);
+                            }
+                            case None -> {}
+                        }
+
                     } else {
                         FriendManager.add(name);
-                        Catgirl.sendChatMessage("Added " + name + " as a friend.");
+                    switch (NotificationsModule.INSTANCE.mode.getValue()) {
+                            case Chat -> {
+                                Catgirl.sendChatMessage(this.getDisplayName() + " Added " + name + " as a friend.");
+                            }
+                            case Exhibition -> {
+                                NotificationManager.post(this.getDisplayName(), "Added " + name + " as a friend.", Notification.Type.OKAY);
+                            }
+                            case None -> {}
+                        }
                     }
                 }
             }

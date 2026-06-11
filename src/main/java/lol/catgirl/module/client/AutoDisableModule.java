@@ -59,6 +59,8 @@ public final class AutoDisableModule extends Module {
 
     @EventHook
     public void onPacket(PacketReceivedEvent event) {
+        if (mc.player == null || mc.level == null) return;
+
         if (event.packet instanceof ClientboundPlayerPositionPacket) {
             if (event.packet instanceof ClientboundPlayerPositionPacket packet) {
 
