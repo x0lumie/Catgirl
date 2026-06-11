@@ -86,7 +86,8 @@ public class MLGNoFallMode implements NoFallMode {
 
     @Override
     public void onRotation(PlayerRotationEvent event) {
-        if (mc.player == null) return;
+        if (mc.player == null || mc.level == null) return;
+        if (rotations == null) return;
 
         RotationUtils.setRotationSpeed(180);
 
